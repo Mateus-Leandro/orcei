@@ -1,0 +1,19 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-container">
+        <app-form-field label="Email" placeholder="Digite seu email" type="email" [control]="emailControl" />
+        <app-form-field label="Senha" placeholder="Digite sua senha" type="password" [control]="passControl" />
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <app-button text="Entrar" type="submit" width="100%" />
+            <app-button text="Esqueci minha senha" type="submit" bgColor="transparent" textColor="var(--primary)"
+                width="100%" />
+
+            <div class="register-container">
+                <div>
+                    <app-button icon="person" bgColor="transparent" textColor="var(--primary)" text="Realizar Cadastro"
+                        width="22">
+                    </app-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
