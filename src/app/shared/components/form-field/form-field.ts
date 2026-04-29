@@ -18,28 +18,25 @@ export class FormField {
   control!: FormControl;
 
   get errorMessage(): string {
-    if (!this.control || !this.control.errors || !this.control.touched) {
+    if (!this.control || !this.control.touched || !this.control.errors) {
       return '';
     }
 
     if (this.control.hasError('required')) {
-      return ` O campo ${this.label.toLowerCase()} é obrigatório`;
+      return `O campo ${this.label.toLowerCase()} é obrigatório`;
     }
 
     if (this.control.hasError('email')) {
       return 'Email inválido';
     }
 
-    if (this.control.hasError('minlength')) {
-      const requiredLength = this.control.getError('minlength')?.requiredLength;
-
-      return `Mínimo de ${requiredLength} caracteres`;
+    if (this.control.hasError('passwordMismatch')) {
+      return 'As senhas não coincidem';
     }
 
-    if (this.control.hasError('maxlength')) {
-      const requiredLength = this.control.getError('maxlength')?.requiredLength;
-
-      return `Máximo de ${requiredLength} caracteres`;
+    if (this.control.hasError('minlength')) {
+      const requiredLength = this.control.getError('minlength')?.requiredLength;
+      return `Mínimo de ${requiredLength} caracteres`;
     }
 
     return 'Campo inválido';
