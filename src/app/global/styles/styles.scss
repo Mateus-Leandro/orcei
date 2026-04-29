@@ -1,0 +1,19 @@
+@use '../themes/color.scss' as *;
+
+/* 1. Remove as margens que causam o scroll e a borda branca externa */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Evita qualquer scroll acidental */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.input {
+  display: flex;
+}
