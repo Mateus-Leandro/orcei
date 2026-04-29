@@ -6,20 +6,19 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { FormField } from '../../../../shared/components/form-field/form-field';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../../shared/components/button/button';
+import { FormField } from '../../../../shared/components/form-field/form-field';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login-form',
-  standalone: true,
+  selector: 'app-register-form',
   imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormField, ButtonComponent],
-  templateUrl: './login-form.html',
-  styleUrl: './login-form.scss',
+  templateUrl: './register-form.html',
+  styleUrl: './register-form.scss',
 })
-export class LoginForm {
+export class RegisterForm {
   form: FormGroup;
 
   constructor(
@@ -32,28 +31,20 @@ export class LoginForm {
     });
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      console.log('Formulário inválido');
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    console.log('Formulário enviado:', this.form.value);
-
-    // chamar API aqui
-    // this.authService.login(this.form.value)
-  }
-
-  navigateToRegister() {
-    this.router.navigate(['/register']);
-  }
-
   get emailControl(): FormControl {
     return this.form.get('email') as FormControl;
   }
 
   get passControl(): FormControl {
     return this.form.get('pass') as FormControl;
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      // Lógica para lidar com o envio do formulário, como chamar um serviço de autenticação
+      console.log('Formulário enviado', this.form.value);
+    } else {
+      console.log('Formulário inválido');
+    }
   }
 }
