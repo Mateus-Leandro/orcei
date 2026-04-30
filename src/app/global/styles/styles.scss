@@ -1,4 +1,5 @@
 @use '../themes/color.scss' as *;
+@use '@angular/material' as mat;
 
 /* 1. Remove as margens que causam o scroll e a borda branca externa */
 html,
@@ -16,4 +17,52 @@ body {
 
 .input {
   display: flex;
+}
+
+// Customização da cor do spinner
+@include mat.progress-spinner-overrides(
+  (
+    active-indicator-color: $primary,
+  )
+);
+
+// Customização dos snackbars para diferentes tipos de mensagens
+.snackbar-success {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: $secondary,
+      container-color: $success-color,
+      container-shape: 8px,
+    )
+  );
+}
+
+.snackbar-error {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: $secondary,
+      container-color: $error-color,
+      container-shape: 8px,
+    )
+  );
+}
+
+.snackbar-warning {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: $secondary,
+      container-color: $warning-color,
+      container-shape: 8px,
+    )
+  );
+}
+
+.snackbar-info {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: $secondary,
+      container-color: $info-color,
+      container-shape: 8px,
+    )
+  );
 }
