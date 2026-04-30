@@ -22,7 +22,6 @@
 .logo-wrapper {
   display: flex;
   justify-content: center;
-  padding-top: 100px;
 }
 
 .color-container {
@@ -90,7 +89,6 @@
   font-size: 22px;
   font-weight: 500;
   color: $primary;
-  margin-bottom: 24px;
 }
 
 @media (max-width: 768px) {
