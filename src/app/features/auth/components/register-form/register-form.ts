@@ -9,13 +9,21 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../../shared/components/button/button';
-import { FormField } from '../../../../shared/components/form-field/form-field';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
 import { Router } from '@angular/router';
 import { PasswordMatchValidator } from '../../../../shared/validators/password-match.validator';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 
 @Component({
   selector: 'app-register-form',
-  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormField, ButtonComponent],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FormFieldComponent,
+    ButtonComponent,
+  ],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
 })
@@ -25,12 +33,15 @@ export class RegisterForm {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
+    private notificationService: NotificationService,
   ) {
     this.form = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
         pass: ['', [Validators.required, Validators.minLength(6)]],
         confirmPass: ['', [Validators.required, Validators.minLength(6)]],
+        name: ['', [Validators.required, Validators.minLength(3)]],
       },
       { validators: [PasswordMatchValidator.match('pass', 'confirmPass')] },
     );
@@ -48,11 +59,28 @@ export class RegisterForm {
     return this.form.get('confirmPass') as FormControl;
   }
 
+  get nameControl(): FormControl {
+    return this.form.get('name') as FormControl;
+  }
+
   onSubmit() {
     if (this.form.valid) {
       console.log('Formulário enviado', this.form.value);
-    } else {
-      console.log('Formulário inválido');
+      this.authService
+        .createAccount(this.emailControl.value, this.passControl.value, this.nameControl.value)
+        .subscribe({
+          next: () => {
+            this.notificationService.showSuccess(
+              'Conta criada com sucesso! Realize o login para utilizar o sistema.',
+            );
+            this.router.navigate(['/login']);
+          },
+          error: (err) => {
+            this.notificationService.showError(
+              err.message || 'Erro ao criar conta. Tente novamente.',
+            );
+          },
+        });
     }
   }
 }

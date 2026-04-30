@@ -1,5 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-container">
+        <app-form-field label="Nome" placeholder="Digite seu nome" [control]="nameControl" />
         <app-form-field label="Email" placeholder="Digite seu email" type="email" [control]="emailControl" />
         <app-form-field label="Senha" placeholder="Digite sua senha" type="password" [control]="passControl" />
         <app-form-field label="Confirme sua senha" placeholder="Confirme sua senha" type="password"

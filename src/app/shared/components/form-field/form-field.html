@@ -1,9 +1,21 @@
 <mat-form-field appearance="outline" class="input">
     <mat-label>{{ label }}</mat-label>
-    <input matInput [type]="type" [placeholder]="placeholder" [formControl]="control" />
+
+    <input matInput [type]="inputType" [placeholder]="placeholder" [formControl]="control" />
+
     @if (errorMessage) {
     <mat-error>
         {{ errorMessage }}
     </mat-error>
+    }
+
+    @if (enablePasswordToggle && type === 'password') {
+    <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+
+        <mat-icon>
+            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+
+    </button>
     }
 </mat-form-field>

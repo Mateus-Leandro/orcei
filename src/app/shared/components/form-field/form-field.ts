@@ -2,20 +2,35 @@ import { Component, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-form-field',
-  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
   templateUrl: './form-field.html',
   styleUrl: './form-field.scss',
 })
-export class FormField {
+export class FormFieldComponent {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
+  @Input() enablePasswordToggle = false;
 
   @Input({ required: true })
   control!: FormControl;
+
+  hidePassword = true;
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
 
   get errorMessage(): string {
     if (!this.control || !this.control.touched || !this.control.errors) {
@@ -40,5 +55,13 @@ export class FormField {
     }
 
     return 'Campo inválido';
+  }
+
+  get inputType(): string {
+    if (this.type !== 'password') {
+      return this.type;
+    }
+
+    return this.enablePasswordToggle ? (this.hidePassword ? 'password' : 'text') : 'password';
   }
 }

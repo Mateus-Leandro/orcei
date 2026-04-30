@@ -10,4 +10,8 @@ export class AuthService {
   getSession() {
     return this.repository.getSession();
   }
+
+  createAccount(email: string, password: string, userName: string) {
+    return this.repository.createAccount(email, password, userName);
+  }
 }
