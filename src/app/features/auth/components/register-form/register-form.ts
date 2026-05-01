@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { PasswordMatchValidator } from '../../../../shared/validators/password-match.validator';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-register-form',
@@ -35,6 +36,7 @@ export class RegisterForm {
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private location: Location,
   ) {
     this.form = this.fb.group(
       {
@@ -42,6 +44,7 @@ export class RegisterForm {
         pass: ['', [Validators.required, Validators.minLength(6)]],
         confirmPass: ['', [Validators.required, Validators.minLength(6)]],
         name: ['', [Validators.required, Validators.minLength(3)]],
+        cnpj: ['', [Validators.required, Validators.pattern(/^\d{14}$/)]],
       },
       { validators: [PasswordMatchValidator.match('pass', 'confirmPass')] },
     );
@@ -63,6 +66,10 @@ export class RegisterForm {
     return this.form.get('name') as FormControl;
   }
 
+  get cnpjControl(): FormControl {
+    return this.form.get('cnpj') as FormControl;
+  }
+
   onSubmit() {
     if (this.form.valid) {
       console.log('Formulário enviado', this.form.value);
@@ -82,5 +89,9 @@ export class RegisterForm {
           },
         });
     }
+  }
+
+  return() {
+    this.location.back();
   }
 }

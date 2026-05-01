@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-form-field',
@@ -13,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
+    NgxMaskDirective,
   ],
   templateUrl: './form-field.html',
   styleUrl: './form-field.scss',
@@ -22,6 +24,7 @@ export class FormFieldComponent {
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
   @Input() enablePasswordToggle = false;
+  @Input() mask: string = '';
 
   @Input({ required: true })
   control!: FormControl;
