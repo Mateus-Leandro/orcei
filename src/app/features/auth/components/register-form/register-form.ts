@@ -15,6 +15,9 @@ import { PasswordMatchValidator } from '../../../../shared/validators/password-m
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { Location } from '@angular/common';
+import { ICreateUser } from '../../../../core/models/user/user.model';
+import { ICreateUsercompany } from '../../../../core/models/company/company.model';
+import { CompanyService } from '../../../../core/services/company/company.service';
 
 @Component({
   selector: 'app-register-form',
@@ -37,6 +40,7 @@ export class RegisterForm {
     private authService: AuthService,
     private notificationService: NotificationService,
     private location: Location,
+    private companyService: CompanyService,
   ) {
     this.form = this.fb.group(
       {
@@ -72,22 +76,38 @@ export class RegisterForm {
 
   onSubmit() {
     if (this.form.valid) {
-      console.log('Formulário enviado', this.form.value);
-      this.authService
-        .createAccount(this.emailControl.value, this.passControl.value, this.nameControl.value)
-        .subscribe({
-          next: () => {
-            this.notificationService.showSuccess(
-              'Conta criada com sucesso! Realize o login para utilizar o sistema.',
-            );
-            this.router.navigate(['/login']);
-          },
-          error: (err) => {
-            this.notificationService.showError(
-              err.message || 'Erro ao criar conta. Tente novamente.',
-            );
-          },
-        });
+      this.companyService.searchForCnpj(this.cnpjControl.value).subscribe({
+        next: (response) => {
+          const createCompany: ICreateUsercompany = {
+            cnpj: response.cnpj,
+            name: response.razao_social,
+          };
+          const createUser: ICreateUser = {
+            name: this.nameControl.value,
+            email: this.emailControl.value,
+            pass: this.passControl.value,
+            company: createCompany,
+          };
+          this.authService.createAccount(createUser).subscribe({
+            next: () => {
+              this.notificationService.showSuccess(
+                'Conta criada com sucesso! Realize o login para utilizar o sistema.',
+              );
+              this.router.navigate(['/login']);
+            },
+            error: (err) => {
+              this.notificationService.showError(
+                err.message || 'Erro ao criar conta. Tente novamente.',
+              );
+            },
+          });
+        },
+        error: (err) => {
+          this.notificationService.showError(
+            `Erro ao consultar CNPJ ${this.cnpjControl.value}: ${err.message || err} `,
+          );
+        },
+      });
     }
   }
 

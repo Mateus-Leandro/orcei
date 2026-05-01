@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AuthRepository } from '../../repositories/auth.repository';
+import { AuthRepository } from '../../repositories/auth/auth.repository';
+import { ICreateUser } from '../../models/user/user.model';
+import { ICreateUsercompany } from '../../models/company/company.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +13,7 @@ export class AuthService {
     return this.repository.getSession();
   }
 
-  createAccount(email: string, password: string, userName: string) {
-    return this.repository.createAccount(email, password, userName);
+  createAccount(createUser: ICreateUser) {
+    return this.repository.createAccount(createUser);
   }
 }
