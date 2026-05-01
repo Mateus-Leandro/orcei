@@ -86,9 +86,28 @@
 }
 
 .title-form {
+  padding-top: 15px;
   font-size: 22px;
   font-weight: 500;
   color: $primary;
+}
+
+.img-logo {
+  width: 300px;
+  height: 300px;
+}
+
+.login-title-container {
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-title-container {
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
 }
 
 @media (max-width: 768px) {
@@ -112,5 +131,12 @@
   .bottom-message {
     left: 30px;
     bottom: 30px;
+  }
+}
+
+@media (max-width: 1600px) {
+  .img-logo {
+    width: 220px;
+    height: 220px;
   }
 }

@@ -1,39 +1,41 @@
 @if (loading()) {
-<app-spinner />
+  <app-spinner />
 }
 
 <div class="main-container">
-    <div class="form-container">
-        <div class="logo-wrapper">
-            <img src="assets/images/logo.png" alt="Logo" width="300" height="300" />
-        </div>
+  <div class="form-container">
+    @if (!registerPage()) {
+      <div class="logo-wrapper">
+        <img src="assets/images/logo.png" alt="Logo" class="img-logo" />
+      </div>
+    }
 
-        <div style="gap: 25px; display: flex; flex-direction: column;">
-            <b class="title-form">
-                <ng-content select="[title-form]"></ng-content>
-            </b>
-            <ng-content select="[form]"></ng-content>
-        </div>
+    <div [ngClass]="registerPage() ? 'register-title-container' : 'login-title-container'">
+      <b class="title-form">
+        <ng-content select="[title-form]"></ng-content>
+      </b>
+      <ng-content select="[form]"></ng-content>
+    </div>
+  </div>
+
+  <div class="color-container">
+    <div class="message-container">
+      <div class="divider"></div>
+
+      <div class="message-content">
+        <h1>
+          <ng-content select="[title]"></ng-content>
+        </h1>
+        <p>
+          <ng-content select="[description]"></ng-content>
+        </p>
+      </div>
     </div>
 
-    <div class="color-container">
-        <div class="message-container">
-            <div class="divider"></div>
-
-            <div class="message-content">
-                <h1>
-                    <ng-content select="[title]"></ng-content>
-                </h1>
-                <p>
-                    <ng-content select="[description]"></ng-content>
-                </p>
-            </div>
-        </div>
-
-        <div class="bottom-message" title="Entre em contato conosco pelo WhatsApp">
-            <a href="https://wa.me/5531984448086" class="whatsapp-link">
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </div>
+    <div class="bottom-message" title="Entre em contato conosco pelo WhatsApp">
+      <a href="https://wa.me/5531984448086" class="whatsapp-link">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
     </div>
+  </div>
 </div>
