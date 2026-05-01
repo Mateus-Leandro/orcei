@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RegisterForm } from '../../components/register-form/register-form';
-import { AuthLayout } from '../../components/auth-layout/auth-layout';
+import { AuthLayout } from '../../../../layouts/auth-layout/auth-layout';
 
 @Component({
   selector: 'app-register',

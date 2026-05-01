@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginForm } from '../../components/login-form/login-form';
-import { AuthLayout } from '../../components/auth-layout/auth-layout';
+import { AuthLayout } from '../../../../layouts/auth-layout/auth-layout';
 
 @Component({
   selector: 'app-login',

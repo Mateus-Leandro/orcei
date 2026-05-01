@@ -8,10 +8,12 @@
             <img src="assets/images/logo.png" alt="Logo" width="350" height="350" />
         </div>
 
-        <b class="title-form">
-            <ng-content select="[title-form]"></ng-content>
-        </b>
-        <ng-content select="[form]"></ng-content>
+        <div style="gap: 25px; display: flex; flex-direction: column;">
+            <b class="title-form">
+                <ng-content select="[title-form]"></ng-content>
+            </b>
+            <ng-content select="[form]"></ng-content>
+        </div>
     </div>
 
     <div class="color-container">
