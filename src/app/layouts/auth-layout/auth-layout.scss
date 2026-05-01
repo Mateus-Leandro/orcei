@@ -9,14 +9,14 @@
 }
 
 .form-container {
-  flex: 0 0 400px;
+  flex: 0 0 420px;
   background-color: white;
   display: flex;
   flex-direction: column;
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
   justify-content: space-between;
-  padding: 40px;
+  padding: 0 40px 40px;
 }
 
 .logo-wrapper {
