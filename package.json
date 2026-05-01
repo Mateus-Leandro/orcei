@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
-    "types:db": "supabase gen types typescript --project-id fjlaysrwonssquljnztn --schema public > src/app/core/types/database.types.ts"
+    "types:db": "supabase gen types typescript --project-id fjlaysrwonssquljnztn --schema public > src/app/core/types/database.types.ts",
+    "supabase:deploy-migrations": "supabase db push",
+    "supabase:deploy-function": "bash -c 'read -p \"Nome da função Supabase: \" FN && supabase functions deploy \"$FN\"'"
   },
   "prettier": {
     "printWidth": 100,
