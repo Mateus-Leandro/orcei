@@ -11,4 +11,5 @@ import { MatIconModule } from '@angular/material/icon';
 export class IconButton {
   @Input({ required: true }) icon: string = '';
   @Input() iconColor: string = 'var(--secondary)';
+  @Input() bgColor: string = 'var(--primary)';
 }
