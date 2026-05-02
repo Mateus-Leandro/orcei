@@ -1,21 +1,35 @@
 <mat-form-field appearance="outline" class="input">
-    <mat-label>{{ label }}</mat-label>
+  <mat-label>{{ label }}</mat-label>
 
-    <input matInput [type]="inputType" [placeholder]="placeholder" [formControl]="control" [mask]="mask" />
+  @if (prefixIcon) {
+    <mat-icon matPrefix>
+      {{ prefixIcon }}
+    </mat-icon>
+  }
 
-    @if (errorMessage) {
-    <mat-error>
-        {{ errorMessage }}
-    </mat-error>
-    }
+  <input
+    matInput
+    [type]="inputType"
+    [placeholder]="placeholder"
+    [formControl]="control"
+    [mask]="mask"
+  />
 
-    @if (enablePasswordToggle && type === 'password') {
+  @if (enablePasswordToggle && type === 'password') {
     <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
-
-        <mat-icon>
-            {{ hidePassword ? 'visibility_off' : 'visibility' }}
-        </mat-icon>
-
+      <mat-icon>
+        {{ hidePassword ? 'visibility_off' : 'visibility' }}
+      </mat-icon>
     </button>
-    }
+  } @else if (suffixIcon) {
+    <mat-icon matSuffix>
+      {{ suffixIcon }}
+    </mat-icon>
+  }
+
+  @if (errorMessage) {
+    <mat-error>
+      {{ errorMessage }}
+    </mat-error>
+  }
 </mat-form-field>

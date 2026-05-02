@@ -25,6 +25,8 @@ export class FormFieldComponent {
   @Input() type: string = 'text';
   @Input() enablePasswordToggle = false;
   @Input() mask: string = '';
+  @Input() prefixIcon: string = '';
+  @Input() suffixIcon: string = '';
 
   @Input({ required: true })
   control!: FormControl;
