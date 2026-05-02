@@ -1,0 +1,12 @@
+<app-container-page-layout>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ title }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="card-container">
+      <app-form-field [placeholder]="placeholder" [label]="label" [control]="searchControl" />
+      <ng-content></ng-content>
+    </mat-card-content>
+  </mat-card>
+</app-container-page-layout>
