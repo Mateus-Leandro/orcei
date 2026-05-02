@@ -4,10 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { FormFieldComponent } from '../form-field/form-field';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime } from 'rxjs';
+import { IconButton } from '../icon-button/icon-button';
 
 @Component({
   selector: 'app-card-container',
-  imports: [ContainerPageLayout, MatCardModule, FormFieldComponent],
+  imports: [ContainerPageLayout, MatCardModule, FormFieldComponent, IconButton],
   templateUrl: './card-container.html',
   styleUrl: './card-container.scss',
 })

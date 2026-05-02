@@ -5,7 +5,17 @@
     </mat-card-header>
 
     <mat-card-content class="card-container">
-      <app-form-field [placeholder]="placeholder" [label]="label" [control]="searchControl" />
+      <div class="actions">
+        <app-icon-button class="icon-button" icon="add" />
+
+        <app-form-field
+          prefixIcon="search"
+          class="search-field"
+          [placeholder]="placeholder"
+          [label]="label"
+          [control]="searchControl"
+        />
+      </div>
       <ng-content></ng-content>
     </mat-card-content>
   </mat-card>
