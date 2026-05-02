@@ -49,6 +49,29 @@ export class AuthRepository {
     );
   }
 
+  logIn(email: string, password: string) {
+    this.loadingService.show();
+    return from(
+      this.supabase.auth.signInWithPassword({
+        email,
+        password,
+      }),
+    ).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
+
+  logOut() {
+    return from(this.supabase.auth.signOut()).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+      }),
+    );
+  }
+
   getSession() {
     return from(this.supabase.auth.getSession()).pipe(
       map(({ data, error }) => {

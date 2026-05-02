@@ -16,4 +16,12 @@ export class AuthService {
   createAccount(createUser: ICreateUser) {
     return this.repository.createAccount(createUser);
   }
+
+  logIn(email: string, password: string) {
+    return this.repository.logIn(email, password);
+  }
+
+  logOut() {
+    return this.repository.logOut();
+  }
 }

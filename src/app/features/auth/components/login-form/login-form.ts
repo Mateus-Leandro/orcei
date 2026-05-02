@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '../../../../shared/components/button/button';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 
 @Component({
   selector: 'app-login-form',
@@ -32,6 +34,8 @@ export class LoginForm {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
+    private notificationService: NotificationService,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -41,15 +45,26 @@ export class LoginForm {
 
   onSubmit(): void {
     if (this.form.invalid) {
-      console.log('Formulário inválido');
-      this.form.markAllAsTouched();
-      return;
+      return this.form.markAllAsTouched();
     }
 
-    console.log('Formulário enviado:', this.form.value);
+    this.authService
+      .logIn(this.form.value.email, this.form.value.pass)
+      .pipe()
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/budgets']);
+        },
+        error: (err) => {
+          this.emailControl.setErrors({ invalidEmail: true });
+          this.passControl.setErrors({ invalidPassword: true });
+          this.form.markAllAsTouched();
 
-    // chamar API aqui
-    // this.authService.login(this.form.value)
+          this.notificationService.showError(
+            `Não foi possível realizar o login, verifique o e-mail e senha informados.`,
+          );
+        },
+      });
   }
 
   navigateToRegister() {

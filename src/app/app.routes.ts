@@ -1,16 +1,13 @@
 import { Routes } from '@angular/router';
 import { AUTH_ROUTES } from './features/auth/auth.routes';
-import { guestGuard } from './core/guards/auth/guest-guard';
+import { BUDGETS_ROUTES } from './features/budgets/budgets.routes';
+import { MainLayout } from './layouts/main-layout/main-layout';
 
 export const routes: Routes = [
+  ...AUTH_ROUTES,
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'login',
-  },
-  {
-    path: '',
-    children: AUTH_ROUTES,
-    canActivate: [guestGuard],
+    component: MainLayout,
+    children: [...BUDGETS_ROUTES],
   },
 ];
