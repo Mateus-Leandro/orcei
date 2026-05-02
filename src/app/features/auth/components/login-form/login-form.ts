@@ -48,23 +48,17 @@ export class LoginForm {
       return this.form.markAllAsTouched();
     }
 
-    this.authService
-      .logIn(this.form.value.email, this.form.value.pass)
-      .pipe()
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/budgets']);
-        },
-        error: (err) => {
-          this.emailControl.setErrors({ invalidEmail: true });
-          this.passControl.setErrors({ invalidPassword: true });
-          this.form.markAllAsTouched();
-
-          this.notificationService.showError(
-            `Não foi possível realizar o login, verifique o e-mail e senha informados.`,
-          );
-        },
-      });
+    this.authService.logIn(this.form.value.email, this.form.value.pass).subscribe({
+      next: () => {
+        this.router.navigate(['/budgets']);
+      },
+      error: () => {
+        this.form.setErrors({ invalidLogin: true });
+        this.notificationService.showError(
+          'Não foi possível realizar o login, verifique o e-mail e senha informados.',
+        );
+      },
+    });
   }
 
   navigateToRegister() {

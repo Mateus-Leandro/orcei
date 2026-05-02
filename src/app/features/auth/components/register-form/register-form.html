@@ -1,16 +1,39 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="form-container">
-        <app-form-field label="Nome" placeholder="Digite seu nome" [control]="nameControl" />
-        <app-form-field label="Email" placeholder="Digite seu email" type="email" [control]="emailControl" />
-        <app-form-field label="Senha" placeholder="Digite sua senha" type="password" [control]="passControl" />
-        <app-form-field label="Confirme sua senha" placeholder="Confirme sua senha" type="password"
-            [control]="confirmPassControl" />
-        <app-form-field mask="00.000.000/0000-00" label="CNPJ da empresa" placeholder="Confirme sua senha"
-            [control]="cnpjControl" />
-        <div style="display: flex; flex-direction: row; gap: 16px;">
-            <app-button icon="arrow_back" (click)="return()" textColor="var(--primary)" text="Voltar"
-                bgColor="transparent" />
-            <app-button text="Cadastrar-se" type="submit" width="100%" />
-        </div>
+  <div class="form-container">
+    <app-form-field label="Nome" placeholder="Digite seu nome" [control]="nameControl" />
+    <app-form-field
+      label="E-mail"
+      placeholder="Digite seu e-mail"
+      type="email"
+      [control]="emailControl"
+    />
+    <app-form-field
+      label="Senha"
+      placeholder="Digite sua senha"
+      type="password"
+      [control]="passControl"
+    />
+    <app-form-field
+      label="Confirme sua senha"
+      placeholder="Confirme sua senha"
+      type="password"
+      [control]="confirmPassControl"
+    />
+    <app-form-field
+      mask="00.000.000/0000-00"
+      label="CNPJ da empresa"
+      placeholder="Confirme sua senha"
+      [control]="cnpjControl"
+    />
+    <div style="display: flex; flex-direction: row; gap: 16px">
+      <app-button
+        icon="arrow_back"
+        (click)="return()"
+        textColor="var(--primary)"
+        text="Voltar"
+        bgColor="transparent"
+      />
+      <app-button text="Cadastrar-se" type="submit" width="100%" />
     </div>
+  </div>
 </form>
