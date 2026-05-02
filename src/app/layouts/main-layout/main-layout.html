@@ -1,0 +1,11 @@
+<mat-drawer-container hasBackdrop="true" class="layout-container">
+  <mat-drawer [autoFocus]="false" #drawer mode="over" class="drawer-container">
+    <app-sidenav-menu (closeMenu)="drawer.close()" />
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <app-toolbar (toggleMenu)="drawer.toggle()" />
+
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

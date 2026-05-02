@@ -1,0 +1,13 @@
+@use '../../../global/themes/color.scss' as *;
+
+.toolbar {
+  display: flex;
+  gap: 5px;
+  background-color: $primary;
+  color: $font-primary;
+}
+
+.menu-icon {
+  color: $font-primary;
+  cursor: pointer;
+}

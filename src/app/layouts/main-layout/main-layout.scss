@@ -1,0 +1,15 @@
+@use '../../global/themes/color.scss' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout-container {
+  flex: 1;
+}
+
+.drawer-container {
+  background-color: $primary;
+}

@@ -1,0 +1,34 @@
+<div class="layout-content">
+  <div style="padding: 16px">
+    <b></b>
+  </div>
+
+  <mat-nav-list class="nav-list">
+    @for (item of menuItens; track item.router) {
+      <a
+        mat-list-item
+        [routerLink]="item.router"
+        (click)="onItemClick()"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+      >
+        <div class="item-container">
+          <mat-icon class="icon-nav">
+            {{ item.icon }}
+          </mat-icon>
+          <span class="nav-text">
+            {{ item.textNav }}
+          </span>
+        </div>
+      </a>
+    }
+
+    <a mat-list-item (click)="logOut()" class="nav-item">
+      <div class="item-container">
+        <mat-icon class="icon-nav"> logout </mat-icon>
+        <span class="nav-text"> Sair </span>
+      </div>
+    </a>
+  </mat-nav-list>
+</div>
