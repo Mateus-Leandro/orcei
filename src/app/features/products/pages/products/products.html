@@ -7,10 +7,12 @@
   placeholder="Pesquisar produto"
   label="Pesquisar produto"
   (searchValue)="onSearch($event)"
+  (addItem)="navigateToProductForm()"
 >
   <app-product-table
     [products]="products()"
     [totalItems]="totalItems"
     (pageChange)="loadProducts($event)"
+    (clickRow)="navigateToProductForm($event)"
   />
 </app-card-container>

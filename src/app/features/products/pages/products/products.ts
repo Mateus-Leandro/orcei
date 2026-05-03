@@ -7,6 +7,7 @@ import { ProductService } from '../../../../core/services/product/product.servic
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -25,6 +26,7 @@ export class Products implements OnInit {
     private fb: FormBuilder,
     private productService: ProductService,
     private notificationService: NotificationService,
+    private router: Router,
   ) {
     this.form = this.fb.group({
       search: [''],
@@ -62,5 +64,9 @@ export class Products implements OnInit {
       },
       value,
     );
+  }
+
+  navigateToProductForm(product?: IProduct) {
+    return this.router.navigate([`products/form${product?.id ? `/${product.id}` : ''}`]);
   }
 }

@@ -14,6 +14,8 @@ export class ProductTable implements OnChanges {
   @Input({ required: true }) products: IProduct[] = [];
   @Input() totalItems: number = 0;
 
+  @Output() clickRow = new EventEmitter<IProduct>();
+
   @Output()
   pageChange = new EventEmitter<{
     page: number;
@@ -22,7 +24,7 @@ export class ProductTable implements OnChanges {
 
   displayedColumns: string[] = ['Código', 'Nome', 'Data Criação', 'Data Alteração'];
 
-  productsDataSource: any[] = [];
+  productsDataSource: Partial<IProduct>[] = [];
 
   constructor(private dateFormatPipe: DateFormatPipe) {}
 
@@ -34,6 +36,7 @@ export class ProductTable implements OnChanges {
 
   private mapProducts(): void {
     this.productsDataSource = this.products.map((product) => ({
+      id: product.id,
       Código: product.code,
       Nome: product.name,
       'Data Criação': this.dateFormatPipe.transform(product.createdAt),

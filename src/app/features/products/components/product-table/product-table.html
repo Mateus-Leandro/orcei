@@ -3,4 +3,5 @@
   [dataSource]="productsDataSource"
   [totalItems]="totalItems"
   (pageChange)="pageChange.emit($event)"
+  (clickRow)="clickRow.emit($event)"
 ></app-table>

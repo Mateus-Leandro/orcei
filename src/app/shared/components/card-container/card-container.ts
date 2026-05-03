@@ -19,6 +19,8 @@ export class CardContainer {
 
   @Output() searchValue = new EventEmitter<string>();
 
+  @Output() addItem = new EventEmitter<void>();
+
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
@@ -33,5 +35,9 @@ export class CardContainer {
 
   get searchControl(): FormControl {
     return this.form.get('search') as FormControl;
+  }
+
+  add() {
+    this.addItem.emit();
   }
 }
