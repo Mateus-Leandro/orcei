@@ -1,0 +1,6 @@
+<app-table
+  [columns]="displayedColumns"
+  [dataSource]="productsDataSource"
+  [totalItems]="totalItems"
+  (pageChange)="pageChange.emit($event)"
+></app-table>

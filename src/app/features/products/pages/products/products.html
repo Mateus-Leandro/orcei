@@ -1,0 +1,16 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-card-container
+  title="Produtos Cadastrados"
+  placeholder="Pesquisar produto"
+  label="Pesquisar produto"
+  (searchValue)="onSearch($event)"
+>
+  <app-product-table
+    [products]="products()"
+    [totalItems]="totalItems"
+    (pageChange)="loadProducts($event)"
+  />
+</app-card-container>
