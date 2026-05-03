@@ -1,12 +1,17 @@
 <app-container-page-layout>
   <mat-card>
     <mat-card-header>
-      <mat-card-title>{{ title }}</mat-card-title>
+      <mat-card-title>{{ titleCard }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content class="card-container">
       <div class="actions">
-        <app-icon-button class="icon-button" icon="add" (click)="add()" />
+        <app-icon-button
+          class="icon-button"
+          icon="add"
+          (click)="add()"
+          tooltip="Criar Novo Produto"
+        />
 
         <app-form-field
           prefixIcon="search"

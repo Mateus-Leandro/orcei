@@ -13,7 +13,7 @@ import { IconButton } from '../icon-button/icon-button';
   styleUrl: './card-container.scss',
 })
 export class CardContainer {
-  @Input({ required: true }) title: string = '';
+  @Input({ required: true }) titleCard: string = '';
   @Input({ required: true }) placeholder: string = '';
   @Input({ required: true }) label: string = '';
 
