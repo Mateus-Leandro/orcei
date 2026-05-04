@@ -30,7 +30,7 @@ export class SidenavMenu {
     {
       router: '/products',
       textNav: 'Produtos',
-      icon: 'barcode_reader',
+      icon: 'sell',
     },
     {
       router: '/customers',
