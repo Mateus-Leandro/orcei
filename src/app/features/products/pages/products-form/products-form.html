@@ -1,1 +1,25 @@
-<p>products-form works!</p>
+<app-container-page-layout>
+  <mat-card>
+    <mat-card-header style="padding: 25px">
+      <mat-card-title>Cadastro de Produtos</mat-card-title>
+      <mat-card-subtitle>Preencha as informações do produto</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="formGroup" class="form">
+        <div class="row">
+          <div class="code">
+            <app-form-field [readonly]="true" label="Código" [control]="codeControl" />
+          </div>
+
+          <div class="name">
+            <app-form-field label="Nome" [control]="nameControl" />
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="end" style="gap: 15px">
+      <app-button text="Cancelar" bgColor="red" />
+      <app-button text="Salvar" />
+    </mat-card-actions>
+  </mat-card>
+</app-container-page-layout>

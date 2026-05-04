@@ -27,6 +27,7 @@ export class FormFieldComponent {
   @Input() mask: string = '';
   @Input() prefixIcon: string = '';
   @Input() suffixIcon: string = '';
+  @Input() readonly: boolean = false;
 
   @Input({ required: true })
   control!: FormControl;
