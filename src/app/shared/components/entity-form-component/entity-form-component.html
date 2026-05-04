@@ -1,0 +1,22 @@
+<app-container-page-layout>
+  <mat-card>
+    <mat-card-header style="padding: 25px">
+      <div style="flex-direction: row; display: flex; align-items: center; gap: 25px">
+        <mat-icon>{{ icon }}</mat-icon>
+        <div>
+          <mat-card-title>{{ title }}</mat-card-title>
+          <mat-card-subtitle>{{ subtitle }}</mat-card-subtitle>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="formGroup" class="form" (submit)="submitEvent.emit()">
+        <ng-content />
+      </form>
+    </mat-card-content>
+    <mat-card-actions align="end" style="gap: 15px">
+      <app-button text="Cancelar" bgColor="red" (click)="cancelEvent.emit()" />
+      <app-button text="Salvar" type="submit" (submit)="submitEvent.emit()" />
+    </mat-card-actions>
+  </mat-card>
+</app-container-page-layout>
