@@ -34,6 +34,43 @@ export class ProductRepository {
     ).pipe(finalize(() => this.loadingService.hide()));
   }
 
+  findById(id: string) {
+    this.loadingService.show();
+
+    const query = this.supabase.from('products').select('*').eq('id', id).maybeSingle();
+
+    return from(query).pipe(
+      map(({ data, count, error }) => {
+        if (error) {
+          throw error;
+        }
+
+        if (!data) {
+          return {
+            data: null,
+            count: 0,
+          };
+        }
+
+        const mappedData: IProduct = {
+          id: data.id,
+          code: data.code,
+          name: data.name,
+          barcode: data.barcode ?? '',
+          companyId: data.company_id,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+        };
+
+        return {
+          data: mappedData,
+          count: count ?? 0,
+        };
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
+
   findAll(page: number = 1, limit: number = 10, search: string = '') {
     this.loadingService.show();
 
