@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ContainerPageLayout } from '../../../../layouts/container-page-layout/container-page-layout';
 import {
   FormBuilder,
   FormControl,
@@ -13,16 +12,17 @@ import { ProductService } from '../../../../core/services/product/product.servic
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { EntityFormComponent } from '../../../../shared/components/entity-form-component/entity-form-component';
 import { ButtonComponent } from '../../../../shared/components/button/button';
 
 @Component({
   selector: 'app-products-form',
   imports: [
-    ContainerPageLayout,
     FormFieldComponent,
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
+    EntityFormComponent,
     ButtonComponent,
   ],
   templateUrl: './products-form.html',
