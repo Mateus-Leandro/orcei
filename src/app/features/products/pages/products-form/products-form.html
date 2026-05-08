@@ -1,9 +1,13 @@
+@if (loading()) {
+  <app-spinner />
+}
+
 <app-entity-form-component
   icon="sell"
   [formGroup]="formGroup"
   (submitEvent)="onSave()"
   (cancelEvent)="onCancel()"
-  title="Cadastro de produto"
+  titleCard="Cadastro de produto"
   subtitle="Preencha as informações do produto"
 >
   <div>
@@ -18,15 +22,11 @@
     </div>
 
     <div>
-      <div style="flex-direction: row; justify-content: space-between; display: flex">
-        <span>Código de barras</span>
-        <app-button
-          icon="add"
-          text="Adicionar código de Barras"
-          bgColor="transparent"
-          textColor="var(--primary)"
-        />
-      </div>
+      <app-barcode-product-table
+        (removeBarcode)="removeBarcode($event)"
+        (addBarcode)="addBarcode()"
+        [datasource]="barcodesControl.value"
+      />
     </div>
   </div>
 </app-entity-form-component>

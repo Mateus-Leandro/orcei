@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,7 +13,12 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { EntityFormComponent } from '../../../../shared/components/entity-form-component/entity-form-component';
-import { ButtonComponent } from '../../../../shared/components/button/button';
+import { BarcodeProductTable } from '../../components/barcode-product-table/barcode-product-table';
+import { IUpsertProduct } from '../../../../core/models/product/product.model';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { IBarcode, IBarcodeEanAndId } from '../../../../core/models/barcode/barcode.model';
+import { Spinner } from '../../../../shared/components/spinner/spinner';
+import { LoadingService } from '../../../../core/services/loading/loading.service';
 
 @Component({
   selector: 'app-products-form',
@@ -23,7 +28,8 @@ import { ButtonComponent } from '../../../../shared/components/button/button';
     MatButtonModule,
     MatCardModule,
     EntityFormComponent,
-    ButtonComponent,
+    BarcodeProductTable,
+    Spinner,
   ],
   templateUrl: './products-form.html',
   styleUrl: './products-form.scss',
@@ -31,6 +37,8 @@ import { ButtonComponent } from '../../../../shared/components/button/button';
 export class ProductsForm implements OnInit {
   formGroup: FormGroup;
   productId: string | null = null;
+  displayColumns = ['Código'];
+  loading = inject(LoadingService).loading;
 
   constructor(
     fb: FormBuilder,
@@ -38,11 +46,12 @@ export class ProductsForm implements OnInit {
     private productService: ProductService,
     private notificationService: NotificationService,
     private router: Router,
+    private authService: AuthService,
   ) {
     this.formGroup = fb.group({
       code: ['', []],
       name: ['', [Validators.required]],
-      barcode: ['', [Validators.maxLength(14)]],
+      barcodes: [[], []],
     });
 
     this.productId = this.route.snapshot.paramMap.get('id');
@@ -55,7 +64,7 @@ export class ProductsForm implements OnInit {
           this.formGroup.patchValue({
             code: product.data?.code,
             name: product.data?.name,
-            barcode: product.data?.barcode,
+            barcodes: product.data?.barcodes,
           });
         },
         error: (err) => {
@@ -74,11 +83,54 @@ export class ProductsForm implements OnInit {
       return;
     }
 
-    const payload = this.formGroup.value;
+    const payload = this.formGroup.getRawValue();
 
-    if (this.productId) {
-    } else {
-    }
+    const upsertProduct: IUpsertProduct = {
+      id: this?.productId || undefined,
+      name: payload.name,
+    };
+
+    this.productService.upsertProduct(upsertProduct).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Produto salvo com sucesso!');
+        this.router.navigate(['/products']);
+      },
+      error: (error) => {
+        this.notificationService.showError(`Erro ao salvar produto: ${error}`);
+      },
+    });
+  }
+
+  addBarcode() {
+    this.authService.getSession().subscribe({
+      next: (session) => {
+        console.log(session);
+      },
+    });
+    console.log('Adicionar código de barra');
+  }
+
+  removeBarcode(barcode: IBarcodeEanAndId) {
+    this.productService.deleteBarcodeById(barcode.id).subscribe({
+      next: () => {
+        const currentBarcodes = this.barcodesControl.value || [];
+
+        const updatedBarcodes = currentBarcodes.filter(
+          (element: IBarcodeEanAndId) => element.id !== barcode.id,
+        );
+
+        this.barcodesControl.setValue(updatedBarcodes);
+
+        this.notificationService.showSuccess(
+          `Código de barras ${barcode.ean} removido do produto.`,
+        );
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          `Erro ao remover código de barras ${barcode.ean} do produto: ${error}`,
+        );
+      },
+    });
   }
 
   onCancel(): void {
@@ -86,14 +138,14 @@ export class ProductsForm implements OnInit {
   }
 
   get codeControl() {
-    return this.formGroup.get('code') as FormControl;
+    return this.formGroup.get('code') as FormControl<string>;
   }
 
   get nameControl() {
-    return this.formGroup.get('name') as FormControl;
+    return this.formGroup.get('name') as FormControl<string>;
   }
 
-  get barcodeControl() {
-    return this.formGroup.get('barcode') as FormControl;
+  get barcodesControl() {
+    return this.formGroup.get('barcodes') as FormControl<IBarcodeEanAndId[]>;
   }
 }

@@ -10,3 +10,8 @@ export interface ICreateBarcode {
   product_id: string;
   ean: string;
 }
+
+export interface IBarcodeEanAndId {
+  id: string;
+  ean: string;
+}

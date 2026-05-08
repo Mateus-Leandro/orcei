@@ -16,7 +16,7 @@
     </mat-card-content>
     <mat-card-actions align="end" style="gap: 15px">
       <app-button text="Cancelar" bgColor="red" (click)="cancelEvent.emit()" />
-      <app-button text="Salvar" type="submit" (submit)="submitEvent.emit()" />
+      <app-button text="Salvar" (click)="submitEvent.emit()" />
     </mat-card-actions>
   </mat-card>
 </app-container-page-layout>

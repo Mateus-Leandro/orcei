@@ -10,7 +10,6 @@ export interface IProduct {
 
 export interface IUpsertProduct {
   id?: string;
-  code?: number;
   name: string;
 }
 
