@@ -22,15 +22,20 @@ export class ProductRepository {
   upsert(upsertProduct: IUpsertProduct) {
     this.loadingService.show();
 
-    return from(
-      this.supabase
-        .from('products')
-        .upsert(upsertProduct, {
-          onConflict: 'id',
-        })
-        .select()
-        .single(),
-    ).pipe(finalize(() => this.loadingService.hide()));
+    const request = this.supabase
+      .from('products')
+      .upsert({
+        id: upsertProduct.id,
+        name: upsertProduct.name,
+      })
+      .select()
+      .single()
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data;
+      });
+
+    return from(request).pipe(finalize(() => this.loadingService.hide()));
   }
 
   findById(id: string) {
@@ -110,6 +115,18 @@ export class ProductRepository {
           data: mappedData,
           count: count ?? 0,
         };
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
+
+  deleteBarcodeById(id: string) {
+    this.loadingService.show();
+
+    return from(this.supabase.from('barcodes').delete().eq('id', id)).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return data;
       }),
       finalize(() => this.loadingService.hide()),
     );
