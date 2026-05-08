@@ -15,7 +15,7 @@ export class EntityFormComponent {
   @Output() submitEvent = new EventEmitter<void>();
   @Output() cancelEvent = new EventEmitter<void>();
   @Input({ required: true }) formGroup!: FormGroup;
-  @Input({ required: true }) title: string = '';
+  @Input({ required: true }) titleCard: string = '';
   @Input({ required: true }) subtitle: string = '';
   @Input({ required: true }) icon: string = '';
 }
