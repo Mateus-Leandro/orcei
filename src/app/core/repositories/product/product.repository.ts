@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { LoadingService } from '../../services/loading/loading.service';
-import { IProduct, IUpsertProduct } from '../../models/product/product.model';
+import { IProduct, IProductView, IUpsertProduct } from '../../models/product/product.model';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../../services/supabase/supabase.service';
 import { from } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +36,11 @@ export class ProductRepository {
   findById(id: string) {
     this.loadingService.show();
 
-    const query = this.supabase.from('products').select('*').eq('id', id).maybeSingle();
+    const query = this.supabase
+      .from('products')
+      .select('*, barcodes(id, ean)')
+      .eq('id', id)
+      .maybeSingle();
 
     return from(query).pipe(
       map(({ data, count, error }) => {
@@ -52,12 +55,11 @@ export class ProductRepository {
           };
         }
 
-        const mappedData: IProduct = {
+        const mappedData: IProductView = {
           id: data.id,
           code: data.code,
           name: data.name,
-          barcode: data.barcode ?? '',
-          companyId: data.company_id,
+          barcodes: data?.barcodes || [],
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -79,7 +81,7 @@ export class ProductRepository {
 
     let query = this.supabase
       .from('products')
-      .select('*', { count: 'exact' })
+      .select('*, barcodes(id, ean)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(fromIndex, toIndex);
 
@@ -93,15 +95,16 @@ export class ProductRepository {
           throw error;
         }
 
-        const mappedData: IProduct[] = (data || []).map((item: any) => ({
-          id: item.id,
-          code: item.code,
-          name: item.name,
-          barcode: '',
-          companyId: item.company_id,
-          createdAt: item.created_at,
-          updatedAt: item.updated_at,
-        }));
+        const mappedData: IProductView[] = (data || []).map(
+          (item): IProductView => ({
+            id: item.id,
+            code: item.code,
+            name: item.name,
+            barcodes: item?.barcodes || [],
+            createdAt: item.created_at,
+            updatedAt: item.updated_at,
+          }),
+        );
 
         return {
           data: mappedData,
