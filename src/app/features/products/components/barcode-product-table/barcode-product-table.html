@@ -1,0 +1,15 @@
+<div>
+  <div class="container-title-barras">
+    <app-icon-button icon="add" tooltip="Adicionar código de barras" (click)="addBarcode.emit()" />
+    <span class="title-barras">Códigos de Barras do Produto</span>
+  </div>
+  <div style="display: flex; flex-direction: column">
+    <app-table
+      [columns]="displayColumns"
+      [dataSource]="datasource"
+      [totalItems]="datasource.length"
+      [deleteButton]="true"
+      (delete)="deleteBarcode($event)"
+    />
+  </div>
+</div>
