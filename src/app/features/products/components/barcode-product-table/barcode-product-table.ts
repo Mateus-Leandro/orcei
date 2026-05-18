@@ -2,7 +2,10 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { IconButton } from '../../../../shared/components/icon-button/icon-button';
 import { Table } from '../../../../shared/components/table/table';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent, DialogData } from '../../../../shared/components/dialog/dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { IBarcodeEanAndId } from '../../../../core/models/barcode/barcode.model';
 
 @Component({
@@ -20,9 +23,9 @@ export class BarcodeProductTable {
   displayColumns = ['ean'];
 
   deleteBarcode(barcode: IBarcodeEanAndId): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '400px',
-      data: <DialogData>{
+      data: <ConfirmDialogData>{
         title: 'Remover código de barras',
         message: `Deseja remover o EAN ${barcode.ean}?`,
         confirmText: 'Remover',
