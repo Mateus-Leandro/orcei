@@ -16,3 +16,8 @@ export interface IUpsertProduct {
 export interface IProductView extends IProduct {
   barcodes: IBarcode[];
 }
+
+export interface IAddBarcode {
+  productId: string;
+  barcode: string;
+}

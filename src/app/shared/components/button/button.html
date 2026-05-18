@@ -1,14 +1,18 @@
-<button [style.width]="width" [style.color]="textColor" [style.background-color]="bgColor" matButton="filled"
-    [type]="type" [disabled]="disabled">
-
-    @if (icon && iconPosition === 'left') {
+<button
+  [style.width]="width"
+  [style.color]="disabled ? null : textColor"
+  [style.background-color]="disabled ? null : bgColor"
+  matButton="filled"
+  [type]="type"
+  [disabled]="disabled"
+>
+  @if (icon && iconPosition === 'left') {
     <mat-icon>{{ icon }}</mat-icon>
-    }
+  }
 
-    {{text}}
+  {{ text }}
 
-    @if (icon && iconPosition === 'right') {
+  @if (icon && iconPosition === 'right') {
     <mat-icon>{{ icon }}</mat-icon>
-    }
-
+  }
 </button>

@@ -7,7 +7,11 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" style="gap: 15px">
-  <app-button bgColor="red" (click)="close(false)" [text]="data.cancelText || 'Cancelar'" />
+  <app-button
+    bgColor="var(--cancel-color)"
+    (click)="close(false)"
+    [text]="data.cancelText || 'Cancelar'"
+  />
 
   <app-button (click)="close(true)" [text]="data.confirmText || 'Confirmar'" />
 </mat-dialog-actions>

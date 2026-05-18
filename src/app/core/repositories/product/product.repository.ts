@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LoadingService } from '../../services/loading/loading.service';
-import { IProduct, IProductView, IUpsertProduct } from '../../models/product/product.model';
+import {
+  IAddBarcode,
+  IProduct,
+  IProductView,
+  IUpsertProduct,
+} from '../../models/product/product.model';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../../services/supabase/supabase.service';
 import { from } from 'rxjs';
@@ -130,5 +135,33 @@ export class ProductRepository {
       }),
       finalize(() => this.loadingService.hide()),
     );
+  }
+
+  addBarcode(addBarcodeData: IAddBarcode) {
+    this.loadingService.show();
+
+    const barcode = addBarcodeData?.barcode?.trim();
+
+    return from(
+      this.supabase
+        .from('barcodes')
+        .insert({
+          product_id: addBarcodeData?.productId,
+          ean: barcode,
+        })
+        .select()
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            if (error.code === '23505') {
+              throw new Error('Código de barras já cadastrado em algum produto!');
+            }
+
+            throw new Error(error.message);
+          }
+
+          return data;
+        }),
+    ).pipe(finalize(() => this.loadingService.hide()));
   }
 }

@@ -16,9 +16,11 @@ import { EntityFormComponent } from '../../../../shared/components/entity-form-c
 import { BarcodeProductTable } from '../../components/barcode-product-table/barcode-product-table';
 import { IUpsertProduct } from '../../../../core/models/product/product.model';
 import { AuthService } from '../../../../core/services/auth/auth.service';
-import { IBarcode, IBarcodeEanAndId } from '../../../../core/models/barcode/barcode.model';
+import { IBarcodeEanAndId } from '../../../../core/models/barcode/barcode.model';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
+import { MatDialog } from '@angular/material/dialog';
+import { BarcodeDialog } from '../../components/barcode-dialog/barcode-dialog';
 
 @Component({
   selector: 'app-products-form',
@@ -39,6 +41,7 @@ export class ProductsForm implements OnInit {
   productId: string | null = null;
   displayColumns = ['Código'];
   loading = inject(LoadingService).loading;
+  private dialog = inject(MatDialog);
 
   constructor(
     fb: FormBuilder,
@@ -46,7 +49,6 @@ export class ProductsForm implements OnInit {
     private productService: ProductService,
     private notificationService: NotificationService,
     private router: Router,
-    private authService: AuthService,
   ) {
     this.formGroup = fb.group({
       code: ['', []],
@@ -102,12 +104,29 @@ export class ProductsForm implements OnInit {
   }
 
   addBarcode() {
-    this.authService.getSession().subscribe({
-      next: (session) => {
-        console.log(session);
-      },
+    const dialogRef = this.dialog.open(BarcodeDialog, {
+      width: '400px',
     });
-    console.log('Adicionar código de barra');
+
+    dialogRef.afterClosed().subscribe((barcode) => {
+      if (!barcode || !this.productId) return;
+
+      this.productService
+        .addBarcode({
+          productId: this.productId,
+          barcode: barcode,
+        })
+        .subscribe({
+          next: (newBarcode) => {
+            const currentBarcodes = this.barcodesControl.value || [];
+            this.barcodesControl.setValue([...currentBarcodes, newBarcode]);
+            this.notificationService.showSuccess('Código de barras vinculado corretamente!');
+          },
+          error: (error) => {
+            this.notificationService.showError(`Erro: ${error.message || error}`);
+          },
+        });
+    });
   }
 
   removeBarcode(barcode: IBarcodeEanAndId) {

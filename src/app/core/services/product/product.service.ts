@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import { IUpsertProduct } from '../../models/product/product.model';
+import { IAddBarcode, IUpsertProduct } from '../../models/product/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +22,9 @@ export class ProductService {
 
   upsertProduct(upsertProduct: IUpsertProduct) {
     return this.repository.upsert(upsertProduct);
+  }
+
+  addBarcode(addBarcodeData: IAddBarcode) {
+    return this.repository.addBarcode(addBarcodeData);
   }
 }

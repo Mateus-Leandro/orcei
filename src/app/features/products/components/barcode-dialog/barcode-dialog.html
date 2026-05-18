@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Vincular código de barras</h2>
+
+<mat-dialog-content style="padding-top: 15px">
+  <form [formGroup]="formGroup" (submit)="confirm()">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Código de barras</mat-label>
+
+      <input matInput type="text" maxlength="14" formControlName="barcode" cdkFocusInitial />
+      @if (
+        this.barcodeControl.hasError('required') ||
+        this.barcodeControl.hasError('minlength') ||
+        this.barcodeControl.hasError('pattern')
+      ) {
+        <mat-error>Código de barras inválido!</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" style="gap: 5px">
+  <app-button mat-button (click)="cancel()" text="Cancelar" bgColor="var(--cancel-color)" />
+
+  <app-button mat-flat-button (click)="confirm()" [disabled]="formGroup.invalid" text="Salvar" />
+</mat-dialog-actions>

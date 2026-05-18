@@ -27,7 +27,7 @@ export class BarcodeProductTable {
       width: '400px',
       data: <ConfirmDialogData>{
         title: 'Remover código de barras',
-        message: `Deseja remover o EAN ${barcode.ean}?`,
+        message: `Deseja remover o código ${barcode.ean}?`,
         confirmText: 'Remover',
         cancelText: 'Cancelar',
       },
