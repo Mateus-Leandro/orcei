@@ -23,6 +23,11 @@ export class SidenavMenu {
 
   menuItens: IItensMenuDrawer[] = [
     {
+      router: '/stores',
+      textNav: 'Lojas',
+      icon: 'store',
+    },
+    {
       router: '/budgets',
       textNav: 'Orçamentos',
       icon: 'assignment',

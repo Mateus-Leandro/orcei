@@ -1,0 +1,7 @@
+<app-table
+  [columns]="displayedColumns"
+  [dataSource]="storesDataSource"
+  [totalItems]="totalItems"
+  (pageChange)="pageChange.emit($event)"
+  (clickRow)="clickRow.emit($event)"
+></app-table>

@@ -1,0 +1,18 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-card-container
+  titleCard="Lojas Cadastradas"
+  placeholder="Pesquisar Loja"
+  label="Pesquisar Loja"
+  (searchValue)="onSearch($event)"
+  (addItem)="navigateToStoreForm()"
+>
+  <app-store-table
+    [stores]="stores()"
+    [totalItems]="totalItems"
+    (pageChange)="loadStores($event)"
+    (clickRow)="navigateToStoreForm($event)"
+  />
+</app-card-container>
