@@ -16,6 +16,7 @@ export class CardContainer {
   @Input({ required: true }) titleCard: string = '';
   @Input({ required: true }) placeholder: string = '';
   @Input({ required: true }) label: string = '';
+  @Input({ required: true }) tooltipText: string = '';
 
   @Output() searchValue = new EventEmitter<string>();
 

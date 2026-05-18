@@ -55,6 +55,6 @@ export class Stores implements OnInit {
   }
 
   navigateToStoreForm(store?: IStoreView) {
-    this.router.navigate([`stores/form/${store?.id}`]);
+    this.router.navigate([`stores/form${store?.id ? `/${store.id}` : ''}`]);
   }
 }

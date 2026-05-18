@@ -8,6 +8,7 @@
   label="Pesquisar produto"
   (searchValue)="onSearch($event)"
   (addItem)="navigateToProductForm()"
+  tooltipText="Criar novo Produto"
 >
   <app-product-table
     [products]="products()"
