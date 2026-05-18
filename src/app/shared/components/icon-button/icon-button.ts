@@ -10,6 +10,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   styleUrl: './icon-button.scss',
 })
 export class IconButton {
+  @Input() type: 'button' | 'submit' = 'button';
   @Input({ required: true }) icon: string = '';
   @Input() iconColor: string = 'var(--secondary)';
   @Input() bgColor: string = 'var(--primary)';
