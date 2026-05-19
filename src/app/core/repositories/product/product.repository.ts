@@ -48,7 +48,7 @@ export class ProductRepository {
 
     const query = this.supabase
       .from('products')
-      .select('*, barcodes(id, ean)')
+      .select('*, barcodes(id, ean), financialStatement:financial_statement(*)')
       .eq('id', id)
       .maybeSingle();
 
@@ -69,6 +69,7 @@ export class ProductRepository {
           id: data.id,
           code: data.code,
           name: data.name,
+          financialStatement: data?.financialStatement[0],
           barcodes: data?.barcodes || [],
           createdAt: data.created_at,
           updatedAt: data.updated_at,
@@ -91,7 +92,7 @@ export class ProductRepository {
 
     let query = this.supabase
       .from('products')
-      .select('*, barcodes(id, ean)', { count: 'exact' })
+      .select('*, barcodes(id, ean), financialStatement:financial_statement(*)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(fromIndex, toIndex);
 
@@ -110,6 +111,12 @@ export class ProductRepository {
             id: item.id,
             code: item.code,
             name: item.name,
+            financialStatement: {
+              ...item?.financialStatement[0],
+              margin: item?.financialStatement[0]?.margin || 0,
+              costPrice: item?.financialStatement[0]?.cost_price || 0,
+              salePrice: item?.financialStatement[0]?.sale_price || 0,
+            },
             barcodes: item?.barcodes || [],
             createdAt: item.created_at,
             updatedAt: item.updated_at,

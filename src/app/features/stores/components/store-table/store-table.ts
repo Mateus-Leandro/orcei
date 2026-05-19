@@ -6,7 +6,6 @@ import { IStoreView } from '../../../../core/models/store/store.model';
 @Component({
   selector: 'app-store-table',
   imports: [Table],
-  providers: [DateFormatPipe],
   templateUrl: './store-table.html',
   styleUrl: './store-table.scss',
 })
