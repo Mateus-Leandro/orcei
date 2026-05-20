@@ -1,5 +1,11 @@
 <mat-toolbar class="toolbar">
-  <mat-toolbar-row>
+  <mat-toolbar-row style="display: flex; width: 100%; justify-content: space-between">
     <app-icon-button icon="menu" (click)="openOrCloseMenu()" />
+    <app-select
+      label="Selecione a loja"
+      [options]="storeOptions"
+      [selectedValue]="storeService.selectedStore()"
+      (clickOption)="setSelectedStore($event)"
+    />
   </mat-toolbar-row>
 </mat-toolbar>
