@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CardContainer } from '../../../../shared/components/card-container/card-container';
 import { ProductTable } from '../../components/product-table/product-table';
-import { IProduct } from '../../../../core/models/product/product.model';
+import { IProduct, IProductView } from '../../../../core/models/product/product.model';
 import { ProductService } from '../../../../core/services/product/product.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 })
 export class Products implements OnInit {
   form: FormGroup;
-  products = signal<IProduct[]>([]);
+  products = signal<IProductView[]>([]);
   totalItems: number = 0;
   loading = inject(LoadingService).loading;
 
