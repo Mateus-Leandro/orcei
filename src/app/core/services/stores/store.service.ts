@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { map, tap } from 'rxjs';
 
 import { StoreRepository } from '../../repositories/store/store.repository';
-import { IStoreView } from '../../models/store/store.model';
+import { IStoreView, IUpsertStore } from '../../models/store/store.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,14 @@ export class StoreService {
 
   findAll(page: number, limit: number, search: string) {
     return this.repository.findAll(page, limit, search);
+  }
+
+  findById(id: string) {
+    return this.repository.findById(id);
+  }
+
+  upsert(data: IUpsertStore) {
+    return this.repository.upsert(data);
   }
 
   loadSelectedStore(preloadedStores?: IStoreView[]): void {

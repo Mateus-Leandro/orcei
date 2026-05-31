@@ -1,1 +1,32 @@
-<p>stores-form works!</p>
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-entity-form-component
+  icon="store"
+  [formGroup]="form"
+  (submitEvent)="onSubmit()"
+  (cancelEvent)="goBack()"
+  titleCard="Informações da Loja"
+  subtitle="Preencha as informações da loja"
+>
+  <div class="form-container">
+    <app-form-field
+      label="Número da loja"
+      placeholder="Digite o número da loja"
+      type="number"
+      [control]="storeNumberControl"
+    />
+    <app-form-field
+      label="CNPJ"
+      placeholder="00.000.000/0000-00"
+      mask="00.000.000/0000-00"
+      [control]="cnpjControl"
+    />
+    <app-form-field
+      label="Nome para exibição"
+      placeholder="Digite o nome da loja"
+      [control]="nameControl"
+    />
+  </div>
+</app-entity-form-component>

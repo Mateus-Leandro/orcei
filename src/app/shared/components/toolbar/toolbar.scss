@@ -27,4 +27,8 @@
   ::ng-deep app-select .mat-mdc-text-field-wrapper {
     margin-top: 0;
   }
+
+  ::ng-deep app-select .mat-mdc-form-field {
+    width: 400px;
+  }
 }

@@ -1,7 +1,7 @@
 export interface IStore {
   id: string;
   companyId: string;
-  storeNumber: string;
+  storeNumber: number | null;
   name: string;
   cnpj: string;
   createdAt: string;
@@ -10,9 +10,16 @@ export interface IStore {
 
 export interface IStoreView {
   id: string;
-  storeNumber: string;
+  storeNumber: number | null;
   name: string;
   cnpj: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IUpsertStore {
+  id?: string;
+  storeNumber: number | null;
+  name: string;
+  cnpj: string;
 }
