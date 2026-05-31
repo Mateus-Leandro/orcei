@@ -5,8 +5,28 @@
         {{ column }}
       </th>
 
-      <td mat-cell *matCellDef="let element">
-        {{ element[column] }}
+      <td mat-cell *matCellDef="let element" [class.editable-cell]="isEditable(column)">
+        @if (isEditable(column)) {
+          @if (isCellEditing(element, column)) {
+            <input
+              class="editable-input"
+              type="text"
+              inputmode="decimal"
+              (input)="onCellInput(element, column, $event)"
+              (blur)="onCellBlur(element, column, $event)"
+              (click)="$event.stopPropagation()"
+            />
+          } @else {
+            <span
+              class="editable-display"
+              (click)="startEditing(element, column, $event)"
+            >
+              {{ formatCellValue(element[column], column) }}
+            </span>
+          }
+        } @else {
+          {{ element[column] }}
+        }
       </td>
     </ng-container>
   }

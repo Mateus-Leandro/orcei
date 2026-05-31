@@ -6,6 +6,7 @@ import {
   IProductView,
   IUpsertProduct,
 } from '../../models/product/product.model';
+import { IFinancialStatementView } from '../../models/financial-statement/financial-statement.model';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../../services/supabase/supabase.service';
 import { from } from 'rxjs';
@@ -48,7 +49,7 @@ export class ProductRepository {
 
     const query = this.supabase
       .from('products')
-      .select('*, barcodes(id, ean), financialStatement:financial_statement(*)')
+      .select('*, barcodes(id, ean), financialStatement:financial_statement(*, store:stores(id, name))')
       .eq('id', id)
       .maybeSingle();
 
@@ -65,11 +66,27 @@ export class ProductRepository {
           };
         }
 
+        const rawStatements: any[] = data?.financialStatement || [];
+
         const mappedData: IProductView = {
           id: data.id,
           code: data.code,
           name: data.name,
-          financialStatement: data?.financialStatement[0],
+          financialStatement: rawStatements[0],
+          financialStatements: rawStatements.map(
+            (item): IFinancialStatementView => ({
+              id: item.id,
+              companyId: item.company_id,
+              storeId: item.store_id,
+              productId: item.product_id,
+              costPrice: item.cost_price ?? 0,
+              margin: item.margin ?? 0,
+              salePrice: item.sale_price ?? 0,
+              createdAt: item.created_at,
+              updatedAt: item.updated_at,
+              storeName: item.store?.name || '',
+            }),
+          ),
           barcodes: data?.barcodes || [],
           createdAt: data.created_at,
           updatedAt: data.updated_at,

@@ -28,5 +28,13 @@
         [datasource]="barcodesControl.value"
       />
     </div>
+
+    <div class="financial-section">
+      <p class="financial-section__label">Preços por Loja</p>
+      <app-financial-statement-table
+        [financialStatements]="financialStatements()"
+        (cellChange)="onFinancialStatementCellChange($event)"
+      />
+    </div>
   </div>
 </app-entity-form-component>

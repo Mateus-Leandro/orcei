@@ -9,3 +9,16 @@ export interface IFinancialStatement {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IFinancialStatementView extends IFinancialStatement {
+  storeName: string;
+}
+
+export interface IUpsertFinancialStatement {
+  id?: string;
+  storeId: string;
+  productId: string;
+  margin?: number | null;
+  costPrice?: number | null;
+  salePrice?: number | null;
+}

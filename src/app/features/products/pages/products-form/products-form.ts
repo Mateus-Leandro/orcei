@@ -21,6 +21,9 @@ import { Spinner } from '../../../../shared/components/spinner/spinner';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BarcodeDialog } from '../../components/barcode-dialog/barcode-dialog';
+import { FinancialStatementTable, IFinancialStatementCellChange } from '../../components/financial-statement-table/financial-statement-table';
+import { IFinancialStatementView } from '../../../../core/models/financial-statement/financial-statement.model';
+import { FinancialStatementService } from '../../../../core/services/financial-statement/financial-statement.service';
 
 @Component({
   selector: 'app-products-form',
@@ -31,6 +34,7 @@ import { BarcodeDialog } from '../../components/barcode-dialog/barcode-dialog';
     MatCardModule,
     EntityFormComponent,
     BarcodeProductTable,
+    FinancialStatementTable,
     Spinner,
   ],
   templateUrl: './products-form.html',
@@ -41,6 +45,7 @@ export class ProductsForm implements OnInit {
   productId: string | null = null;
   displayColumns = ['Código'];
   loading = inject(LoadingService).loading;
+  financialStatements = signal<IFinancialStatementView[]>([]);
   private dialog = inject(MatDialog);
 
   constructor(
@@ -48,6 +53,7 @@ export class ProductsForm implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private notificationService: NotificationService,
+    private financialStatementService: FinancialStatementService,
     private router: Router,
   ) {
     this.formGroup = fb.group({
@@ -68,6 +74,7 @@ export class ProductsForm implements OnInit {
             name: product.data?.name,
             barcodes: product.data?.barcodes,
           });
+          this.financialStatements.set(product.data?.financialStatements ?? []);
         },
         error: (err) => {
           this.notificationService.showError(
@@ -77,6 +84,26 @@ export class ProductsForm implements OnInit {
         },
       });
     }
+  }
+
+  onFinancialStatementCellChange(change: IFinancialStatementCellChange): void {
+    const statement = this.financialStatements().find((s) => s.id === change.id);
+    if (!statement) return;
+
+    this.financialStatementService
+      .upsert({
+        id: statement.id,
+        storeId: statement.storeId,
+        productId: statement.productId,
+        [change.field]: change.value,
+      })
+      .subscribe({
+        error: (error) => {
+          this.notificationService.showError(
+            `Erro ao salvar ficha financeira: ${error.message || error}`,
+          );
+        },
+      });
   }
 
   onSave(): void {

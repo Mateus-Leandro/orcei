@@ -36,5 +36,38 @@ table {
 .delete-column {
   width: 1%;
   white-space: nowrap;
-  text-align: right;
+  text-align: left;
+}
+
+.editable-cell {
+  min-width: 200px;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.editable-display {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  cursor: text;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    border-bottom-color: #aaa;
+  }
+}
+
+.editable-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 2px 4px;
+  color: inherit;
 }

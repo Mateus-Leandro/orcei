@@ -1,0 +1,9 @@
+<app-table
+  [columns]="displayedColumns"
+  [dataSource]="dataSource"
+  [totalItems]="totalItems"
+  [editableColumns]="editableColumns"
+  [editableColumnTypes]="editableColumnTypes"
+  (cellChange)="onCellChange($event)"
+  (pageChange)="pageChange.emit($event)"
+></app-table>

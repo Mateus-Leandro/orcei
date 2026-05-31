@@ -1,5 +1,5 @@
 import { IBarcode } from '../barcode/barcode.model';
-import { IFinancialStatement } from '../financial-statement/financial-statement.model';
+import { IFinancialStatement, IFinancialStatementView } from '../financial-statement/financial-statement.model';
 
 export interface IProduct {
   id: string;
@@ -17,6 +17,7 @@ export interface IUpsertProduct {
 export interface IProductView extends IProduct {
   barcodes: IBarcode[];
   financialStatement: IFinancialStatement;
+  financialStatements?: IFinancialStatementView[];
 }
 
 export interface IAddBarcode {

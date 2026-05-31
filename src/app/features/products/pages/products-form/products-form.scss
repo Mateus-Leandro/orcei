@@ -20,6 +20,16 @@
   min-width: 0;
 }
 
+.financial-section {
+  margin-top: 24px;
+
+  &__label {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
