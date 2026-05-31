@@ -66,3 +66,26 @@ body {
     )
   );
 }
+
+@include mat.select-overrides(
+  (
+    panel-background-color: $primary,
+    enabled-trigger-text-color: $font-primary,
+    disabled-trigger-text-color: $font-primary,
+    placeholder-text-color: $font-primary,
+    focused-arrow-color: $font-primary,
+    disabled-arrow-color: $font-primary,
+    enabled-arrow-color: $font-primary,
+  )
+);
+
+@include mat.option-overrides(
+  (
+    label-text-color: $font-primary,
+    selected-state-label-text-color: $font-primary,
+  )
+);
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  color: $font-primary !important;
+}

@@ -4,10 +4,27 @@
   display: flex;
   gap: 5px;
   background-color: $primary;
+  padding: 15px 0px;
   color: $font-primary;
 }
 
 .menu-icon {
   color: $font-primary;
   cursor: pointer;
+}
+
+.toolbar-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  ::ng-deep app-select .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep app-select .mat-mdc-text-field-wrapper {
+    margin-top: 0;
+  }
 }
