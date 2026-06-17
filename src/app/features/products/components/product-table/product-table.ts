@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Table } from '../../../../shared/components/table/table';
-import { IProduct, IProductView } from '../../../../core/models/product/product.model';
+import { IProductView } from '../../../../core/models/product/product.model';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
 
@@ -13,6 +13,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/cur
 export class ProductTable implements OnChanges {
   @Input({ required: true }) products: IProductView[] = [];
   @Input() totalItems: number = 0;
+  @Input() pageIndex: number = 0;
 
   @Output() clickRow = new EventEmitter<IProductView>();
 

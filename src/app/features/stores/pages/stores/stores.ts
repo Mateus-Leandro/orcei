@@ -17,6 +17,7 @@ import { StoreTable } from '../../components/store-table/store-table';
 export class Stores implements OnInit {
   stores = signal<IStoreView[]>([]);
   totalItems: number = 0;
+  pageIndex: number = 0;
   loading = inject(LoadingService).loading;
 
   constructor(
@@ -33,6 +34,8 @@ export class Stores implements OnInit {
   }
 
   loadStores(event: { page: number; limit: number }, searchText: string = ''): void {
+    this.pageIndex = event.page - 1;
+
     this.storeService.findAll(event.page, event.limit, searchText).subscribe({
       next: (response: any) => {
         this.stores.set(response.data ?? []);

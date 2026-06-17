@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z2 full-width-table">
+<table mat-table [dataSource]="displayedData" class="mat-elevation-z2 full-width-table">
   @for (column of columns; track column) {
     <ng-container [matColumnDef]="column">
       <th mat-header-cell *matHeaderCellDef>
@@ -55,3 +55,14 @@
     style="cursor: pointer"
   ></tr>
 </table>
+
+@if (showPaginator) {
+  <mat-paginator
+    [length]="paginatorLength"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="pageSizeOptions"
+    showFirstLastButtons
+    (page)="handlePageEvent($event)"
+  ></mat-paginator>
+}

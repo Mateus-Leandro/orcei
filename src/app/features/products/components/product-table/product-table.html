@@ -2,6 +2,8 @@
   [columns]="displayedColumns"
   [dataSource]="productsDataSource"
   [totalItems]="totalItems"
+  [pageIndex]="pageIndex"
+  [serverSidePagination]="true"
   (pageChange)="pageChange.emit($event)"
   (clickRow)="clickRow.emit($event)"
 ></app-table>

@@ -58,6 +58,10 @@ export class Products {
     return this.form.get('search') as FormControl;
   }
 
+  get pageIndex(): number {
+    return this.currentPage - 1;
+  }
+
   loadProducts(event: { page: number; limit: number }, searchText: string = ''): void {
     this.currentPage = event.page;
     this.currentLimit = event.limit;

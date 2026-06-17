@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { IconButton } from '../icon-button/icon-button';
@@ -18,13 +18,18 @@ export interface TableCellChange {
   templateUrl: './table.html',
   styleUrl: './table.scss',
 })
-export class Table {
+export class Table implements OnChanges {
   @Input({ required: true }) columns: string[] = [];
   @Input({ required: true }) dataSource: any[] = [];
   @Input() totalItems: number = 0;
   @Input() deleteButton: boolean = false;
   @Input() editableColumns: string[] = [];
   @Input() editableColumnTypes: Record<string, EditableColumnType> = {};
+  @Input() serverSidePagination: boolean = false;
+  @Input() showPaginator: boolean = true;
+  @Input() pageSizeOptions: number[] = [5, 10, 25, 50];
+  @Input() pageIndex = 0;
+
   @Output() clickRow = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() cellChange = new EventEmitter<TableCellChange>();
@@ -36,8 +41,26 @@ export class Table {
   }>();
 
   pageSize = 10;
-  pageIndex = 0;
   editingCell: { element: any; column: string; originalValue: number } | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dataSource'] && !this.serverSidePagination) {
+      this.clampPageIndex();
+    }
+  }
+
+  get displayedData(): any[] {
+    if (this.serverSidePagination) {
+      return this.dataSource;
+    }
+
+    const start = this.pageIndex * this.pageSize;
+    return this.dataSource.slice(start, start + this.pageSize);
+  }
+
+  get paginatorLength(): number {
+    return this.serverSidePagination ? this.totalItems : this.dataSource.length;
+  }
 
   handlePageEvent(event: PageEvent): void {
     this.pageSize = event.pageSize;
@@ -47,6 +70,14 @@ export class Table {
       page: this.pageIndex + 1,
       limit: this.pageSize,
     });
+  }
+
+  private clampPageIndex(): void {
+    const maxPageIndex = Math.max(0, Math.ceil(this.dataSource.length / this.pageSize) - 1);
+
+    if (this.pageIndex > maxPageIndex) {
+      this.pageIndex = maxPageIndex;
+    }
   }
 
   onRowClick(row: any): void {

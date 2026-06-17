@@ -13,6 +13,7 @@
   <app-product-table
     [products]="products()"
     [totalItems]="totalItems"
+    [pageIndex]="pageIndex"
     (pageChange)="loadProducts($event)"
     (clickRow)="navigateToProductForm($event)"
   />

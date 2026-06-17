@@ -71,3 +71,25 @@ table {
   padding: 2px 4px;
   color: inherit;
 }
+
+:host ::ng-deep .mat-mdc-paginator {
+  background: transparent;
+
+  .mat-mdc-paginator-container {
+    background: transparent;
+  }
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text,
+  .mat-mdc-select-min-line {
+    color: #000;
+  }
+
+  .mat-mdc-select-arrow {
+    color: #000;
+
+    svg {
+      fill: #000;
+    }
+  }
+}

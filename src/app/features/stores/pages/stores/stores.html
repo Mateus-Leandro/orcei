@@ -13,6 +13,7 @@
   <app-store-table
     [stores]="stores()"
     [totalItems]="totalItems"
+    [pageIndex]="pageIndex"
     (pageChange)="loadStores($event)"
     (clickRow)="navigateToStoreForm($event)"
   />

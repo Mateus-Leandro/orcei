@@ -12,6 +12,7 @@ import { IStoreView } from '../../../../core/models/store/store.model';
 export class StoreTable implements OnChanges {
   @Input({ required: true }) stores: IStoreView[] = [];
   @Input() totalItems: number = 0;
+  @Input() pageIndex: number = 0;
 
   @Output() clickRow = new EventEmitter<IStoreView>();
 
