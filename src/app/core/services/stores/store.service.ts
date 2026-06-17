@@ -11,6 +11,7 @@ export class StoreService {
   private readonly SELECTED_STORE_KEY = 'selected_store';
 
   selectedStore = signal<IStoreView | null>(null);
+  selectionLocked = signal(false);
 
   constructor(private repository: StoreRepository) {}
 
@@ -58,6 +59,14 @@ export class StoreService {
     localStorage.setItem(this.SELECTED_STORE_KEY, JSON.stringify(store));
 
     this.selectedStore.set(store);
+  }
+
+  lockSelection(): void {
+    this.selectionLocked.set(true);
+  }
+
+  unlockSelection(): void {
+    this.selectionLocked.set(false);
   }
 
   removeSelectedStore(): void {

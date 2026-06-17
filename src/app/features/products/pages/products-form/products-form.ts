@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -24,6 +24,7 @@ import { BarcodeDialog } from '../../components/barcode-dialog/barcode-dialog';
 import { FinancialStatementTable, IFinancialStatementCellChange } from '../../components/financial-statement-table/financial-statement-table';
 import { IFinancialStatementView } from '../../../../core/models/financial-statement/financial-statement.model';
 import { FinancialStatementService } from '../../../../core/services/financial-statement/financial-statement.service';
+import { StoreService } from '../../../../core/services/stores/store.service';
 
 @Component({
   selector: 'app-products-form',
@@ -40,7 +41,7 @@ import { FinancialStatementService } from '../../../../core/services/financial-s
   templateUrl: './products-form.html',
   styleUrl: './products-form.scss',
 })
-export class ProductsForm implements OnInit {
+export class ProductsForm implements OnInit, OnDestroy {
   formGroup: FormGroup;
   productId: string | null = null;
   displayColumns = ['Código'];
@@ -54,6 +55,7 @@ export class ProductsForm implements OnInit {
     private productService: ProductService,
     private notificationService: NotificationService,
     private financialStatementService: FinancialStatementService,
+    private storeService: StoreService,
     private router: Router,
   ) {
     this.formGroup = fb.group({
@@ -66,6 +68,8 @@ export class ProductsForm implements OnInit {
   }
 
   ngOnInit(): void {
+    this.storeService.lockSelection();
+
     if (this.productId) {
       this.productService.findById(this.productId).subscribe({
         next: (product) => {
@@ -84,6 +88,10 @@ export class ProductsForm implements OnInit {
         },
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.storeService.unlockSelection();
   }
 
   onFinancialStatementCellChange(change: IFinancialStatementCellChange): void {

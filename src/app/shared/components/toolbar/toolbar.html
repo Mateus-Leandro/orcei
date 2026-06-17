@@ -5,6 +5,7 @@
       label="Selecione a loja"
       [options]="storeOptions"
       [selectedValue]="storeService.selectedStore()"
+      [disabled]="storeService.selectionLocked()"
       (clickOption)="setSelectedStore($event)"
     />
   </mat-toolbar-row>

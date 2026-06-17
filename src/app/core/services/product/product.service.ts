@@ -12,8 +12,8 @@ export class ProductService {
     return this.repository.findById(id);
   }
 
-  findAll(page: number, limit: number, search: string) {
-    return this.repository.findAll(page, limit, search);
+  findAll(page: number, limit: number, search: string, storeId?: string) {
+    return this.repository.findAll(page, limit, search, storeId);
   }
 
   deleteBarcodeById(id: string) {

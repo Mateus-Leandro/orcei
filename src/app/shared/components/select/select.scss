@@ -8,3 +8,26 @@
     border-color: white !important;
   }
 }
+
+:host(.select--disabled) ::ng-deep {
+  $disabled-color: #cfcfcf;
+
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing,
+  .mdc-notched-outline__leading {
+    border-color: $disabled-color !important;
+  }
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text,
+  .mat-mdc-select-arrow,
+  .mat-mdc-floating-label,
+  .mdc-floating-label,
+  mat-label {
+    color: $disabled-color !important;
+  }
+
+  .mat-mdc-select-arrow svg {
+    fill: $disabled-color !important;
+  }
+}

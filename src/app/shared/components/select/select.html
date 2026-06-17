@@ -3,6 +3,7 @@
 
   <mat-select
     [value]="selectedValue"
+    [disabled]="disabled"
     (selectionChange)="selectOption($event.value)"
     [compareWith]="compareFn"
   >

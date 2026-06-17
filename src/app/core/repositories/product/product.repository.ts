@@ -101,7 +101,7 @@ export class ProductRepository {
     );
   }
 
-  findAll(page: number = 1, limit: number = 10, search: string = '') {
+  findAll(page: number = 1, limit: number = 10, search: string = '', storeId?: string) {
     this.loadingService.show();
 
     const fromIndex = (page - 1) * limit;
@@ -115,6 +115,10 @@ export class ProductRepository {
 
     if (search?.trim()) {
       query = query.ilike('search_text', `%${search.trim()}%`);
+    }
+
+    if (storeId) {
+      query = query.eq('financialStatement.store_id', storeId);
     }
 
     return from(query).pipe(
