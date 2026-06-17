@@ -5,7 +5,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/cur
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 
 export interface IFinancialStatementCellChange {
-  id: string;
+  storeId: string;
   field: 'costPrice' | 'margin' | 'salePrice';
   value: number;
 }
@@ -77,7 +77,7 @@ export class FinancialStatementTable implements OnChanges {
 
     const field = this.columnFieldMap[column];
     if (field) {
-      this.cellChange.emit({ id: row.id, field, value: numericValue });
+      this.cellChange.emit({ storeId: row.storeId, field, value: numericValue });
     }
   }
 

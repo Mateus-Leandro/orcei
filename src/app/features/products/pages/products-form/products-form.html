@@ -29,12 +29,19 @@
       />
     </div>
 
-    <div class="financial-section">
-      <p class="financial-section__label">Preços por Loja</p>
-      <app-financial-statement-table
-        [financialStatements]="financialStatements()"
-        (cellChange)="onFinancialStatementCellChange($event)"
-      />
-    </div>
+    @if (productId) {
+      <div class="financial-section">
+        <p class="financial-section__label">Preços por Loja</p>
+        <app-financial-statement-table
+          [financialStatements]="financialStatements()"
+          (cellChange)="onFinancialStatementCellChange($event)"
+        />
+      </div>
+    } @else {
+      <div class="financial-hint">
+        <mat-icon class="financial-hint__icon">info</mat-icon>
+        <span>Salve o produto para informar os preços de cada loja.</span>
+      </div>
+    }
   </div>
 </app-entity-form-component>

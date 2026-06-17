@@ -30,6 +30,26 @@
   }
 }
 
+.financial-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background-color: #e8f0fe;
+  color: #1f3a5f;
+  font-size: 13px;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: #1a73e8;
+  }
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

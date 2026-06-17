@@ -12,6 +12,7 @@ import { ProductService } from '../../../../core/services/product/product.servic
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { EntityFormComponent } from '../../../../shared/components/entity-form-component/entity-form-component';
 import { BarcodeProductTable } from '../../components/barcode-product-table/barcode-product-table';
 import { IUpsertProduct } from '../../../../core/models/product/product.model';
@@ -25,6 +26,8 @@ import { FinancialStatementTable, IFinancialStatementCellChange } from '../../co
 import { IFinancialStatementView } from '../../../../core/models/financial-statement/financial-statement.model';
 import { FinancialStatementService } from '../../../../core/services/financial-statement/financial-statement.service';
 import { StoreService } from '../../../../core/services/stores/store.service';
+import { IStoreView } from '../../../../core/models/store/store.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-products-form',
@@ -33,6 +36,7 @@ import { StoreService } from '../../../../core/services/stores/store.service';
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
+    MatIconModule,
     EntityFormComponent,
     BarcodeProductTable,
     FinancialStatementTable,
@@ -71,14 +75,19 @@ export class ProductsForm implements OnInit, OnDestroy {
     this.storeService.lockSelection();
 
     if (this.productId) {
-      this.productService.findById(this.productId).subscribe({
-        next: (product) => {
+      forkJoin({
+        product: this.productService.findById(this.productId),
+        stores: this.storeService.findAll(1, 999, ''),
+      }).subscribe({
+        next: ({ product, stores }) => {
           this.formGroup.patchValue({
             code: product.data?.code,
             name: product.data?.name,
             barcodes: product.data?.barcodes,
           });
-          this.financialStatements.set(product.data?.financialStatements ?? []);
+          this.financialStatements.set(
+            this.buildStatementsForAllStores(product.data?.financialStatements ?? [], stores.data),
+          );
         },
         error: (err) => {
           this.notificationService.showError(
@@ -90,12 +99,38 @@ export class ProductsForm implements OnInit, OnDestroy {
     }
   }
 
+  private buildStatementsForAllStores(
+    statements: IFinancialStatementView[],
+    stores: IStoreView[],
+  ): IFinancialStatementView[] {
+    return stores.map((store) => {
+      const existing = statements.find((statement) => statement.storeId === store.id);
+
+      if (existing) {
+        return { ...existing, storeName: existing.storeName || store.name };
+      }
+
+      return {
+        id: '',
+        companyId: '',
+        storeId: store.id,
+        productId: this.productId ?? '',
+        margin: '0',
+        costPrice: 0,
+        salePrice: 0,
+        createdAt: '',
+        updatedAt: '',
+        storeName: store.name,
+      };
+    });
+  }
+
   ngOnDestroy(): void {
     this.storeService.unlockSelection();
   }
 
   onFinancialStatementCellChange(change: IFinancialStatementCellChange): void {
-    const statement = this.financialStatements().find((s) => s.id === change.id);
+    const statement = this.financialStatements().find((s) => s.storeId === change.storeId);
     if (!statement) return;
 
     this.financialStatementService
@@ -122,14 +157,22 @@ export class ProductsForm implements OnInit, OnDestroy {
 
     const payload = this.formGroup.getRawValue();
 
+    const isNewProduct = !this.productId;
+
     const upsertProduct: IUpsertProduct = {
       id: this?.productId || undefined,
       name: payload.name,
     };
 
     this.productService.upsertProduct(upsertProduct).subscribe({
-      next: () => {
+      next: (product) => {
         this.notificationService.showSuccess('Produto salvo com sucesso!');
+
+        if (isNewProduct && product?.id) {
+          this.router.navigate(['products/form', product.id]);
+          return;
+        }
+
         this.router.navigate(['/products']);
       },
       error: (error) => {
