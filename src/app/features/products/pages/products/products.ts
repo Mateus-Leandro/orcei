@@ -107,7 +107,7 @@ export class Products {
       width: '400px',
       data: <ConfirmDialogData>{
         title: 'Excluir produto',
-        message: `Deseja excluir o produto "${row.Nome ?? ''}"?`.trim(),
+        message: `Deseja excluir permanentemente o produto "${row.Nome ?? ''}"?`.trim(),
         confirmText: 'Remover',
         cancelText: 'Cancelar',
       },
