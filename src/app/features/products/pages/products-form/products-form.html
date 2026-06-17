@@ -12,9 +12,16 @@
 >
   <div>
     <div class="row">
-      <div class="code">
-        <app-form-field [readonly]="true" label="Código" [control]="codeControl" />
-      </div>
+      @if (productId) {
+        <div class="code">
+          <app-form-field
+            [readonly]="true"
+            [disabled]="true"
+            label="Código"
+            [control]="codeControl"
+          />
+        </div>
+      }
 
       <div class="name">
         <app-form-field label="Nome" [control]="nameControl" />

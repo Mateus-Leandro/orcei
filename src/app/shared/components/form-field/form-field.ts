@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +19,7 @@ import { NgxMaskDirective } from 'ngx-mask';
   templateUrl: './form-field.html',
   styleUrl: './form-field.scss',
 })
-export class FormFieldComponent {
+export class FormFieldComponent implements OnInit, OnChanges {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
@@ -34,6 +34,30 @@ export class FormFieldComponent {
   control!: FormControl;
 
   hidePassword = true;
+
+  private disabledByInput = false;
+
+  ngOnInit(): void {
+    this.syncDisabledState();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['disabled'] || changes['control']) {
+      this.syncDisabledState();
+    }
+  }
+
+  private syncDisabledState(): void {
+    if (!this.control) return;
+
+    if (this.disabled && !this.control.disabled) {
+      this.control.disable({ emitEvent: false });
+      this.disabledByInput = true;
+    } else if (!this.disabled && this.disabledByInput) {
+      this.control.enable({ emitEvent: false });
+      this.disabledByInput = false;
+    }
+  }
 
   togglePasswordVisibility() {
     this.hidePassword = !this.hidePassword;
