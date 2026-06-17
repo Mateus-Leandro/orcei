@@ -16,6 +16,10 @@ export class ProductService {
     return this.repository.findAll(page, limit, search, storeId);
   }
 
+  deleteById(id: string) {
+    return this.repository.deleteById(id);
+  }
+
   deleteBarcodeById(id: string) {
     return this.repository.deleteBarcodeById(id);
   }

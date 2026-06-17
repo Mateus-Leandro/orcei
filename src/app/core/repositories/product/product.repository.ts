@@ -153,6 +153,18 @@ export class ProductRepository {
     );
   }
 
+  deleteById(id: string) {
+    this.loadingService.show();
+
+    return from(this.supabase.from('products').delete().eq('id', id)).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return data;
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
+
   deleteBarcodeById(id: string) {
     this.loadingService.show();
 

@@ -1,5 +1,6 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { CardContainer } from '../../../../shared/components/card-container/card-container';
 import { ProductTable } from '../../components/product-table/product-table';
 import { IProduct, IProductView } from '../../../../core/models/product/product.model';
@@ -8,6 +9,10 @@ import { StoreService } from '../../../../core/services/stores/store.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Router } from '@angular/router';
 
 @Component({
@@ -23,6 +28,7 @@ export class Products {
   totalItems: number = 0;
   loading = inject(LoadingService).loading;
 
+  private dialog = inject(MatDialog);
   private currentPage = 1;
   private currentLimit = 10;
   private currentSearch = '';
@@ -92,5 +98,36 @@ export class Products {
 
   navigateToProductForm(product?: IProduct) {
     return this.router.navigate([`products/form${product?.id ? `/${product.id}` : ''}`]);
+  }
+
+  onDelete(row: { id?: string; Nome?: string }): void {
+    if (!row?.id) return;
+
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      data: <ConfirmDialogData>{
+        title: 'Excluir produto',
+        message: `Deseja excluir o produto "${row.Nome ?? ''}"?`.trim(),
+        confirmText: 'Remover',
+        cancelText: 'Cancelar',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+
+      this.productService.deleteById(row.id!).subscribe({
+        next: () => {
+          this.notificationService.showSuccess('Produto excluido com sucesso!');
+          this.loadProducts(
+            { page: this.currentPage, limit: this.currentLimit },
+            this.currentSearch,
+          );
+        },
+        error: (err) => {
+          this.notificationService.showError(`Erro ao excluir produto: ${err.message || err}`);
+        },
+      });
+    });
   }
 }

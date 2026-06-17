@@ -4,6 +4,8 @@
   [totalItems]="totalItems"
   [pageIndex]="pageIndex"
   [serverSidePagination]="true"
+  [deleteButton]="true"
   (pageChange)="pageChange.emit($event)"
   (clickRow)="clickRow.emit($event)"
+  (delete)="deleteRow.emit($event)"
 ></app-table>

@@ -16,6 +16,7 @@ export class ProductTable implements OnChanges {
   @Input() pageIndex: number = 0;
 
   @Output() clickRow = new EventEmitter<IProductView>();
+  @Output() deleteRow = new EventEmitter<Partial<IProductView>>();
 
   @Output()
   pageChange = new EventEmitter<{
