@@ -9,3 +9,12 @@ export interface ICustomer {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IUpsertCustomer {
+  id?: string;
+  name: string;
+  surname?: string;
+  document?: string;
+  phone?: string;
+  address?: string;
+}

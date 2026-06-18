@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CustomersRepository } from '../../repositories/customers/customers.repository';
+import { IUpsertCustomer } from '../../models/customers/customers.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,5 +18,9 @@ export class CustomersService {
 
   deleteById(id: string) {
     return this.repository.deleteById(id);
+  }
+
+  upsertCustomer(upsertCustomer: IUpsertCustomer) {
+    return this.repository.upsert(upsertCustomer);
   }
 }

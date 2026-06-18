@@ -3,7 +3,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { LoadingService } from '../../services/loading/loading.service';
 import { SupabaseService } from '../../services/supabase/supabase.service';
 import { finalize, from, map } from 'rxjs';
-import { ICustomer } from '../../models/customers/customers.model';
+import { ICustomer, IUpsertCustomer } from '../../models/customers/customers.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,36 @@ export class CustomersRepository {
     private supabaseService: SupabaseService,
   ) {
     this.supabase = this.supabaseService.supabase;
+  }
+
+  upsert(upsertCustomer: IUpsertCustomer) {
+    this.loadingService.show();
+
+    const request = this.supabase
+      .from('customers')
+      .upsert({
+        id: upsertCustomer.id,
+        name: upsertCustomer.name,
+        surname: upsertCustomer.surname,
+        document: upsertCustomer.document,
+        phone: upsertCustomer.phone,
+        address: upsertCustomer.address,
+      })
+      .select()
+      .single()
+      .then(({ data, error }) => {
+        if (error) {
+          if (error.code === '23505') {
+            throw new Error('Já existe um cliente com este documento!');
+          }
+
+          throw new Error(error.message);
+        }
+
+        return data;
+      });
+
+    return from(request).pipe(finalize(() => this.loadingService.hide()));
   }
 
   findById(id: string) {

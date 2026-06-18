@@ -1,1 +1,59 @@
-<p>customers-form works!</p>
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-entity-form-component
+  icon="person"
+  [formGroup]="formGroup"
+  (submitEvent)="onSave()"
+  (cancelEvent)="onCancel()"
+  titleCard="Cadastro de cliente"
+  subtitle="Preencha as informações do cliente"
+>
+  <div>
+    <div class="row">
+      @if (customerId) {
+        <div class="code">
+          <app-form-field
+            [readonly]="true"
+            [disabled]="true"
+            label="Código"
+            [control]="codeControl"
+          />
+        </div>
+      }
+
+      <div class="name">
+        <app-form-field label="Nome" [control]="nameControl" />
+      </div>
+
+      <div class="name">
+        <app-form-field label="Sobrenome" [control]="surnameControl" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="name">
+        <app-form-field
+          label="Documento"
+          mask="000.000.000-00||00.000.000/0000-00"
+          [control]="documentControl"
+        />
+      </div>
+
+      <div class="name">
+        <app-form-field
+          label="Telefone"
+          mask="(00) 0000-0000||(00) 00000-0000"
+          [control]="phoneControl"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="name">
+        <app-form-field label="Endereço" [control]="addressControl" />
+      </div>
+    </div>
+  </div>
+</app-entity-form-component>
