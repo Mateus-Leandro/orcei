@@ -1,0 +1,21 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-card-container
+  titleCard="Clientes Cadastrados"
+  placeholder="Pesquisar cliente"
+  label="Pesquisar cliente"
+  (searchValue)="onSearch($event)"
+  (addItem)="navigateToCustomerForm()"
+  tooltipText="Criar novo Cliente"
+>
+  <app-customer-table
+    [customers]="customers()"
+    [totalItems]="totalItems"
+    [pageIndex]="pageIndex"
+    (pageChange)="loadCustomers($event)"
+    (clickRow)="navigateToCustomerForm($event)"
+    (deleteRow)="onDelete($event)"
+  />
+</app-card-container>
