@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { EditableColumnType, Table, TableCellChange } from '../../../../shared/components/table/table';
+import {
+  EditableColumnType,
+  Table,
+  TableCellChange,
+} from '../../../../shared/components/table/table';
 import { IFinancialStatementView } from '../../../../core/models/financial-statement/financial-statement.model';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
@@ -22,7 +26,15 @@ export class FinancialStatementTable implements OnChanges {
   @Output() cellChange = new EventEmitter<IFinancialStatementCellChange>();
   @Output() pageChange = new EventEmitter<{ page: number; limit: number }>();
 
-  displayedColumns = ['Loja', 'Preço de Custo', 'Margem (%)', 'Preço de Venda', 'Preço Sugerido', 'Data Alteração'];
+  displayedColumns = [
+    'Loja',
+    'Preço de Custo',
+    'Margem (%)',
+    'Preço Sugerido',
+    'Preço de Venda',
+    'Margem Praticada (%)',
+    'Data Alteração',
+  ];
   editableColumns = ['Preço de Custo', 'Margem (%)', 'Preço de Venda'];
   editableColumnTypes: Record<string, EditableColumnType> = {
     'Preço de Custo': 'currency',
@@ -52,6 +64,7 @@ export class FinancialStatementTable implements OnChanges {
     this.dataSource = this.financialStatements.map((statement) => {
       const costPrice = statement.costPrice ?? 0;
       const margin = parseFloat(statement.margin as any) || 0;
+      const salePrice = statement.salePrice ?? 0;
 
       return {
         id: statement.id,
@@ -59,8 +72,9 @@ export class FinancialStatementTable implements OnChanges {
         Loja: statement.storeName,
         'Preço de Custo': costPrice,
         'Margem (%)': margin,
-        'Preço de Venda': statement.salePrice ?? 0,
         'Preço Sugerido': this.calcSuggestedPrice(costPrice, margin),
+        'Preço de Venda': salePrice,
+        'Margem Praticada (%)': this.calcPracticedMargin(costPrice, salePrice),
         'Data Alteração': this.dateFormatPipe.transform(statement.updatedAt),
       };
     });
@@ -72,8 +86,10 @@ export class FinancialStatementTable implements OnChanges {
 
     const costPrice = column === 'Preço de Custo' ? numericValue : row['Preço de Custo'];
     const margin = column === 'Margem (%)' ? numericValue : row['Margem (%)'];
+    const salePrice = column === 'Preço de Venda' ? numericValue : row['Preço de Venda'];
 
     row['Preço Sugerido'] = this.calcSuggestedPrice(costPrice, margin);
+    row['Margem Praticada (%)'] = this.calcPracticedMargin(costPrice, salePrice);
 
     const field = this.columnFieldMap[column];
     if (field) {
@@ -83,5 +99,15 @@ export class FinancialStatementTable implements OnChanges {
 
   private calcSuggestedPrice(costPrice: number, margin: number): string {
     return this.currencyFormatPipe.transform(costPrice * (1 + margin / 100));
+  }
+
+  private calcPracticedMargin(costPrice: number, salePrice: number): string {
+    if (!costPrice) {
+      return '0%';
+    }
+
+    const practicedMargin = ((salePrice - costPrice) / costPrice) * 100;
+
+    return `${practicedMargin.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
   }
 }
