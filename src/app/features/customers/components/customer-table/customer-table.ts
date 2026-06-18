@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { Table } from '../../../../shared/components/table/table';
 import { ICustomer } from '../../../../core/models/customers/customers.model';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
+import { CpfCnpjPipe } from '../../../../shared/pipes/cpf-cnpj/cpf-cnpj.pipe';
 
 @Component({
   selector: 'app-customer-table',
@@ -35,7 +36,10 @@ export class CustomerTable implements OnChanges {
 
   customersDataSource: Partial<ICustomer>[] = [];
 
-  constructor(private dateFormatPipe: DateFormatPipe) {}
+  constructor(
+    private dateFormatPipe: DateFormatPipe,
+    private cpfCnpjPipe: CpfCnpjPipe,
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['customers']) {
@@ -49,7 +53,7 @@ export class CustomerTable implements OnChanges {
       Código: customer.code,
       Nome: customer.name,
       Sobrenome: customer.surname ?? '',
-      Documento: customer.document ?? '',
+      Documento: this.cpfCnpjPipe.transform(customer.document),
       Telefone: customer.phone ?? '',
       'Data Criação': this.dateFormatPipe.transform(customer.createdAt),
       'Data Alteração': this.dateFormatPipe.transform(customer.updatedAt),

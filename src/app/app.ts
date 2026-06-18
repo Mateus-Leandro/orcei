@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { DateFormatPipe } from './shared/pipes/date-pipe/date.pipe';
 import { CurrencyPipe } from '@angular/common';
 import { CurrencyFormatPipe } from './shared/pipes/currency-format/currency-format.pipe';
+import { CpfCnpjPipe } from './shared/pipes/cpf-cnpj/cpf-cnpj.pipe';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -16,6 +17,7 @@ registerLocaleData(localePt);
     DateFormatPipe,
     CurrencyPipe,
     CurrencyFormatPipe,
+    CpfCnpjPipe,
     {
       provide: LOCALE_ID,
       useValue: 'pt-BR',
