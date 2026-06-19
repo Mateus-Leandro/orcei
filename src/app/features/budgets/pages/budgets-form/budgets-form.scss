@@ -4,6 +4,11 @@
   gap: 16px;
 }
 
+.budget-number {
+  max-width: 240px;
+  flex-shrink: 0;
+}
+
 .customer-field {
   flex: 1;
   min-width: 0;

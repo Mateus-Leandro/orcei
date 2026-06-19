@@ -76,6 +76,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
     private router: Router,
   ) {
     this.formGroup = fb.group({
+      budgetNumber: [''],
       observation: [''],
       deliveryForecast: [''],
     });
@@ -123,6 +124,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
           this.storeId = budget.storeId;
 
           this.formGroup.patchValue({
+            budgetNumber: budget.budgetNumber,
             observation: budget.observation ?? '',
             deliveryForecast: budget.deliveryForecast ?? '',
           });
@@ -247,6 +249,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   get totalValueFormatted(): string {
     return this.currencyFormatPipe.transform(this.totalValue());
+  }
+
+  get budgetNumberControl() {
+    return this.formGroup.get('budgetNumber') as FormControl<string>;
   }
 
   get observationControl() {

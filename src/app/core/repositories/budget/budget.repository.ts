@@ -38,7 +38,7 @@ export class BudgetRepository {
     }
 
     if (search?.trim()) {
-      query = query.ilike('customer.name', `%${search.trim()}%`);
+      query = query.ilike('search_text', `%${search.trim()}%`);
     }
 
     return from(query).pipe(
@@ -183,6 +183,7 @@ export class BudgetRepository {
 
     return {
       id: item.id,
+      budgetNumber: item.budget_number,
       customerId: item.customer_id,
       storeId: item.store_id,
       observation: item.observation ?? undefined,

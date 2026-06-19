@@ -25,6 +25,7 @@ export class BudgetTable implements OnChanges {
   }>();
 
   displayedColumns: string[] = [
+    'Número',
     'Cliente',
     'Qtde de Produtos',
     'Valor Total',
@@ -49,6 +50,7 @@ export class BudgetTable implements OnChanges {
   private mapBudgets(): void {
     this.budgetsDataSource = this.budgets.map((budget) => ({
       id: budget.id,
+      Número: budget.budgetNumber,
       Cliente: budget.customerName,
       'Qtde de Produtos': budget.totalProducts,
       'Valor Total': this.currencyFormatPipe.transform(budget.totalValue),

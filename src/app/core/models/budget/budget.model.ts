@@ -12,6 +12,7 @@ export interface IBudgetProduct {
 
 export interface IBudget {
   id: string;
+  budgetNumber: number;
   customerId: string;
   storeId: string;
   observation?: string;

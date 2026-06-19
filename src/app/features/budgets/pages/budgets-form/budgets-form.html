@@ -11,6 +11,19 @@
   subtitle="Selecione o cliente e os produtos do orçamento"
 >
   <div>
+    @if (budgetId) {
+      <div class="row">
+        <div class="budget-number">
+          <app-form-field
+            [readonly]="true"
+            [disabled]="true"
+            label="Número do orçamento"
+            [control]="budgetNumberControl"
+          />
+        </div>
+      </div>
+    }
+
     <div class="row">
       <mat-form-field appearance="outline" class="customer-field">
         <mat-label>Cliente</mat-label>
