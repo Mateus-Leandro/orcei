@@ -167,6 +167,14 @@ export class BudgetsForm implements OnInit, OnDestroy {
     this.productOptions.set([]);
   }
 
+  onProductSearchEnter(event: Event): void {
+    const options = this.productOptions();
+    if (options.length === 1) {
+      event.preventDefault();
+      this.onProductSelected(options[0]);
+    }
+  }
+
   private addProduct(product: IProductView): void {
     const exists = this.budgetProducts().some((item) => item.productId === product.id);
     if (exists) {
