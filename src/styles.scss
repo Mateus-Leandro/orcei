@@ -29,3 +29,10 @@ body {
 .mat-mdc-select-panel .mat-mdc-option .mdc-list-item__primary-text {
   color: #000;
 }
+
+// O option-overrides global deixa o texto das opções branco (pensado para o
+// painel verde do select). No autocomplete o painel é branco, então o texto
+// precisa ser preto para ser legível.
+.mat-mdc-autocomplete-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: #000 !important;
+}

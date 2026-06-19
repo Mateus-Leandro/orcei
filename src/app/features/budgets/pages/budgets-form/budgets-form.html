@@ -1,1 +1,96 @@
-<p>Informções do orçamentos</p>
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-entity-form-component
+  icon="request_quote"
+  [formGroup]="formGroup"
+  (submitEvent)="onSave()"
+  (cancelEvent)="onCancel()"
+  titleCard="Cadastro de orçamento"
+  subtitle="Selecione o cliente e os produtos do orçamento"
+>
+  <div>
+    <div class="row">
+      <mat-form-field appearance="outline" class="customer-field">
+        <mat-label>Cliente</mat-label>
+        <input
+          matInput
+          placeholder="Pesquisar cliente"
+          [formControl]="customerSearchControl"
+          [matAutocomplete]="customerAuto"
+        />
+        <mat-autocomplete
+          #customerAuto="matAutocomplete"
+          [displayWith]="displayCustomer"
+          (optionSelected)="onCustomerSelected($event.option.value)"
+        >
+          @for (customer of customerOptions(); track customer.id) {
+            <mat-option [value]="customer">{{ displayCustomer(customer) }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="delivery">
+        <app-form-field
+          label="Previsão de entrega"
+          type="date"
+          [control]="deliveryForecastControl"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="observation">
+        <app-form-field label="Observação" [control]="observationControl" />
+      </div>
+    </div>
+
+    <div class="products-section">
+      <p class="products-section__label">Produtos do orçamento</p>
+
+      <mat-form-field appearance="outline" class="product-field">
+        <mat-label>Adicionar produto</mat-label>
+        <input
+          matInput
+          placeholder="Pesquisar produto"
+          [formControl]="productSearchControl"
+          [matAutocomplete]="productAuto"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+        <mat-autocomplete
+          #productAuto="matAutocomplete"
+          (optionSelected)="onProductSelected($event.option.value)"
+        >
+          @for (product of productOptions(); track product.id) {
+            <mat-option [value]="product">{{ product.name }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      @if (budgetProducts().length) {
+        <app-budget-products-table
+          [products]="budgetProducts()"
+          (cellChange)="onCellChange($event)"
+          (removeProduct)="onRemoveProduct($event)"
+        />
+      } @else {
+        <div class="products-hint">
+          <mat-icon class="products-hint__icon">info</mat-icon>
+          <span>Pesquise e selecione produtos para adicionar ao orçamento.</span>
+        </div>
+      }
+
+      <div class="summary">
+        <div class="summary__item">
+          <span class="summary__label">Qtde de Produtos</span>
+          <span class="summary__value">{{ totalProducts() }}</span>
+        </div>
+        <div class="summary__item">
+          <span class="summary__label">Valor Total</span>
+          <span class="summary__value">{{ totalValueFormatted }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-entity-form-component>

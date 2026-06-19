@@ -1,0 +1,11 @@
+<app-table
+  [columns]="displayedColumns"
+  [dataSource]="dataSource"
+  [totalItems]="dataSource.length"
+  [editableColumns]="editableColumns"
+  [editableColumnTypes]="editableColumnTypes"
+  [deleteButton]="true"
+  [showPaginator]="false"
+  (cellChange)="onCellChange($event)"
+  (delete)="removeProduct.emit($event)"
+></app-table>
