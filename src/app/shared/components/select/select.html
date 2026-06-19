@@ -1,9 +1,10 @@
 <mat-form-field appearance="outline">
-  <mat-label style="color: white">{{ label }}</mat-label>
+  <mat-label>{{ label }}</mat-label>
 
   <mat-select
     [value]="selectedValue"
     [disabled]="disabled"
+    [panelClass]="panelClass"
     (selectionChange)="selectOption($event.value)"
     [compareWith]="compareFn"
   >

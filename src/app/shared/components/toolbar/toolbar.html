@@ -3,6 +3,7 @@
     <app-icon-button icon="menu" (click)="openOrCloseMenu()" />
     <app-select
       label="Selecione a loja"
+      variant="primary"
       [options]="storeOptions"
       [selectedValue]="storeService.selectedStore()"
       [disabled]="storeService.selectionLocked()"

@@ -33,6 +33,8 @@ export class ProductRepository {
       .upsert({
         id: upsertProduct.id,
         name: upsertProduct.name,
+        sale_unit: upsertProduct.saleUnit,
+        is_fractional: upsertProduct.isFractional,
       })
       .select()
       .single()
@@ -72,6 +74,8 @@ export class ProductRepository {
           id: data.id,
           code: data.code,
           name: data.name,
+          saleUnit: data.sale_unit ?? 'UN',
+          isFractional: data.is_fractional ?? false,
           financialStatement: rawStatements[0],
           financialStatements: rawStatements.map(
             (item): IFinancialStatementView => ({
@@ -132,6 +136,8 @@ export class ProductRepository {
             id: item.id,
             code: item.code,
             name: item.name,
+            saleUnit: item.sale_unit ?? 'UN',
+            isFractional: item.is_fractional ?? false,
             financialStatement: {
               ...item?.financialStatement[0],
               margin: item?.financialStatement[0]?.margin || 0,

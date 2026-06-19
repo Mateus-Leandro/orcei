@@ -26,6 +26,22 @@
       <div class="name">
         <app-form-field label="Nome" [control]="nameControl" />
       </div>
+
+      <div class="sale-unit">
+        <app-select
+          label="Unidade de venda"
+          variant="secondary"
+          [options]="saleUnitOptions"
+          [selectedValue]="saleUnitControl.value"
+          (clickOption)="saleUnitControl.setValue($event.value)"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <mat-checkbox [formControl]="isFractionalControl">
+        Permite venda com quantidade fracionada
+      </mat-checkbox>
     </div>
 
     <div>

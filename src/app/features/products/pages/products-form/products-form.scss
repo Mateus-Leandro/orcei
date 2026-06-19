@@ -20,6 +20,11 @@
   min-width: 0;
 }
 
+.sale-unit {
+  max-width: 240px;
+  flex-shrink: 0;
+}
+
 .financial-section {
   margin-top: 24px;
 
