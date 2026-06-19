@@ -184,6 +184,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
     const newProduct: IBudgetProduct = {
       productId: product.id,
+      productCode: product.code,
       productName: product.name,
       saleUnit: product.saleUnit,
       quantity: 1,

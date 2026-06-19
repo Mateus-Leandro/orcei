@@ -91,6 +91,7 @@ export class BudgetRepository {
           id: bp.id,
           budgetId: row.id,
           productId: bp.product_id,
+          productCode: bp.product?.code,
           productName: bp.product?.name ?? '',
           saleUnit: bp.product?.sale_unit ?? '',
           quantity: bp.quantity ?? 0,

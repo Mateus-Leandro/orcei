@@ -25,7 +25,14 @@ export class BudgetProductsTable implements OnChanges {
   @Output() cellChange = new EventEmitter<IBudgetProductCellChange>();
   @Output() removeProduct = new EventEmitter<{ productId: string }>();
 
-  displayedColumns = ['Produto', 'Unidade', 'Quantidade', 'Preço Unitário', 'Preço Total'];
+  displayedColumns = [
+    'Código',
+    'Produto',
+    'Unidade',
+    'Quantidade',
+    'Preço Unitário',
+    'Preço Total',
+  ];
   editableColumns = ['Quantidade', 'Preço Unitário'];
   editableColumnTypes: Record<string, EditableColumnType> = {
     Quantidade: 'number',
@@ -49,6 +56,7 @@ export class BudgetProductsTable implements OnChanges {
   private mapDataSource(): void {
     this.dataSource = this.products.map((product) => ({
       productId: product.productId,
+      Código: product.productCode ?? '',
       Produto: product.productName ?? '',
       Unidade: product.saleUnit ?? '',
       Quantidade: product.quantity ?? 0,

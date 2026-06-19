@@ -4,6 +4,7 @@ export interface IBudgetProduct {
   id?: string;
   budgetId?: string;
   productId: string;
+  productCode?: number;
   productName?: string;
   saleUnit?: string;
   quantity: number;
