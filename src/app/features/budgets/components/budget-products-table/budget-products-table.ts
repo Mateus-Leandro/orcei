@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import {
   EditableColumnType,
   Table,
@@ -6,6 +15,10 @@ import {
 } from '../../../../shared/components/table/table';
 import { IBudgetProduct } from '../../../../core/models/budget/budget.model';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 export interface IBudgetProductCellChange {
   productId: string;
@@ -45,7 +58,29 @@ export class BudgetProductsTable implements OnChanges {
     'Preço Unitário': 'unitPrice',
   };
 
+  private dialog = inject(MatDialog);
+
   constructor(private currencyFormatPipe: CurrencyFormatPipe) {}
+
+  confirmRemove(row: { productId: string; Produto?: string }): void {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      data: <ConfirmDialogData>{
+        title: 'Remover produto',
+        message: `Deseja remover o produto "${row.Produto ?? ''}" do orçamento?`.trim(),
+        confirmText: 'Remover',
+        cancelText: 'Cancelar',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.removeProduct.emit({ productId: row.productId });
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['products']) {

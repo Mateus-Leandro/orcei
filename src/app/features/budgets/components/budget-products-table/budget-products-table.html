@@ -7,5 +7,5 @@
   [deleteButton]="true"
   [showPaginator]="false"
   (cellChange)="onCellChange($event)"
-  (delete)="removeProduct.emit($event)"
+  (delete)="confirmRemove($event)"
 ></app-table>
