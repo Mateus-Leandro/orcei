@@ -18,6 +18,7 @@
               [dropSpecialCharacters]="false"
               [ngModel]="editValue"
               (ngModelChange)="onCellModelChange($event)"
+              (keydown.enter)="onCellEnter($event)"
               (blur)="onCellBlur(element, column)"
               (click)="$event.stopPropagation()"
             />

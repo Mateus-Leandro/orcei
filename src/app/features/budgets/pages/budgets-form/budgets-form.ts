@@ -1,5 +1,21 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +23,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgxMaskDirective } from 'ngx-mask';
 import { debounceTime } from 'rxjs';
+import { ButtonComponent } from '../../../../shared/components/button/button';
 import { EntityFormComponent } from '../../../../shared/components/entity-form-component/entity-form-component';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
@@ -26,11 +44,21 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
 
+function positiveNumberValidator(control: AbstractControl): ValidationErrors | null {
+  const value = parseFloat(
+    String(control.value ?? '')
+      .replace(/\./g, '')
+      .replace(',', '.'),
+  );
+  return value > 0 ? null : { positiveNumber: true };
+}
+
 @Component({
   selector: 'app-budgets-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    ButtonComponent,
     EntityFormComponent,
     FormFieldComponent,
     BudgetProductsTable,
@@ -40,6 +68,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/cur
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    NgxMaskDirective,
     Spinner,
     CurrencyFormatPipe,
   ],
@@ -52,13 +81,32 @@ export class BudgetsForm implements OnInit, OnDestroy {
   private storeId: string | null = null;
   loading = inject(LoadingService).loading;
 
+  @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('quantityInput') quantityInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('unitPriceInput') unitPriceInput?: ElementRef<HTMLInputElement>;
+
   customerSearchControl = new FormControl<ICustomer | string | null>('');
   productSearchControl = new FormControl<IProductView | string | null>('');
 
+  productForm = new FormGroup({
+    quantity: new FormControl<string>(
+      { value: '', disabled: true },
+      { validators: positiveNumberValidator },
+    ),
+    unitPrice: new FormControl<string>(
+      { value: '', disabled: true },
+      { validators: positiveNumberValidator },
+    ),
+  });
+
   selectedCustomer = signal<ICustomer | null>(null);
+  selectedProduct = signal<IProductView | null>(null);
   customerOptions = signal<ICustomer[]>([]);
   productOptions = signal<IProductView[]>([]);
   budgetProducts = signal<IBudgetProduct[]>([]);
+  quantityMask = computed(() =>
+    this.selectedProduct()?.isFractional ? 'separator.2' : 'separator.0',
+  );
 
   totalProducts = computed(() => this.budgetProducts().length);
   totalValue = computed(() =>
@@ -108,7 +156,6 @@ export class BudgetsForm implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Trava a troca de loja na toolbar enquanto o orçamento está aberto.
     this.storeService.lockSelection();
     this.storeId = this.storeService.selectedStore()?.id ?? null;
 
@@ -162,10 +209,35 @@ export class BudgetsForm implements OnInit, OnDestroy {
     this.selectedCustomer.set(customer);
   }
 
+  displayProduct = (product: IProductView | string | null): string => {
+    if (!product || typeof product === 'string') {
+      return '';
+    }
+    return `${product.code} - ${product.name}`;
+  };
+
   onProductSelected(product: IProductView): void {
-    this.addProduct(product);
-    this.productSearchControl.setValue('', { emitEvent: false });
+    if (this.budgetProducts().some((item) => item.productId === product.id)) {
+      this.notificationService.showError('Produto já adicionado ao orçamento.');
+      this.resetProductSelection();
+      return;
+    }
+
+    this.selectedProduct.set(product);
+    this.productSearchControl.setValue(product, { emitEvent: false });
     this.productOptions.set([]);
+
+    this.productForm.enable({ emitEvent: false });
+    this.quantityControl.setValue(this.formatNumber(1, product.isFractional ? 2 : 0), {
+      emitEvent: false,
+    });
+
+    const salePrice = product.financialStatement?.salePrice ?? 0;
+    this.unitPriceControl.setValue(salePrice > 0 ? this.formatNumber(salePrice, 2) : '', {
+      emitEvent: false,
+    });
+
+    setTimeout(() => this.quantityInput?.nativeElement.focus(), 0);
   }
 
   onProductSearchEnter(event: Event): void {
@@ -176,12 +248,31 @@ export class BudgetsForm implements OnInit, OnDestroy {
     }
   }
 
-  private addProduct(product: IProductView): void {
-    const exists = this.budgetProducts().some((item) => item.productId === product.id);
-    if (exists) {
-      this.notificationService.showError('Produto já adicionado ao orçamento.');
+  onClearProduct(): void {
+    this.resetProductSelection();
+    setTimeout(() => this.productSearchInput?.nativeElement.focus(), 0);
+  }
+
+  focusUnitPrice(event: Event): void {
+    event.preventDefault();
+    this.unitPriceInput?.nativeElement.focus();
+  }
+
+  onAddProduct(event?: Event): void {
+    event?.preventDefault();
+
+    const product = this.selectedProduct();
+    if (!product) {
       return;
     }
+
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+
+    const quantity = this.toNumber(this.quantityControl.value);
+    const unitPrice = this.toNumber(this.unitPriceControl.value);
 
     const newProduct: IBudgetProduct = {
       productId: product.id,
@@ -189,11 +280,51 @@ export class BudgetsForm implements OnInit, OnDestroy {
       productName: product.name,
       saleUnit: product.saleUnit,
       isFractional: product.isFractional,
-      quantity: 1,
-      unitPrice: product.financialStatement?.salePrice ?? 0,
+      quantity,
+      unitPrice,
     };
 
     this.budgetProducts.update((products) => [...products, newProduct]);
+    this.resetProductSelection();
+    setTimeout(() => this.productSearchInput?.nativeElement.focus(), 0);
+  }
+
+  private resetProductSelection(): void {
+    this.selectedProduct.set(null);
+    this.productSearchControl.setValue('', { emitEvent: false });
+    this.productOptions.set([]);
+    this.productForm.reset({ quantity: '', unitPrice: '' }, { emitEvent: false });
+    this.productForm.disable({ emitEvent: false });
+  }
+
+  get quantityControl(): FormControl<string | null> {
+    return this.productForm.controls.quantity;
+  }
+
+  get unitPriceControl(): FormControl<string | null> {
+    return this.productForm.controls.unitPrice;
+  }
+
+  canAddProduct(): boolean {
+    return !!this.selectedProduct() && this.productForm.valid;
+  }
+
+  private formatNumber(value: number, decimals: number): string {
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+      useGrouping: false,
+    });
+  }
+
+  private toNumber(value: string | null | undefined): number {
+    return (
+      parseFloat(
+        String(value ?? '')
+          .replace(/\./g, '')
+          .replace(',', '.'),
+      ) || 0
+    );
   }
 
   onCellChange(change: IBudgetProductCellChange): void {

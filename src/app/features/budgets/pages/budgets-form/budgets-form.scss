@@ -24,8 +24,30 @@
   min-width: 0;
 }
 
+.product-add-row {
+  align-items: flex-start;
+}
+
 .product-field {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.quantity-field {
+  max-width: 160px;
+  flex-shrink: 0;
+}
+
+.unit-price-field {
+  max-width: 200px;
+  flex-shrink: 0;
+}
+
+.add-product-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
 }
 
 .products-section {

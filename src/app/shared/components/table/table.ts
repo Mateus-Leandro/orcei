@@ -16,7 +16,14 @@ export interface TableCellChange {
 
 @Component({
   selector: 'app-table',
-  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, NgxMaskDirective, IconButton],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    NgxMaskDirective,
+    IconButton,
+  ],
   templateUrl: './table.html',
   styleUrl: './table.scss',
 })
@@ -125,6 +132,10 @@ export class Table implements OnChanges {
   // ngx-mask já entrega a string formatada (vírgula como decimal); guardamos no buffer.
   onCellModelChange(value: string | null): void {
     this.editValue = value ?? '';
+  }
+
+  onCellEnter(event: Event): void {
+    (event.target as HTMLInputElement).blur();
   }
 
   onCellBlur(element: any, column: string): void {
