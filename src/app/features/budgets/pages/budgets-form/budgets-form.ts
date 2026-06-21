@@ -17,6 +17,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,16 +34,25 @@ import {
   BudgetProductsTable,
   IBudgetProductCellChange,
 } from '../../components/budget-products-table/budget-products-table';
-import { IBudgetProduct, IUpsertBudget } from '../../../../core/models/budget/budget.model';
+import {
+  IBudgetProduct,
+  IBudgetView,
+  IUpsertBudget,
+} from '../../../../core/models/budget/budget.model';
 import { ICustomer } from '../../../../core/models/customers/customers.model';
 import { IProductView } from '../../../../core/models/product/product.model';
 import { BudgetService } from '../../../../core/services/budget/budget.service';
+import { BudgetPdfService } from '../../../../core/services/budget-pdf/budget-pdf.service';
 import { CustomersService } from '../../../../core/services/customers/customers.service';
 import { ProductService } from '../../../../core/services/product/product.service';
 import { StoreService } from '../../../../core/services/stores/store.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 
 function positiveNumberValidator(control: AbstractControl): ValidationErrors | null {
@@ -80,6 +90,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
   formGroup: FormGroup;
   budgetId: string | null = null;
   private storeId: string | null = null;
+
+  // Datas no formato ISO original, preservadas para a geração do PDF.
+  private budgetCreatedAtRaw = '';
+  private budgetUpdatedAtRaw = '';
   loading = inject(LoadingService).loading;
 
   @ViewChild('customerSearchInput') customerSearchInput?: ElementRef<HTMLInputElement>;
@@ -130,11 +144,13 @@ export class BudgetsForm implements OnInit, OnDestroy {
     fb: FormBuilder,
     private route: ActivatedRoute,
     private budgetService: BudgetService,
+    private budgetPdfService: BudgetPdfService,
     private customersService: CustomersService,
     private productService: ProductService,
     private notificationService: NotificationService,
     private currencyFormatPipe: CurrencyFormatPipe,
     private storeService: StoreService,
+    private dialog: MatDialog,
     private router: Router,
   ) {
     this.formGroup = fb.group({
@@ -190,6 +206,8 @@ export class BudgetsForm implements OnInit, OnDestroy {
             deliveryForecast: budget.deliveryForecast ?? '',
           });
 
+          this.budgetCreatedAtRaw = budget.createdAt;
+          this.budgetUpdatedAtRaw = budget.updatedAt;
           this.budgetCreatedAtControl.setValue(this.dateFormatPipe.transform(budget.createdAt));
           this.budgetUpdatedAtControl.setValue(this.dateFormatPipe.transform(budget.updatedAt));
 
@@ -407,9 +425,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
     };
 
     this.budgetService.upsertBudget(upsertBudget).subscribe({
-      next: () => {
+      next: (budgetRow) => {
+        this.applySavedBudget(budgetRow);
         this.notificationService.showSuccess('Orçamento salvo com sucesso!');
-        this.router.navigate(['/budgets']);
+        this.confirmPrint();
       },
       error: (error) => {
         this.notificationService.showError(`Erro ao salvar orçamento: ${error.message || error}`);
@@ -417,8 +436,70 @@ export class BudgetsForm implements OnInit, OnDestroy {
     });
   }
 
+  // Atualiza os identificadores locais com o registro retornado pelo upsert,
+  // garantindo número/datas corretos na geração do PDF (inclusive ao criar).
+  private applySavedBudget(budgetRow: any): void {
+    this.budgetId = budgetRow?.id ?? this.budgetId;
+    this.storeId = budgetRow?.store_id ?? this.storeId;
+    this.budgetCreatedAtRaw = budgetRow?.created_at ?? this.budgetCreatedAtRaw;
+    this.budgetUpdatedAtRaw = budgetRow?.updated_at ?? this.budgetUpdatedAtRaw;
+
+    if (budgetRow?.budget_number != null) {
+      this.budgetNumberControl.setValue(String(budgetRow.budget_number));
+    }
+  }
+
+  private confirmPrint(): void {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      data: <ConfirmDialogData>{
+        title: 'Imprimir orçamento',
+        message: 'Deseja imprimir o orçamento agora?',
+        confirmText: 'Imprimir',
+        cancelText: 'Não',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.onGeneratePdf();
+      }
+      this.router.navigate(['/budgets']);
+    });
+  }
+
   onCancel(): void {
     this.router.navigate(['/budgets']);
+  }
+
+  canGeneratePdf(): boolean {
+    return !!this.budgetId && this.budgetProducts().length > 0;
+  }
+
+  onGeneratePdf(): void {
+    const customer = this.selectedCustomer();
+
+    if (!this.canGeneratePdf() || !customer) {
+      return;
+    }
+
+    const budgetView: IBudgetView = {
+      id: this.budgetId ?? '',
+      budgetNumber: Number(this.budgetNumberControl.value) || 0,
+      customerId: customer.id,
+      storeId: this.storeId ?? '',
+      observation: this.observationControl.value || undefined,
+      deliveryForecast: this.deliveryForecastControl.value || undefined,
+      createdAt: this.budgetCreatedAtRaw,
+      updatedAt: this.budgetUpdatedAtRaw,
+      customer,
+      customerName: this.displayCustomer(customer),
+      totalProducts: this.totalProducts(),
+      totalValue: this.totalValue(),
+      products: this.budgetProducts(),
+    };
+
+    this.budgetPdfService.generate(budgetView, this.storeService.selectedStore());
   }
 
   get totalValueFormatted(): string {
