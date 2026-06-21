@@ -43,6 +43,7 @@ import { StoreService } from '../../../../core/services/stores/store.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
+import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 
 function positiveNumberValidator(control: AbstractControl): ValidationErrors | null {
   const value = parseFloat(
@@ -81,12 +82,24 @@ export class BudgetsForm implements OnInit, OnDestroy {
   private storeId: string | null = null;
   loading = inject(LoadingService).loading;
 
+  @ViewChild('customerSearchInput') customerSearchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('quantityInput') quantityInput?: ElementRef<HTMLInputElement>;
   @ViewChild('unitPriceInput') unitPriceInput?: ElementRef<HTMLInputElement>;
 
   customerSearchControl = new FormControl<ICustomer | string | null>('');
   productSearchControl = new FormControl<IProductView | string | null>('');
+
+  private dateFormatPipe = new DateFormatPipe();
+
+  // Datas do orçamento (somente leitura, exibidas apenas na edição).
+  budgetCreatedAtControl = new FormControl<string>({ value: '', disabled: true });
+  budgetUpdatedAtControl = new FormControl<string>({ value: '', disabled: true });
+
+  // Informações do cliente exibidas apenas para leitura.
+  customerDocumentControl = new FormControl<string>({ value: '', disabled: true });
+  customerPhoneControl = new FormControl<string>({ value: '', disabled: true });
+  customerAddressControl = new FormControl<string>({ value: '', disabled: true });
 
   productForm = new FormGroup({
     quantity: new FormControl<string>(
@@ -177,9 +190,13 @@ export class BudgetsForm implements OnInit, OnDestroy {
             deliveryForecast: budget.deliveryForecast ?? '',
           });
 
+          this.budgetCreatedAtControl.setValue(this.dateFormatPipe.transform(budget.createdAt));
+          this.budgetUpdatedAtControl.setValue(this.dateFormatPipe.transform(budget.updatedAt));
+
           if (budget.customer) {
             this.selectedCustomer.set(budget.customer);
             this.customerSearchControl.setValue(budget.customer, { emitEvent: false });
+            this.setCustomerInfo(budget.customer);
           }
 
           this.budgetProducts.set(budget.products ?? []);
@@ -207,6 +224,21 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   onCustomerSelected(customer: ICustomer): void {
     this.selectedCustomer.set(customer);
+    this.setCustomerInfo(customer);
+  }
+
+  onClearCustomer(): void {
+    this.selectedCustomer.set(null);
+    this.customerSearchControl.setValue('', { emitEvent: false });
+    this.customerOptions.set([]);
+    this.setCustomerInfo(null);
+    setTimeout(() => this.customerSearchInput?.nativeElement.focus(), 0);
+  }
+
+  private setCustomerInfo(customer: ICustomer | null): void {
+    this.customerDocumentControl.setValue(customer?.document ?? '');
+    this.customerPhoneControl.setValue(customer?.phone ?? '');
+    this.customerAddressControl.setValue(customer?.address ?? '');
   }
 
   displayProduct = (product: IProductView | string | null): string => {

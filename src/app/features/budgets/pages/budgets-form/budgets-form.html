@@ -21,18 +21,48 @@
             [control]="budgetNumberControl"
           />
         </div>
+
+        <div class="budget-date">
+          <app-form-field
+            [readonly]="true"
+            [disabled]="true"
+            label="Data de criação"
+            [control]="budgetCreatedAtControl"
+          />
+        </div>
+
+        <div class="budget-date">
+          <app-form-field
+            [readonly]="true"
+            [disabled]="true"
+            label="Data de alteração"
+            [control]="budgetUpdatedAtControl"
+          />
+        </div>
       </div>
     }
-
+    <p class="products-section__label">Informações do Cliente</p>
     <div class="row">
       <mat-form-field appearance="outline" class="customer-field">
         <mat-label>Cliente</mat-label>
         <input
+          #customerSearchInput
           matInput
           placeholder="Pesquisar cliente"
           [formControl]="customerSearchControl"
           [matAutocomplete]="customerAuto"
         />
+        @if (customerSearchControl.value) {
+          <button
+            matSuffix
+            mat-icon-button
+            type="button"
+            aria-label="Remover cliente selecionado"
+            (click)="onClearCustomer()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
         <mat-autocomplete
           #customerAuto="matAutocomplete"
           [displayWith]="displayCustomer"
@@ -44,11 +74,34 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <div class="delivery">
+      <div class="customer-info">
         <app-form-field
-          label="Previsão de entrega"
-          type="date"
-          [control]="deliveryForecastControl"
+          label="Documento"
+          mask="000.000.000-00||00.000.000/0000-00"
+          [readonly]="true"
+          [disabled]="true"
+          [control]="customerDocumentControl"
+        />
+      </div>
+
+      <div class="customer-info">
+        <app-form-field
+          label="Telefone"
+          mask="(00) 0000-0000||(00) 00000-0000"
+          [readonly]="true"
+          [disabled]="true"
+          [control]="customerPhoneControl"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="customer-address">
+        <app-form-field
+          label="Endereço"
+          [readonly]="true"
+          [disabled]="true"
+          [control]="customerAddressControl"
         />
       </div>
     </div>
@@ -56,6 +109,14 @@
     <div class="row">
       <div class="observation">
         <app-form-field label="Observação" [control]="observationControl" />
+      </div>
+
+      <div class="delivery">
+        <app-form-field
+          label="Previsão de entrega"
+          type="date"
+          [control]="deliveryForecastControl"
+        />
       </div>
     </div>
 

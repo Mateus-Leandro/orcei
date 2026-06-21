@@ -9,7 +9,22 @@
   flex-shrink: 0;
 }
 
+.budget-date {
+  max-width: 240px;
+  flex-shrink: 0;
+}
+
 .customer-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.customer-info {
+  max-width: 240px;
+  flex-shrink: 0;
+}
+
+.customer-address {
   flex: 1;
   min-width: 0;
 }
@@ -55,6 +70,7 @@
 
   &__label {
     margin: 0 0 8px;
+    padding: 8px 0;
     font-size: 14px;
     font-weight: 500;
   }
