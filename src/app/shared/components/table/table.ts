@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { NgxMaskDirective } from 'ngx-mask';
 import { IconButton } from '../icon-button/icon-button';
 
 export type EditableColumnType = 'currency' | 'percentage' | 'number';
@@ -14,7 +16,7 @@ export interface TableCellChange {
 
 @Component({
   selector: 'app-table',
-  imports: [CommonModule, MatTableModule, MatPaginatorModule, IconButton],
+  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, NgxMaskDirective, IconButton],
   templateUrl: './table.html',
   styleUrl: './table.scss',
 })
@@ -25,6 +27,7 @@ export class Table implements OnChanges {
   @Input() deleteButton: boolean = false;
   @Input() editableColumns: string[] = [];
   @Input() editableColumnTypes: Record<string, EditableColumnType> = {};
+  @Input() allowFractional: (element: any, column: string) => boolean = () => true;
   @Input() serverSidePagination: boolean = false;
   @Input() showPaginator: boolean = true;
   @Input() pageSizeOptions: number[] = [5, 10, 25, 50];
@@ -42,6 +45,8 @@ export class Table implements OnChanges {
 
   pageSize = 10;
   editingCell: { element: any; column: string; originalValue: number } | null = null;
+  // Buffer da célula em edição como string (vírgula decimal), evita o número cru no ngx-mask.
+  editValue = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['dataSource'] && !this.serverSidePagination) {
@@ -99,39 +104,59 @@ export class Table implements OnChanges {
   startEditing(element: any, column: string, event: MouseEvent): void {
     event.stopPropagation();
     const td = (event.target as HTMLElement).closest('td');
-    this.editingCell = { element, column, originalValue: element[column] ?? 0 };
+    const current = this.toNumber(element[column]);
+    this.editingCell = { element, column, originalValue: current };
+    const fractionDigits = this.decimalPlaces(element, column);
+    this.editValue = current
+      ? current.toLocaleString('pt-BR', {
+          minimumFractionDigits: fractionDigits,
+          maximumFractionDigits: fractionDigits,
+          useGrouping: false,
+        })
+      : '';
 
     setTimeout(() => {
       const input = td?.querySelector('input.editable-input') as HTMLInputElement;
-      if (input) {
-        input.value = (element[column] ?? 0).toString().replace('.', ',');
-        input.focus();
-        input.select();
-      }
+      input?.focus();
+      input?.select();
     }, 0);
   }
 
-  onCellInput(element: any, column: string, event: Event): void {
-    element[column] = this.parseDecimal((event.target as HTMLInputElement).value);
+  // ngx-mask já entrega a string formatada (vírgula como decimal); guardamos no buffer.
+  onCellModelChange(value: string | null): void {
+    this.editValue = value ?? '';
   }
 
-  onCellBlur(element: any, column: string, event: FocusEvent): void {
-    const rawValue = this.parseDecimal((event.target as HTMLInputElement).value);
+  onCellBlur(element: any, column: string): void {
+    const rawValue = this.toNumber(this.editValue);
     const originalValue = this.editingCell?.originalValue ?? rawValue;
     element[column] = rawValue;
     this.editingCell = null;
+    this.editValue = '';
 
     if (rawValue !== originalValue) {
       this.cellChange.emit({ row: element, column, value: rawValue });
     }
   }
 
-  private parseDecimal(value: string): number {
-    return parseFloat(value.replace(',', '.')) || 0;
+  // Define a máscara do ngx-mask por célula: 2 casas quando fracionado, inteiro caso contrário.
+  cellMask(element: any, column: string): string {
+    return `separator.${this.decimalPlaces(element, column)}`;
   }
 
-  formatCellValue(value: any, column: string): string {
-    const numVal = parseFloat(value) || 0;
+  private decimalPlaces(element: any, column: string): number {
+    return this.allowFractional(element, column) ? 2 : 0;
+  }
+
+  private toNumber(value: string | number | null | undefined): number {
+    if (typeof value === 'number') {
+      return value;
+    }
+    return parseFloat(String(value ?? '').replace(',', '.')) || 0;
+  }
+
+  formatCellValue(element: any, column: string): string {
+    const numVal = this.toNumber(element[column]);
     const type = this.editableColumnTypes[column];
 
     if (type === 'currency') {
@@ -145,7 +170,11 @@ export class Table implements OnChanges {
       return `${numVal.toLocaleString('pt-BR')}%`;
     }
 
-    return numVal.toString();
+    const fractionDigits = this.decimalPlaces(element, column);
+    return numVal.toLocaleString('pt-BR', {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    });
   }
 
   get displayedColumns(): string[] {

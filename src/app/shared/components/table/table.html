@@ -12,8 +12,13 @@
               class="editable-input"
               type="text"
               inputmode="decimal"
-              (input)="onCellInput(element, column, $event)"
-              (blur)="onCellBlur(element, column, $event)"
+              [mask]="cellMask(element, column)"
+              decimalMarker=","
+              thousandSeparator=""
+              [dropSpecialCharacters]="false"
+              [ngModel]="editValue"
+              (ngModelChange)="onCellModelChange($event)"
+              (blur)="onCellBlur(element, column)"
               (click)="$event.stopPropagation()"
             />
           } @else {
@@ -21,7 +26,7 @@
               class="editable-display"
               (click)="startEditing(element, column, $event)"
             >
-              {{ formatCellValue(element[column], column) }}
+              {{ formatCellValue(element, column) }}
             </span>
           }
         } @else {

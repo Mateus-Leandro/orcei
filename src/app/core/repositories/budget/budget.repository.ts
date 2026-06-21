@@ -67,7 +67,7 @@ export class BudgetRepository {
       .from('budgets')
       .select(
         '*, customer:customers(id, code, name, surname, document, phone, address, created_at, updated_at), ' +
-          'budgets_products(id, product_id, quantity, unit_price, product:products(id, code, name, sale_unit))',
+          'budgets_products(id, product_id, quantity, unit_price, product:products(id, code, name, sale_unit, is_fractional))',
       )
       .eq('id', id)
       .maybeSingle();
@@ -94,6 +94,7 @@ export class BudgetRepository {
           productCode: bp.product?.code,
           productName: bp.product?.name ?? '',
           saleUnit: bp.product?.sale_unit ?? '',
+          isFractional: bp.product?.is_fractional ?? false,
           quantity: bp.quantity ?? 0,
           unitPrice: bp.unit_price ?? 0,
         }));

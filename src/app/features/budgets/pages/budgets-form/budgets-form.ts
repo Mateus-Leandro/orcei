@@ -41,6 +41,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/cur
     MatInputModule,
     MatAutocompleteModule,
     Spinner,
+    CurrencyFormatPipe,
   ],
   templateUrl: './budgets-form.html',
   styleUrl: './budgets-form.scss',
@@ -100,7 +101,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
         return;
       }
 
-      this.productService.findAll(1, 10, value).subscribe({
+      this.productService.findAll(1, 10, value, this.storeService.selectedStore()?.id).subscribe({
         next: (response: any) => this.productOptions.set(response.data ?? []),
       });
     });
@@ -187,6 +188,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       productCode: product.code,
       productName: product.name,
       saleUnit: product.saleUnit,
+      isFractional: product.isFractional,
       quantity: 1,
       unitPrice: product.financialStatement?.salePrice ?? 0,
     };

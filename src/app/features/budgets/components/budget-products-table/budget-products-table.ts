@@ -58,6 +58,10 @@ export class BudgetProductsTable implements OnChanges {
     'Preço Unitário': 'unitPrice',
   };
 
+  // Bloqueia o separador decimal na quantidade de itens não fracionados.
+  allowFractional = (element: any, column: string): boolean =>
+    column === 'Quantidade' ? !!element['isFractional'] : true;
+
   private dialog = inject(MatDialog);
 
   constructor(private currencyFormatPipe: CurrencyFormatPipe) {}
@@ -91,6 +95,7 @@ export class BudgetProductsTable implements OnChanges {
   private mapDataSource(): void {
     this.dataSource = this.products.map((product) => ({
       productId: product.productId,
+      isFractional: product.isFractional ?? false,
       Código: product.productCode ?? '',
       Produto: product.productName ?? '',
       Unidade: product.saleUnit ?? '',
@@ -102,7 +107,13 @@ export class BudgetProductsTable implements OnChanges {
 
   onCellChange(event: TableCellChange): void {
     const { row, column, value } = event;
-    const numericValue = parseFloat(value) || 0;
+    let numericValue = parseFloat(value) || 0;
+
+    // Itens não fracionados só aceitam quantidade inteira.
+    if (column === 'Quantidade' && !row['isFractional']) {
+      numericValue = Math.trunc(numericValue);
+      row['Quantidade'] = numericValue;
+    }
 
     const quantity = column === 'Quantidade' ? numericValue : row['Quantidade'];
     const unitPrice = column === 'Preço Unitário' ? numericValue : row['Preço Unitário'];

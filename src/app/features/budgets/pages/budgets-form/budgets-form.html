@@ -77,7 +77,13 @@
           (optionSelected)="onProductSelected($event.option.value)"
         >
           @for (product of productOptions(); track product.id) {
-            <mat-option [value]="product">{{ product.code + ' - ' + product.name }}</mat-option>
+            <mat-option [value]="product">{{
+              product.code +
+                ' - ' +
+                product.name +
+                ' | Preço: ' +
+                (product.financialStatement.salePrice | currencyFormat)
+            }}</mat-option>
           }
         </mat-autocomplete>
       </mat-form-field>
