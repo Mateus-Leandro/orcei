@@ -80,7 +80,7 @@ export class BudgetPdfService {
     return {
       generatedAt: this.formatDateTime(new Date()),
       storeName: store?.name ?? '',
-      storePhone: this.formatPhone(''),
+      storePhone: this.formatPhone(store?.phone),
       budgetNumber: String(budget.budgetNumber ?? 0).padStart(6, '0'),
       createdAt: this.formatDate(budget.createdAt),
       deliveryForecast: this.formatForecastDate(budget.deliveryForecast),
