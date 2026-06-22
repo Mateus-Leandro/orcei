@@ -24,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { NgxMaskDirective } from 'ngx-mask';
 import { debounceTime } from 'rxjs';
 import { ButtonComponent } from '../../../../shared/components/button/button';
@@ -54,6 +55,11 @@ import {
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
+
+function customerRequiredValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  return value && typeof value === 'object' ? null : { required: true };
+}
 
 function positiveNumberValidator(control: AbstractControl): ValidationErrors | null {
   const value = parseFloat(
@@ -99,7 +105,9 @@ export class BudgetsForm implements OnInit, OnDestroy {
   @ViewChild('quantityInput') quantityInput?: ElementRef<HTMLInputElement>;
   @ViewChild('unitPriceInput') unitPriceInput?: ElementRef<HTMLInputElement>;
 
-  customerSearchControl = new FormControl<ICustomer | string | null>('');
+  customerSearchControl = new FormControl<ICustomer | string | null>('', {
+    validators: customerRequiredValidator,
+  });
   productSearchControl = new FormControl<IProductView | string | null>('');
 
   private dateFormatPipe = new DateFormatPipe();
@@ -120,6 +128,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
       { validators: positiveNumberValidator },
     ),
   });
+
+  customerErrorMatcher: ErrorStateMatcher = {
+    isErrorState: (control) => !!control && control.invalid && control.touched,
+  };
 
   selectedCustomer = signal<ICustomer | null>(null);
   selectedProduct = signal<IProductView | null>(null);
@@ -391,7 +403,8 @@ export class BudgetsForm implements OnInit, OnDestroy {
   onSave(): void {
     const customer = this.selectedCustomer();
 
-    if (!customer) {
+    if (this.customerSearchControl.invalid || !customer) {
+      this.customerSearchControl.markAsTouched();
       this.notificationService.showError('Selecione um cliente para o orçamento.');
       return;
     }

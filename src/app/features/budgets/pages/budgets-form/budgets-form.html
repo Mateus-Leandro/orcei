@@ -51,6 +51,7 @@
           placeholder="Pesquisar cliente"
           [formControl]="customerSearchControl"
           [matAutocomplete]="customerAuto"
+          [errorStateMatcher]="customerErrorMatcher"
         />
         @if (customerSearchControl.value) {
           <button
@@ -72,6 +73,9 @@
             <mat-option [value]="customer">{{ displayCustomer(customer) }}</mat-option>
           }
         </mat-autocomplete>
+        @if (customerSearchControl.hasError('required')) {
+          <mat-error>Selecione um cliente para o orçamento.</mat-error>
+        }
       </mat-form-field>
 
       <div class="customer-info">
