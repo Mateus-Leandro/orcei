@@ -90,8 +90,6 @@ export class BudgetsForm implements OnInit, OnDestroy {
   formGroup: FormGroup;
   budgetId: string | null = null;
   private storeId: string | null = null;
-
-  // Datas no formato ISO original, preservadas para a geração do PDF.
   private budgetCreatedAtRaw = '';
   private budgetUpdatedAtRaw = '';
   loading = inject(LoadingService).loading;
@@ -106,11 +104,8 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   private dateFormatPipe = new DateFormatPipe();
 
-  // Datas do orçamento (somente leitura, exibidas apenas na edição).
   budgetCreatedAtControl = new FormControl<string>({ value: '', disabled: true });
   budgetUpdatedAtControl = new FormControl<string>({ value: '', disabled: true });
-
-  // Informações do cliente exibidas apenas para leitura.
   customerDocumentControl = new FormControl<string>({ value: '', disabled: true });
   customerPhoneControl = new FormControl<string>({ value: '', disabled: true });
   customerAddressControl = new FormControl<string>({ value: '', disabled: true });
@@ -436,8 +431,6 @@ export class BudgetsForm implements OnInit, OnDestroy {
     });
   }
 
-  // Atualiza os identificadores locais com o registro retornado pelo upsert,
-  // garantindo número/datas corretos na geração do PDF (inclusive ao criar).
   private applySavedBudget(budgetRow: any): void {
     this.budgetId = budgetRow?.id ?? this.budgetId;
     this.storeId = budgetRow?.store_id ?? this.storeId;
