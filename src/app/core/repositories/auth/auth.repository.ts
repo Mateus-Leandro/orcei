@@ -80,4 +80,19 @@ export class AuthRepository {
       }),
     );
   }
+
+  resetPassword(email: string) {
+    this.loadingService.show();
+
+    return from(
+      this.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/login`,
+      }),
+    ).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
 }

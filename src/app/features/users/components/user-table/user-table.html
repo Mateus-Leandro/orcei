@@ -1,0 +1,9 @@
+<app-table
+  [columns]="displayedColumns"
+  [dataSource]="usersDataSource"
+  [totalItems]="totalItems"
+  [pageIndex]="pageIndex"
+  [serverSidePagination]="true"
+  (pageChange)="pageChange.emit($event)"
+  (clickRow)="clickRow.emit($event)"
+></app-table>

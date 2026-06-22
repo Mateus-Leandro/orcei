@@ -1,0 +1,20 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-card-container
+  titleCard="Usuários Cadastrados"
+  placeholder="Pesquisar usuário"
+  label="Pesquisar usuário"
+  (searchValue)="onSearch($event)"
+  (addItem)="navigateToUserForm()"
+  tooltipText="Criar novo Usuário"
+>
+  <app-user-table
+    [users]="users()"
+    [totalItems]="totalItems"
+    [pageIndex]="pageIndex"
+    (pageChange)="loadUsers($event)"
+    (clickRow)="navigateToUserForm($event)"
+  />
+</app-card-container>

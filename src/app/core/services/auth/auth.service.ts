@@ -24,4 +24,8 @@ export class AuthService {
   logOut() {
     return this.repository.logOut();
   }
+
+  resetPassword(email: string) {
+    return this.repository.resetPassword(email);
+  }
 }

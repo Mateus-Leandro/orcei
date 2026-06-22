@@ -1,0 +1,21 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+}
+
+.password-action {
+  margin-top: 8px;
+  display: flex;
+}

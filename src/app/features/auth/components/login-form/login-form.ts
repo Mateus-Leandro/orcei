@@ -65,6 +65,27 @@ export class LoginForm {
     this.router.navigate(['/register']);
   }
 
+  forgotPassword(): void {
+    if (this.emailControl.invalid) {
+      this.emailControl.markAsTouched();
+      this.notificationService.showError('Informe um e-mail válido para recuperar a senha.');
+      return;
+    }
+
+    this.authService.resetPassword(this.emailControl.value).subscribe({
+      next: () => {
+        this.notificationService.showSuccess(
+          'Se o e-mail estiver cadastrado, você receberá as instruções para redefinir a senha.',
+        );
+      },
+      error: (err) => {
+        this.notificationService.showError(
+          `Erro ao enviar e-mail de recuperação: ${err.message || err}`,
+        );
+      },
+    });
+  }
+
   get emailControl(): FormControl {
     return this.form.get('email') as FormControl;
   }

@@ -1,0 +1,67 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-entity-form-component
+  [icon]="userId ? 'manage_accounts' : 'person_add'"
+  [formGroup]="formGroup"
+  (submitEvent)="onSave()"
+  (cancelEvent)="onCancel()"
+  [titleCard]="userId ? 'Edição de usuário' : 'Cadastro de usuário'"
+  [subtitle]="userId ? 'Altere o nome e o e-mail do usuário' : 'O usuário será vinculado à sua empresa'"
+>
+  <div>
+    <div class="row">
+      <div class="name">
+        <app-form-field label="Nome" placeholder="Digite o nome" [control]="nameControl" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="name">
+        <app-form-field
+          label="E-mail"
+          type="email"
+          placeholder="Digite o e-mail"
+          [control]="emailControl"
+        />
+      </div>
+    </div>
+
+    @if (!userId) {
+      <div class="row">
+        <div class="name">
+          <app-form-field
+            label="Senha"
+            type="password"
+            [enablePasswordToggle]="true"
+            placeholder="Digite a senha"
+            [control]="passwordControl"
+          />
+        </div>
+
+        <div class="name">
+          <app-form-field
+            label="Confirme a senha"
+            type="password"
+            [enablePasswordToggle]="true"
+            placeholder="Confirme a senha"
+            [control]="confirmPasswordControl"
+          />
+        </div>
+      </div>
+    }
+
+    @if (isOwnProfile) {
+      <div class="password-action">
+        <app-button
+          icon="lock"
+          text="Alterar senha"
+          bgColor="transparent"
+          textColor="var(--primary)"
+          (click)="openChangePasswordDialog()"
+        />
+      </div>
+    }
+  </div>
+</app-entity-form-component>
