@@ -96,7 +96,7 @@ export class CustomersRepository {
     let query = this.supabase
       .from('customers')
       .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
+      .order('name', { ascending: true })
       .range(fromIndex, toIndex);
 
     if (search?.trim()) {

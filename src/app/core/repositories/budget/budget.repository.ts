@@ -30,7 +30,7 @@ export class BudgetRepository {
         '*, customer:customers!inner(id, name, surname), budgets_products(quantity, unit_price)',
         { count: 'exact' },
       )
-      .order('created_at', { ascending: false })
+      .order('budget_number', { ascending: false })
       .range(fromIndex, toIndex);
 
     if (storeId) {
@@ -174,7 +174,8 @@ export class BudgetRepository {
     products: IBudgetProduct[] = [],
   ): IBudgetView {
     const totalValue = rawProducts.reduce(
-      (acc, product) => acc + (product.quantity ?? 0) * (product.unit_price ?? product.unitPrice ?? 0),
+      (acc, product) =>
+        acc + (product.quantity ?? 0) * (product.unit_price ?? product.unitPrice ?? 0),
       0,
     );
 
