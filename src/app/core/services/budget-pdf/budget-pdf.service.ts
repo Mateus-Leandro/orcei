@@ -60,7 +60,16 @@ export class BudgetPdfService {
     this.cutSeparator(doc, 151);
     this.renderVia(doc, data, 'cliente', 154);
 
-    doc.save(`Orçamento_${data.budgetNumber}.pdf`);
+    this.openOrDownload(doc, `Orçamento_${data.budgetNumber}.pdf`);
+  }
+
+  private openOrDownload(doc: jsPDF, fileName: string): void {
+    const blobUrl = doc.output('bloburl');
+    const tab = window.open(blobUrl, '_blank');
+
+    if (!tab) {
+      doc.save(fileName);
+    }
   }
 
   private buildData(budget: IBudgetView, store: IStoreView | null): IBudgetPdfData {
