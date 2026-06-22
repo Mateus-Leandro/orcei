@@ -1,6 +1,8 @@
+import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 
+import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format/currency-format.pipe';
 import { IBudgetView } from '../../models/budget/budget.model';
 import { IStoreView } from '../../models/store/store.model';
 
@@ -37,6 +39,7 @@ export class BudgetPdfService {
   private readonly RIGHT = 198;
   private readonly CENTER = 105;
   private readonly RED: [number, number, number] = [204, 0, 0];
+  private readonly currencyFormat = new CurrencyFormatPipe(new CurrencyPipe('pt-BR'));
 
   // Posições X (em mm) de cada coluna da tabela de produtos.
   private readonly COL = {
@@ -234,7 +237,7 @@ export class BudgetPdfService {
   }
 
   private formatCurrency(value: number): string {
-    return `R$ ${this.formatNumber(value)}`;
+    return this.currencyFormat.transform(value).replace(/[\u00a0\u202f]/g, ' ');
   }
 
   private formatPhone(value: string | null | undefined): string {
@@ -256,7 +259,10 @@ export class BudgetPdfService {
       return '';
     }
 
-    const date = new Date(value);
+    return this.formatDmy(new Date(value));
+  }
+
+  private formatDmy(date: Date): string {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     return `${day}/${month}/${date.getFullYear()}`;
@@ -274,12 +280,9 @@ export class BudgetPdfService {
   }
 
   private formatDateTime(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
+    return `${this.formatDmy(date)} - ${hours}:${minutes}:${seconds}`;
   }
 }
