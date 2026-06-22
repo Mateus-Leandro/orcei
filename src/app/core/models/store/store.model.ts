@@ -4,6 +4,7 @@ export interface IStore {
   storeNumber: number | null;
   name: string;
   cnpj: string;
+  phone?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -13,6 +14,7 @@ export interface IStoreView {
   storeNumber: number | null;
   name: string;
   cnpj: string;
+  phone?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,4 +24,5 @@ export interface IUpsertStore {
   storeNumber: number | null;
   name: string;
   cnpj: string;
+  phone?: string;
 }

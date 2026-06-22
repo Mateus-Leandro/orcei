@@ -17,12 +17,7 @@ import { EntityFormComponent } from '../../../../shared/components/entity-form-c
 
 @Component({
   selector: 'app-stores-form',
-  imports: [
-    ReactiveFormsModule,
-    FormFieldComponent,
-    Spinner,
-    EntityFormComponent,
-  ],
+  imports: [ReactiveFormsModule, FormFieldComponent, Spinner, EntityFormComponent],
   templateUrl: './stores-form.html',
   styleUrl: './stores-form.scss',
 })
@@ -43,6 +38,7 @@ export class StoresForm implements OnInit {
       storeNumber: [null],
       cnpj: ['', [Validators.required, Validators.pattern(/^\d{14}$/)]],
       name: ['', [Validators.required, Validators.minLength(2)]],
+      phone: ['', []],
     });
   }
 
@@ -57,6 +53,7 @@ export class StoresForm implements OnInit {
             storeNumber: store.storeNumber,
             cnpj: store.cnpj,
             name: store.name,
+            phone: store.phone ?? '',
           });
         },
         error: (err) => {
@@ -78,13 +75,17 @@ export class StoresForm implements OnInit {
     return this.form.get('name') as FormControl;
   }
 
+  get phoneControl(): FormControl {
+    return this.form.get('phone') as FormControl;
+  }
+
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const { storeNumber, cnpj, name } = this.form.value;
+    const { storeNumber, cnpj, name, phone } = this.form.value;
 
     this.storeService
       .upsert({
@@ -92,6 +93,7 @@ export class StoresForm implements OnInit {
         storeNumber: storeNumber ? Number(storeNumber) : null,
         cnpj,
         name,
+        phone: phone,
       })
       .subscribe({
         next: () => {

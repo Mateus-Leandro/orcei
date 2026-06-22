@@ -5,6 +5,17 @@
   padding-top: 16px;
 }
 
+.row {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+}
+
 .form-actions {
   display: flex;
   flex-direction: row;

@@ -17,16 +17,30 @@
       type="number"
       [control]="storeNumberControl"
     />
-    <app-form-field
-      label="CNPJ"
-      placeholder="00.000.000/0000-00"
-      mask="00.000.000/0000-00"
-      [control]="cnpjControl"
-    />
-    <app-form-field
-      label="Nome para exibição"
-      placeholder="Digite o nome da loja"
-      [control]="nameControl"
-    />
+    <div class="row">
+      <div class="field">
+        <app-form-field
+          label="Telefone"
+          placeholder="(00) 00000-0000"
+          mask="(00) 0000-0000||(00) 00000-0000"
+          [control]="phoneControl"
+        />
+      </div>
+      <div class="field">
+        <app-form-field
+          label="CNPJ"
+          placeholder="00.000.000/0000-00"
+          mask="00.000.000/0000-00"
+          [control]="cnpjControl"
+        />
+      </div>
+      <div class="field">
+        <app-form-field
+          label="Nome para exibição"
+          placeholder="Digite o nome da loja"
+          [control]="nameControl"
+        />
+      </div>
+    </div>
   </div>
 </app-entity-form-component>

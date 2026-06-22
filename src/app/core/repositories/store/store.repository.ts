@@ -28,6 +28,7 @@ export class StoreRepository {
         store_number: data.storeNumber,
         name: data.name,
         cnpj: data.cnpj.replace(/\D/g, ''),
+        phone: data.phone,
       })
       .select()
       .single()
@@ -59,6 +60,7 @@ export class StoreRepository {
           storeNumber: data.store_number,
           name: data.name,
           cnpj: data.cnpj,
+          phone: data.phone,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -97,6 +99,7 @@ export class StoreRepository {
             storeNumber: item.store_number,
             name: item.name,
             cnpj: item.cnpj,
+            phone: item.phone,
             createdAt: item.created_at,
             updatedAt: item.updated_at,
           }),
