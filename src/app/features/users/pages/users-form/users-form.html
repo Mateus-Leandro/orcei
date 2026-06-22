@@ -8,7 +8,9 @@
   (submitEvent)="onSave()"
   (cancelEvent)="onCancel()"
   [titleCard]="userId ? 'Edição de usuário' : 'Cadastro de usuário'"
-  [subtitle]="userId ? 'Altere o nome e o e-mail do usuário' : 'O usuário será vinculado à sua empresa'"
+  [subtitle]="
+    userId ? 'Altere o nome e o e-mail do usuário' : 'O usuário será vinculado à sua empresa'
+  "
 >
   <div>
     <div class="row">
@@ -22,6 +24,8 @@
         <app-form-field
           label="E-mail"
           type="email"
+          [readonly]="!!userId"
+          [disabled]="!!userId"
           placeholder="Digite o e-mail"
           [control]="emailControl"
         />
