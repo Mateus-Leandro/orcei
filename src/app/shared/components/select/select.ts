@@ -31,7 +31,8 @@ export class Select<T> {
 
   @Output() clickOption = new EventEmitter<ISelectOptions<T>>();
 
-  compareFn = (a: any, b: any): boolean => a === b || a?.id === b?.id;
+  compareFn = (a: any, b: any): boolean =>
+    a === b || (a?.id != null && a.id === b?.id);
 
   get panelClass(): string {
     return `select-panel-${this.variant}`;
