@@ -27,6 +27,7 @@ export class ProductTable implements OnChanges {
   displayedColumns: string[] = [
     'Código',
     'Nome',
+    'UN',
     'Margem',
     'Preço de Custo',
     'Preço de Venda',
@@ -51,6 +52,7 @@ export class ProductTable implements OnChanges {
     this.productsDataSource = this.products.map((product) => ({
       id: product.id,
       Código: product.code,
+      UN: product.saleUnit,
       Nome: product.name,
       Margem: product?.financialStatement?.margin || 0,
       'Preço de Custo': this.currencyFormatPipe.transform(
