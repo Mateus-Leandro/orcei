@@ -27,7 +27,7 @@ export class CustomerTable implements OnChanges {
   displayedColumns: string[] = [
     'Código',
     'Nome',
-    'Sobrenome',
+    'Apelido',
     'Documento',
     'Telefone',
     'Data Criação',
@@ -52,7 +52,7 @@ export class CustomerTable implements OnChanges {
       id: customer.id,
       Código: customer.code,
       Nome: customer.name,
-      Sobrenome: customer.surname ?? '',
+      Apelido: customer.surname ?? '',
       Documento: this.cpfCnpjPipe.transform(customer.document),
       Telefone: customer.phone ?? '',
       'Data Criação': this.dateFormatPipe.transform(customer.createdAt),
