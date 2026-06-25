@@ -13,5 +13,9 @@
     [text]="data.cancelText || 'Cancelar'"
   />
 
-  <app-button (click)="close(true)" [text]="data.confirmText || 'Confirmar'" />
+  <app-button
+    bgColor="var(--save-color)"
+    (click)="close(true)"
+    [text]="data.confirmText || 'Confirmar'"
+  />
 </mat-dialog-actions>

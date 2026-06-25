@@ -19,11 +19,11 @@
               formControlName="defaultSystemColor"
             />
             <app-button
-              text="Restaurar padrão"
+              text="Restaurar cor padrão"
               icon="restart_alt"
-              bgColor="var(--secondary)"
+              bgColor="transparent"
               textColor="var(--primary)"
-              (click)="resetToDefault()"
+              (click)="showResetColorDialog()"
             />
           </div>
         </div>

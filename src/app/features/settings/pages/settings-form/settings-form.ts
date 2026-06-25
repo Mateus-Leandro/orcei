@@ -13,6 +13,11 @@ import { ButtonComponent } from '../../../../shared/components/button/button';
 import { ThemeService } from '../../../../core/services/theme/theme.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { MatDivider } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-settings-form',
@@ -24,6 +29,7 @@ export class SettingsForm implements OnDestroy {
   private themeService = inject(ThemeService);
   private notification = inject(NotificationService);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(MatDialog);
 
   private saved = false;
 
@@ -57,6 +63,24 @@ export class SettingsForm implements OnDestroy {
     if (!this.saved) {
       this.themeService.loadPrimaryColor();
     }
+  }
+
+  showResetColorDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      data: <ConfirmDialogData>{
+        title: 'Restaura a cor do Sistema',
+        message: `Deseja restaurar a cor padrão do sistema?`,
+        confirmText: 'Sim, restaurar',
+        cancelText: 'Manter atual',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+
+      this.resetToDefault();
+    });
   }
 
   resetToDefault(): void {
