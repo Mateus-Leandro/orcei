@@ -90,6 +90,7 @@ export class SettingsForm implements OnDestroy {
   }
 
   cancel(): void {
-    this.resetToDefault();
+    this.themeService.loadPrimaryColor();
+    this.defaultSystemColor.setValue(this.themeService.getPrimaryColor());
   }
 }
