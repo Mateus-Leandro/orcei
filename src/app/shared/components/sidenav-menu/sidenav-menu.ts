@@ -47,6 +47,11 @@ export class SidenavMenu {
       textNav: 'Usuários',
       icon: 'manage_accounts',
     },
+    {
+      router: '/settings/form',
+      textNav: 'Configurações',
+      icon: 'settings',
+    },
   ];
 
   onItemClick() {

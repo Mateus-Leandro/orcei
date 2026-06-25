@@ -5,7 +5,7 @@
   flex-direction: row;
   height: 100vh;
   width: 100vw;
-  background-color: $primary;
+  background-color: var(--primary);
   overflow: hidden;
 }
 
@@ -29,7 +29,7 @@
 
 .color-container {
   flex: 1;
-  background-color: $primary;
+  background-color: var(--primary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,7 +92,7 @@
   padding-top: 15px;
   font-size: 22px;
   font-weight: 500;
-  color: $primary;
+  color: var(--primary);
 }
 
 .img-logo {

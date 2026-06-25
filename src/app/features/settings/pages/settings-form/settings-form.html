@@ -1,0 +1,51 @@
+<app-container-page-layout>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Configurações</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="card-container">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="color-picker">
+          <mat-divider class="color-picker__divider" />
+
+          <label class="color-picker__label" for="systemColor">Cor padrão do Sistema</label>
+
+          <div class="color-picker__control">
+            <input
+              id="systemColor"
+              class="color-picker__input"
+              type="color"
+              formControlName="defaultSystemColor"
+            />
+            <app-button
+              text="Restaurar padrão"
+              icon="restart_alt"
+              bgColor="var(--secondary)"
+              textColor="var(--primary)"
+              (click)="resetToDefault()"
+            />
+          </div>
+        </div>
+
+        <div class="actions">
+          <app-button
+            text="Cancelar"
+            icon="arrow_back"
+            bgColor="var(--cancel-color)"
+            [disabled]="form.invalid"
+            (click)="cancel()"
+          />
+
+          <app-button
+            text="Salvar"
+            type="submit"
+            icon="save"
+            bgColor="var(--save-color)"
+            [disabled]="form.invalid"
+          />
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</app-container-page-layout>

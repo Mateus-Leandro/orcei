@@ -6,6 +6,7 @@ import { PRODUCTS_ROUTES } from './features/products/product.routes';
 import { STORES_ROUTES } from './features/stores/store.routes';
 import { CUSTOMERS_ROUTES } from './features/customers/customer.routes';
 import { USERS_ROUTES } from './features/users/user.routes';
+import { SETTINGS_ROUTES } from './features/settings/settings.routes';
 
 export const routes: Routes = [
   ...AUTH_ROUTES,
@@ -18,6 +19,7 @@ export const routes: Routes = [
       ...STORES_ROUTES,
       ...CUSTOMERS_ROUTES,
       ...USERS_ROUTES,
+      ...SETTINGS_ROUTES,
     ],
   },
 ];

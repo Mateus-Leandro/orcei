@@ -38,10 +38,10 @@
 
   .nav-text {
     font-weight: 600;
-    color: $primary;
+    color: var(--primary);
   }
 
   .icon-nav {
-    color: $primary;
+    color: var(--primary);
   }
 }

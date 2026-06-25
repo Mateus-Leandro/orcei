@@ -20,5 +20,11 @@
 <mat-dialog-actions align="end" style="gap: 5px">
   <app-button mat-button (click)="cancel()" text="Cancelar" bgColor="var(--cancel-color)" />
 
-  <app-button mat-flat-button (click)="confirm()" [disabled]="formGroup.invalid" text="Salvar" />
+  <app-button
+    mat-flat-button
+    (click)="confirm()"
+    [disabled]="formGroup.invalid"
+    text="Salvar"
+    bgColor="var(--save-color)"
+  />
 </mat-dialog-actions>

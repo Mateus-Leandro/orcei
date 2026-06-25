@@ -3,7 +3,7 @@
 .toolbar {
   display: flex;
   gap: 5px;
-  background-color: $primary;
+  background-color: var(--primary);
   padding: 15px 0px;
   color: $font-primary;
 }

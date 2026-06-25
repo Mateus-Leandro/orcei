@@ -22,7 +22,7 @@ body {
 // Customização da cor do spinner
 @include mat.progress-spinner-overrides(
   (
-    active-indicator-color: $primary,
+    active-indicator-color: var(--primary),
   )
 );
 
@@ -69,7 +69,7 @@ body {
 
 @include mat.select-overrides(
   (
-    panel-background-color: $primary,
+    panel-background-color: var(--primary),
     enabled-trigger-text-color: $font-primary,
     disabled-trigger-text-color: $font-primary,
     placeholder-text-color: $font-primary,

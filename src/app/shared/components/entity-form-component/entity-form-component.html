@@ -21,7 +21,12 @@
         bgColor="var(--cancel-color)"
         (click)="cancelEvent.emit()"
       />
-      <app-button icon="save" text="Salvar" (click)="submitEvent.emit()" />
+      <app-button
+        icon="save"
+        text="Salvar"
+        bgColor="var(--save-color)"
+        (click)="submitEvent.emit()"
+      />
     </mat-card-actions>
   </mat-card>
 </app-container-page-layout>
