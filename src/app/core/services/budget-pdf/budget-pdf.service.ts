@@ -163,6 +163,7 @@ export class BudgetPdfService {
 
     // Linhas de produtos.
     doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
     const descriptionWidth = this.COL.unit - this.COL.description - 2;
     for (const product of data.products) {
       doc.text(product.code, this.COL.code, y);
