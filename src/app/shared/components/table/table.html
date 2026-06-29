@@ -57,6 +57,7 @@
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
+    [ngClass]="rowClass(row)"
     (click)="onRowClick(row)"
     style="cursor: pointer"
   ></tr>

@@ -35,6 +35,7 @@ export class CustomerTable implements OnChanges {
   ];
 
   customersDataSource: Partial<ICustomer>[] = [];
+  rowClass = (row: Partial<ICustomer>) => ({ blocked: !!row.blocked });
 
   constructor(
     private dateFormatPipe: DateFormatPipe,
@@ -50,6 +51,7 @@ export class CustomerTable implements OnChanges {
   private mapCustomers(): void {
     this.customersDataSource = this.customers.map((customer) => ({
       id: customer.id,
+      blocked: customer.blocked,
       Código: customer.code,
       Nome: customer.name,
       Apelido: customer.surname ?? '',

@@ -5,6 +5,7 @@
   [pageIndex]="pageIndex"
   [serverSidePagination]="true"
   [deleteButton]="true"
+  [rowClass]="rowClass"
   (pageChange)="pageChange.emit($event)"
   (clickRow)="clickRow.emit($event)"
   (delete)="deleteRow.emit($event)"

@@ -39,6 +39,7 @@ export class Table implements OnChanges {
   @Input() showPaginator: boolean = true;
   @Input() pageSizeOptions: number[] = [5, 10, 25, 50];
   @Input() pageIndex = 0;
+  @Input() rowClass: (row: any) => string | string[] | Record<string, boolean> = () => '';
 
   @Output() clickRow = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
