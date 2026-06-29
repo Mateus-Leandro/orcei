@@ -14,6 +14,7 @@ import {
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Router } from '@angular/router';
+import { sortBySearchRelevance } from '../../../../shared/helpers/search-ranking.helper';
 
 @Component({
   selector: 'app-products',
@@ -77,7 +78,12 @@ export class Products {
 
     this.productService.findAll(event.page, event.limit, searchText, storeId).subscribe({
       next: (response: any) => {
-        this.products.set(response.data ?? []);
+        this.products.set(
+          sortBySearchRelevance(response.data ?? [], searchText, (product: IProductView) => [
+            product.code,
+            product.name,
+          ]),
+        );
         this.totalItems = response.count ?? 0;
       },
       error: (err) => {

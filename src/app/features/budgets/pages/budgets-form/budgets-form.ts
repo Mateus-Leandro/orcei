@@ -55,6 +55,7 @@ import {
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
+import { sortBySearchRelevance } from '../../../../shared/helpers/search-ranking.helper';
 
 function customerRequiredValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
@@ -175,7 +176,14 @@ export class BudgetsForm implements OnInit, OnDestroy {
       }
 
       this.customersService.findAll(1, 10, value).subscribe({
-        next: (response: any) => this.customerOptions.set(response.data ?? []),
+        next: (response: any) =>
+          this.customerOptions.set(
+            sortBySearchRelevance(response.data ?? [], value, (customer: ICustomer) => [
+              customer.code,
+              customer.name,
+              customer.surname,
+            ]),
+          ),
       });
     });
 
@@ -185,8 +193,14 @@ export class BudgetsForm implements OnInit, OnDestroy {
         return;
       }
 
-      this.productService.findAll(1, 10, value, this.storeService.selectedStore()?.id).subscribe({
-        next: (response: any) => this.productOptions.set(response.data ?? []),
+      this.productService.findAll(1, 20, value, this.storeService.selectedStore()?.id).subscribe({
+        next: (response: any) =>
+          this.productOptions.set(
+            sortBySearchRelevance(response.data ?? [], value, (product: IProductView) => [
+              product.code,
+              product.name,
+            ]),
+          ),
       });
     });
   }
