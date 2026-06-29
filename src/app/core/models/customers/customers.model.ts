@@ -5,6 +5,7 @@ export interface ICustomer {
   surname?: string;
   document?: string;
   phone?: string;
+  blocked?: boolean;
   address?: string;
   createdAt: string;
   updatedAt: string;
@@ -17,4 +18,5 @@ export interface IUpsertCustomer {
   document?: string;
   phone?: string;
   address?: string;
+  blocked?: boolean;
 }

@@ -30,6 +30,7 @@ export class CustomersRepository {
         document: upsertCustomer.document,
         phone: upsertCustomer.phone,
         address: upsertCustomer.address,
+        blocked: upsertCustomer.blocked,
       })
       .select()
       .single()
@@ -74,6 +75,7 @@ export class CustomersRepository {
           phone: data.phone,
           address: data.address,
           document: data.document,
+          blocked: data.blocked,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -118,6 +120,7 @@ export class CustomersRepository {
             document: item.document,
             phone: item.phone,
             address: item.address,
+            blocked: item.blocked,
             createdAt: item.created_at,
             updatedAt: item.updated_at,
           }),

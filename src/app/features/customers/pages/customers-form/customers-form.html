@@ -11,6 +11,10 @@
   subtitle="Preencha as informações do cliente"
 >
   <div>
+    <div class="blocked">
+      <mat-checkbox [formControl]="blockedControl"> Cliente Bloqueado </mat-checkbox>
+    </div>
+
     <div class="row">
       @if (customerId) {
         <div class="code">
@@ -50,10 +54,8 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="name">
-        <app-form-field label="Endereço" [control]="addressControl" />
-      </div>
+    <div class="name">
+      <app-form-field label="Endereço" [control]="addressControl" />
     </div>
   </div>
 </app-entity-form-component>

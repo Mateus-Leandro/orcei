@@ -20,6 +20,12 @@
   min-width: 0;
 }
 
+.blocked {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 0;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

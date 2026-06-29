@@ -1,5 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,6 +17,7 @@ import { CustomersService } from '../../../../core/services/customers/customers.
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { IUpsertCustomer } from '../../../../core/models/customers/customers.model';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-customers-form',
@@ -22,6 +29,7 @@ import { IUpsertCustomer } from '../../../../core/models/customers/customers.mod
     MatIconModule,
     EntityFormComponent,
     Spinner,
+    MatCheckboxModule,
   ],
   templateUrl: './customers-form.html',
   styleUrl: './customers-form.scss',
@@ -45,6 +53,7 @@ export class CustomersForm implements OnInit {
       document: ['', []],
       phone: ['', []],
       address: ['', []],
+      blocked: [false, []],
     });
 
     this.customerId = this.route.snapshot.paramMap.get('id');
@@ -61,6 +70,7 @@ export class CustomersForm implements OnInit {
             document: customer.data?.document,
             phone: customer.data?.phone,
             address: customer.data?.address,
+            blocked: customer.data?.blocked,
           });
         },
         error: (err) => {
@@ -88,6 +98,7 @@ export class CustomersForm implements OnInit {
       document: payload.document || undefined,
       phone: payload.phone || undefined,
       address: payload.address || undefined,
+      blocked: payload.blocked || false,
     };
 
     this.customersService.upsertCustomer(upsertCustomer).subscribe({
@@ -127,5 +138,9 @@ export class CustomersForm implements OnInit {
 
   get addressControl() {
     return this.formGroup.get('address') as FormControl<string>;
+  }
+
+  get blockedControl() {
+    return this.formGroup.get('blocked') as FormControl<boolean>;
   }
 }
