@@ -248,8 +248,31 @@ export class BudgetsForm implements OnInit, OnDestroy {
   };
 
   onCustomerSelected(customer: ICustomer): void {
-    this.selectedCustomer.set(customer);
-    this.setCustomerInfo(customer);
+    if (!customer.blocked) {
+      this.selectedCustomer.set(customer);
+      this.setCustomerInfo(customer);
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      data: <ConfirmDialogData>{
+        title: 'Cliente Bloqueado!',
+        message: `O cliente ${customer.name}${customer?.surname ? ` (${customer.surname})` : ''} está bloqueado. Deseja criar um novo orçamento mesmo assim?`,
+        confirmText: 'Sim',
+        cancelText: 'Não',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.selectedCustomer.set(customer);
+        this.setCustomerInfo(customer);
+        return;
+      }
+
+      this.onClearCustomer();
+    });
   }
 
   onClearCustomer(): void {

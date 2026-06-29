@@ -70,7 +70,9 @@
           (optionSelected)="onCustomerSelected($event.option.value)"
         >
           @for (customer of customerOptions(); track customer.id) {
-            <mat-option [value]="customer">{{ displayCustomer(customer) }}</mat-option>
+            <mat-option [value]="customer" [class.blocked]="customer.blocked">{{
+              displayCustomer(customer)
+            }}</mat-option>
           }
         </mat-autocomplete>
         @if (customerSearchControl.hasError('required')) {

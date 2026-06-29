@@ -36,3 +36,9 @@ body {
 .mat-mdc-autocomplete-panel .mat-mdc-option .mdc-list-item__primary-text {
   color: #000 !important;
 }
+
+// Cliente bloqueado destacado em vermelho na lista de opções.
+.mat-mdc-autocomplete-panel .mat-mdc-option.blocked .mdc-list-item__primary-text {
+  color: #d32f2f !important;
+  font-weight: 500;
+}
