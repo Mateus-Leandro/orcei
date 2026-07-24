@@ -63,6 +63,19 @@ Deno.serve(async (req) => {
       return fail('Erro ao criar empresa: ' + companyCreateError.message, 500);
     }
 
+    const { error: storeCreateError } = await supabase.from('stores').insert({
+      store_number: 1,
+      name: company.name,
+      cnpj: company.cnpj,
+      company_id: createdCompany.id,
+    });
+
+    if (storeCreateError) {
+      await supabase.from('companies').delete().eq('id', createdCompany.id);
+      await supabase.auth.admin.deleteUser(createdUserId);
+      return fail('Erro ao criar loja: ' + storeCreateError.message, 500);
+    }
+
     const { error: userUpdateError } = await supabase
       .from('users')
       .update({
