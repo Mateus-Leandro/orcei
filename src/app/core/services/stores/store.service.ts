@@ -28,18 +28,29 @@ export class StoreService {
   }
 
   loadSelectedStore(preloadedStores?: IStoreView[]): void {
-    const cachedStore = localStorage.getItem(this.SELECTED_STORE_KEY);
-
-    if (cachedStore) {
-      this.selectedStore.set(JSON.parse(cachedStore) as IStoreView);
-      return;
-    }
+    const cachedStore = this.getCachedStore();
 
     if (preloadedStores) {
+      const matchingStore = cachedStore
+        ? (preloadedStores.find((store) => store.id === cachedStore.id) ?? null)
+        : null;
+
+      if (matchingStore) {
+        this.setSelectedStore(matchingStore);
+        return;
+      }
+
       const first = preloadedStores[0] ?? null;
       if (first) {
         this.setSelectedStore(first);
+      } else {
+        this.removeSelectedStore();
       }
+      return;
+    }
+
+    if (cachedStore) {
+      this.selectedStore.set(cachedStore);
       return;
     }
 
@@ -53,6 +64,11 @@ export class StoreService {
         }),
       )
       .subscribe();
+  }
+
+  private getCachedStore(): IStoreView | null {
+    const cachedStore = localStorage.getItem(this.SELECTED_STORE_KEY);
+    return cachedStore ? (JSON.parse(cachedStore) as IStoreView) : null;
   }
 
   setSelectedStore(store: IStoreView): void {
