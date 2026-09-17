@@ -13,6 +13,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
+import { AuthApiError } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-login-form',
@@ -52,8 +53,15 @@ export class LoginForm {
       next: () => {
         this.router.navigate(['/budgets']);
       },
-      error: () => {
+      error: (err: AuthApiError) => {
         this.form.setErrors({ invalidLogin: true });
+
+        if (err.code === 'email_not_confirmed') {
+          return this.notificationService.showError(
+            'O E-mail não está confirmado! Verifique sua caixa de entrada e realize a confirmação.',
+          );
+        }
+
         this.notificationService.showError(
           'Não foi possível realizar o login, verifique o e-mail e senha informados.',
         );
