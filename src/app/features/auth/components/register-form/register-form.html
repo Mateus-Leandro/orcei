@@ -1,3 +1,7 @@
+@if (loading()) {
+  <app-spinner />
+}
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-container">
         <app-form-field label="Nome" placeholder="Digite seu nome" [control]="nameControl" />

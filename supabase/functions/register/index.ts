@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
       email: user.email,
       password: user.password,
-      email_confirm: true,
+      email_confirm: false,
       user_metadata: { name: user.name },
     });
 
@@ -89,6 +89,17 @@ Deno.serve(async (req) => {
     await supabase.auth.admin.updateUserById(createdUserId, {
       app_metadata: { company_id: createdCompany.id },
     });
+
+    const { error: reSendError } = await supabase.auth.resend({
+      type: 'signup',
+      email: user.email,
+    });
+
+    if (reSendError) {
+      await supabase.from('companies').delete().eq('id', createdCompany.id);
+      await supabase.auth.admin.deleteUser(createdUserId);
+      return fail('Erro ao enviar e-mail de confirmação: ' + reSendError.message, 500);
+    }
 
     return success({
       message: 'Registro concluído com sucesso',

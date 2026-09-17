@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -18,6 +18,8 @@ import { Location } from '@angular/common';
 import { ICreateUser } from '../../../../core/models/user/user.model';
 import { ICreateUsercompany } from '../../../../core/models/company/company.model';
 import { CompanyService } from '../../../../core/services/company/company.service';
+import { Spinner } from '../../../../shared/components/spinner/spinner';
+import { LoadingService } from '../../../../core/services/loading/loading.service';
 
 @Component({
   selector: 'app-register-form',
@@ -27,12 +29,17 @@ import { CompanyService } from '../../../../core/services/company/company.servic
     ReactiveFormsModule,
     FormFieldComponent,
     ButtonComponent,
+    Spinner
   ],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
 })
 export class RegisterForm {
+  private loadingService = inject(LoadingService);
+
   form: FormGroup;
+
+  readonly loading = this.loadingService.loading;
 
   constructor(
     private fb: FormBuilder,
@@ -76,6 +83,7 @@ export class RegisterForm {
 
   onSubmit() {
     if (this.form.valid) {
+      this.loadingService.show();
       this.companyService.searchForCnpj(this.cnpjControl.value).subscribe({
         next: (response) => {
           const createCompany: ICreateUsercompany = {
@@ -90,12 +98,14 @@ export class RegisterForm {
           };
           this.authService.createAccount(createUser).subscribe({
             next: () => {
+              this.loadingService.hide();
               this.notificationService.showSuccess(
-                'Conta criada com sucesso! Realize o login para utilizar o sistema.',
+                `Acesse o link enviado no e-mail ${createUser.email} e confirme sua conta.`,
               );
               this.router.navigate(['/login']);
             },
             error: (err) => {
+              this.loadingService.hide();
               this.notificationService.showError(
                 err.message || 'Erro ao criar conta. Tente novamente.',
               );
@@ -103,6 +113,7 @@ export class RegisterForm {
           });
         },
         error: (err) => {
+          this.loadingService.hide();
           this.notificationService.showError(
             `Erro ao consultar CNPJ ${this.cnpjControl.value}: ${err.message || err} `,
           );
