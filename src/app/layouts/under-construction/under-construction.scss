@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  background-color: #fff;
+  min-height: 100%;
+}
+
+.under-construction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.under-construction__image {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+.under-construction__title {
+  margin: 0;
+  font: var(--mat-sys-headline-medium);
+  color: var(--mat-sys-on-surface);
+  font-weight: 600;
+}
+
+.under-construction__subtitle {
+  margin: 0;
+  max-width: 480px;
+  font: var(--mat-sys-body-large);
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+}

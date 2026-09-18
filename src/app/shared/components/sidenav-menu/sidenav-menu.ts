@@ -19,7 +19,7 @@ export class SidenavMenu {
     private authService: AuthService,
     private router: Router,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   menuItens: IItensMenuDrawer[] = [
     {
@@ -36,6 +36,16 @@ export class SidenavMenu {
       router: '/products',
       textNav: 'Produtos',
       icon: 'sell',
+    },
+    {
+      router: '/suppliers',
+      textNav: 'Fornecedores',
+      icon: 'trolley',
+    },
+    {
+      router: '/quotes',
+      textNav: 'Cotações',
+      icon: 'price_check',
     },
     {
       router: '/customers',

@@ -7,6 +7,7 @@ import { STORES_ROUTES } from './features/stores/store.routes';
 import { CUSTOMERS_ROUTES } from './features/customers/customer.routes';
 import { USERS_ROUTES } from './features/users/user.routes';
 import { SETTINGS_ROUTES } from './features/settings/settings.routes';
+import { authGuard } from './core/guards/auth/auth-guard-guard';
 
 export const routes: Routes = [
   ...AUTH_ROUTES,
@@ -20,6 +21,18 @@ export const routes: Routes = [
       ...CUSTOMERS_ROUTES,
       ...USERS_ROUTES,
       ...SETTINGS_ROUTES,
+      {
+        path: 'suppliers',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./layouts/under-construction/under-construction').then((m) => m.UnderConstruction),
+      },
+      {
+        path: 'quotes',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./layouts/under-construction/under-construction').then((m) => m.UnderConstruction),
+      },
     ],
   },
 ];
