@@ -127,6 +127,7 @@
         <app-select
           label="Tipo de pagamento"
           variant="secondary"
+          [disabled]="!!budgetId"
           [options]="paymentTypes"
           [selectedValue]="paymentTypeControl.value"
           (clickOption)="paymentTypeControl.setValue($event.value)"
