@@ -32,6 +32,10 @@ export class SellersRepository {
       .single()
       .then(({ data, error }) => {
         if (error) {
+          if (error.code === '23505') {
+            throw new Error('Já existe um vendedor com este nome!');
+          }
+
           throw new Error(error.message);
         }
 
