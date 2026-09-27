@@ -120,6 +120,7 @@ export class BudgetRepository {
           store_id: budget.storeId,
           observation: budget.observation,
           delivery_forecast: budget.deliveryForecast,
+          payment_type: budget.paymentType,
         })
         .select()
         .single();
@@ -191,6 +192,7 @@ export class BudgetRepository {
       storeId: item.store_id,
       observation: item.observation ?? undefined,
       deliveryForecast: item.delivery_forecast ?? undefined,
+      paymentType: item.payment_type ?? undefined,
       createdAt: item.created_at,
       updatedAt: item.updated_at,
       customer: customer

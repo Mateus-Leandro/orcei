@@ -126,6 +126,18 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="payment-type">
+        <app-select
+          label="Tipo de pagamento"
+          variant="secondary"
+          [options]="paymentTypes"
+          [selectedValue]="paymentTypeControl.value"
+          (clickOption)="paymentTypeControl.setValue($event.value)"
+        />
+      </div>
+    </div>
+
     <div class="products-section">
       <p class="products-section__label">Produtos do orçamento</p>
 

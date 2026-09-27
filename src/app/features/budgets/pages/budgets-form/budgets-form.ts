@@ -36,6 +36,7 @@ import {
   IBudgetProductCellChange,
 } from '../../components/budget-products-table/budget-products-table';
 import {
+  EnumPaymentTypes,
   IBudgetProduct,
   IBudgetView,
   IUpsertBudget,
@@ -56,6 +57,7 @@ import {
 } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 import { sortBySearchRelevance } from '../../../../shared/helpers/search-ranking.helper';
+import { ISelectOptions, Select } from '../../../../shared/components/select/select';
 
 function customerRequiredValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
@@ -89,6 +91,7 @@ function positiveNumberValidator(control: AbstractControl): ValidationErrors | n
     NgxMaskDirective,
     Spinner,
     CurrencyFormatPipe,
+    Select
   ],
   templateUrl: './budgets-form.html',
   styleUrl: './budgets-form.scss',
@@ -100,6 +103,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
   private budgetCreatedAtRaw = '';
   private budgetUpdatedAtRaw = '';
   loading = inject(LoadingService).loading;
+  paymentTypes: ISelectOptions<EnumPaymentTypes>[] = [
+    { value: EnumPaymentTypes.CASH, label: 'À Vista' },
+    { value: EnumPaymentTypes.INSTALLMENT, label: 'A Prazo' },
+  ];
 
   @ViewChild('customerSearchInput') customerSearchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
@@ -165,6 +172,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       budgetNumber: [''],
       observation: [''],
       deliveryForecast: [''],
+      paymentType: [EnumPaymentTypes.INSTALLMENT],
     });
 
     this.budgetId = this.route.snapshot.paramMap.get('id');
@@ -225,6 +233,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
             budgetNumber: budget.budgetNumber,
             observation: budget.observation ?? '',
             deliveryForecast: budget.deliveryForecast ?? '',
+            paymentType: budget.paymentType ?? EnumPaymentTypes.CASH,
           });
 
           this.budgetCreatedAtRaw = budget.createdAt;
@@ -466,6 +475,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       storeId,
       observation: payload.observation || undefined,
       deliveryForecast: payload.deliveryForecast || undefined,
+      paymentType: payload.paymentType || undefined,
       products: this.budgetProducts(),
     };
 
@@ -533,6 +543,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       storeId: this.storeId ?? '',
       observation: this.observationControl.value || undefined,
       deliveryForecast: this.deliveryForecastControl.value || undefined,
+      paymentType: this.paymentTypeControl.value || undefined,
       createdAt: this.budgetCreatedAtRaw,
       updatedAt: this.budgetUpdatedAtRaw,
       customer,
@@ -559,5 +570,9 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   get deliveryForecastControl() {
     return this.formGroup.get('deliveryForecast') as FormControl<string>;
+  }
+
+  get paymentTypeControl() {
+    return this.formGroup.get('paymentType') as FormControl<EnumPaymentTypes>;
   }
 }

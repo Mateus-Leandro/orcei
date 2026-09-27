@@ -19,6 +19,7 @@ export interface IBudget {
   storeId: string;
   observation?: string;
   deliveryForecast?: string;
+  paymentType?: EnumPaymentTypes;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,5 +38,11 @@ export interface IUpsertBudget {
   storeId: string;
   observation?: string;
   deliveryForecast?: string;
+  paymentType?: EnumPaymentTypes;
   products: IBudgetProduct[];
+}
+
+export enum EnumPaymentTypes {
+  CASH = 'CASH',
+  INSTALLMENT = 'INSTALLMENT',
 }
