@@ -33,6 +33,11 @@ export class SidenavMenu {
       icon: 'assignment',
     },
     {
+      router: '/quotes',
+      textNav: 'Cotações',
+      icon: 'price_check',
+    },
+    {
       router: '/products',
       textNav: 'Produtos',
       icon: 'sell',
@@ -46,11 +51,6 @@ export class SidenavMenu {
       router: '/suppliers',
       textNav: 'Fornecedores',
       icon: 'trolley',
-    },
-    {
-      router: '/quotes',
-      textNav: 'Cotações',
-      icon: 'price_check',
     },
     {
       router: '/customers',
