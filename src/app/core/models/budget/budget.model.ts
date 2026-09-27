@@ -46,3 +46,7 @@ export enum EnumPaymentTypes {
   CASH = 'CASH',
   INSTALLMENT = 'INSTALLMENT',
 }
+
+export function PaymentTypeLabel(paymentType: EnumPaymentTypes = EnumPaymentTypes.INSTALLMENT) {
+  return paymentType === EnumPaymentTypes.CASH ? 'À Vista' : 'A Prazo';
+}

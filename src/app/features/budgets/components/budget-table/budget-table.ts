@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Table } from '../../../../shared/components/table/table';
-import { IBudgetView } from '../../../../core/models/budget/budget.model';
+import { IBudgetView, PaymentTypeLabel } from '../../../../core/models/budget/budget.model';
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
 
@@ -29,6 +29,7 @@ export class BudgetTable implements OnChanges {
     'Cliente',
     'Qtde de Produtos',
     'Valor Total',
+    'Pagamento',
     'Previsão de Entrega',
     'Data Criação',
     'Data Alteração',
@@ -39,7 +40,7 @@ export class BudgetTable implements OnChanges {
   constructor(
     private dateFormatPipe: DateFormatPipe,
     private currencyFormatPipe: CurrencyFormatPipe,
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['budgets']) {
@@ -54,6 +55,7 @@ export class BudgetTable implements OnChanges {
       Cliente: budget.customerName,
       'Qtde de Produtos': budget.totalProducts,
       'Valor Total': this.currencyFormatPipe.transform(budget.totalValue),
+      Pagamento: PaymentTypeLabel(budget?.paymentType),
       'Previsão de Entrega': this.formatDate(budget.deliveryForecast),
       'Data Criação': this.dateFormatPipe.transform(budget.createdAt),
       'Data Alteração': this.dateFormatPipe.transform(budget.updatedAt),
