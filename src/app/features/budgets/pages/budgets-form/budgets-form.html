@@ -125,12 +125,11 @@
     <div class="row">
       <div class="payment-type">
         <app-select
-          label="Tipo de pagamento"
+          label="Tipo pagamento"
           variant="secondary"
           [disabled]="!!budgetId"
           [options]="paymentTypes"
-          [selectedValue]="paymentTypeControl.value"
-          (clickOption)="paymentTypeControl.setValue($event.value)"
+          [control]="paymentTypeControl"
         />
       </div>
     </div>

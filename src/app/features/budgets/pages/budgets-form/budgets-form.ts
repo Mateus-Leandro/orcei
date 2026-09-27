@@ -15,6 +15,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
+  Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -176,7 +177,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       budgetNumber: [''],
       observation: [''],
       deliveryForecast: [''],
-      paymentType: [EnumPaymentTypes.INSTALLMENT],
+      paymentType: [EnumPaymentTypes.INSTALLMENT, Validators.required],
     });
 
     this.budgetId = this.route.snapshot.paramMap.get('id');
@@ -471,6 +472,12 @@ export class BudgetsForm implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.formGroup.invalid) {
+      this.formGroup.markAllAsTouched();
+      this.notificationService.showError('Preencha os campos obrigatórios do orçamento.');
+      return;
+    }
+
     const payload = this.formGroup.getRawValue();
 
     const upsertBudget: IUpsertBudget = {
@@ -577,6 +584,6 @@ export class BudgetsForm implements OnInit, OnDestroy {
   }
 
   get paymentTypeControl() {
-    return this.formGroup.get('paymentType') as FormControl<EnumPaymentTypes>;
+    return this.formGroup.get('paymentType') as FormControl<EnumPaymentTypes | null>;
   }
 }
