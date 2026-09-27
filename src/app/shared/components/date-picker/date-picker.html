@@ -1,0 +1,27 @@
+<mat-form-field appearance="outline" class="input">
+  <mat-label>{{ label }}</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [formControl]="dateControl"
+    [placeholder]="placeholder"
+    readonly
+    [class.clickable]="!readonly && !dateControl.disabled"
+    [min]="min"
+    [max]="max"
+    (click)="openPicker(picker)"
+    (keydown.enter)="openPicker(picker)"
+    (keydown.space)="$event.preventDefault(); openPicker(picker)"
+    (blur)="onBlur()"
+  />
+
+  <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="readonly || dateControl.disabled" />
+  <mat-datepicker #picker (closed)="onBlur()" />
+
+  @if (errorMessage) {
+    <mat-error>
+      {{ errorMessage }}
+    </mat-error>
+  }
+</mat-form-field>

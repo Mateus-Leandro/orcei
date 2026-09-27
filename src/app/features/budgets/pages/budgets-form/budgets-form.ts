@@ -30,7 +30,9 @@ import { debounceTime } from 'rxjs';
 import { ButtonComponent } from '../../../../shared/components/button/button';
 import { EntityFormComponent } from '../../../../shared/components/entity-form-component/entity-form-component';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field';
+import { DatePicker } from '../../../../shared/components/date-picker/date-picker';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
+import { Utils } from '../../../../core/utils/utils';
 import {
   BudgetProductsTable,
   IBudgetProductCellChange,
@@ -91,7 +93,8 @@ function positiveNumberValidator(control: AbstractControl): ValidationErrors | n
     NgxMaskDirective,
     Spinner,
     CurrencyFormatPipe,
-    Select
+    Select,
+    DatePicker,
   ],
   templateUrl: './budgets-form.html',
   styleUrl: './budgets-form.scss',
@@ -102,6 +105,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
   private storeId: string | null = null;
   private budgetCreatedAtRaw = '';
   private budgetUpdatedAtRaw = '';
+  readonly minDeliveryForecast = Utils.getActualDate();
   loading = inject(LoadingService).loading;
   paymentTypes: ISelectOptions<EnumPaymentTypes>[] = [
     { value: EnumPaymentTypes.CASH, label: 'À Vista' },

@@ -118,11 +118,7 @@
       </div>
 
       <div class="delivery">
-        <app-form-field
-          label="Previsão de entrega"
-          type="date"
-          [control]="deliveryForecastControl"
-        />
+        <app-date-picker label="Previsão de entrega" [control]="deliveryForecastControl" [min]="minDeliveryForecast" />
       </div>
     </div>
 
