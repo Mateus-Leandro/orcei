@@ -38,6 +38,11 @@ export class SidenavMenu {
       icon: 'sell',
     },
     {
+      router: '/sellers',
+      textNav: 'Vendedores',
+      icon: 'badge',
+    },
+    {
       router: '/suppliers',
       textNav: 'Fornecedores',
       icon: 'trolley',

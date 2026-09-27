@@ -8,6 +8,7 @@ import { CUSTOMERS_ROUTES } from './features/customers/customer.routes';
 import { USERS_ROUTES } from './features/users/user.routes';
 import { SETTINGS_ROUTES } from './features/settings/settings.routes';
 import { authGuard } from './core/guards/auth/auth-guard-guard';
+import { SELLER_ROUTES } from './features/sellers/seller.routes';
 
 export const routes: Routes = [
   ...AUTH_ROUTES,
@@ -21,6 +22,7 @@ export const routes: Routes = [
       ...CUSTOMERS_ROUTES,
       ...USERS_ROUTES,
       ...SETTINGS_ROUTES,
+      ...SELLER_ROUTES,
       {
         path: 'suppliers',
         canActivate: [authGuard],

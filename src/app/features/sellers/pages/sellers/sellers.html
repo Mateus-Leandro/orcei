@@ -1,0 +1,21 @@
+@if (loading()) {
+  <app-spinner />
+}
+
+<app-card-container
+  titleCard="Vendedores Cadastrados"
+  placeholder="Pesquisar por nome ou código"
+  label="Pesquisar vendedor"
+  (searchValue)="onSearch($event)"
+  (addItem)="navigateToSellerForm()"
+  tooltipText="Criar novo Vendedor"
+>
+  <app-sellers-table
+    [sellers]="sellers()"
+    [totalItems]="totalItems"
+    [pageIndex]="pageIndex"
+    (pageChange)="loadSellers($event)"
+    (clickRow)="navigateToSellerForm($event)"
+    (deleteRow)="onDelete($event)"
+  />
+</app-card-container>
