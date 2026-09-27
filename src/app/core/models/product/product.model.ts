@@ -34,6 +34,7 @@ export interface IProduct {
   id: string;
   code: number;
   name: string;
+  commission: boolean;
   saleUnit: ProductSaleUnit;
   isFractional: boolean;
   createdAt: string;
@@ -43,6 +44,7 @@ export interface IProduct {
 export interface IUpsertProduct {
   id?: string;
   name: string;
+  commission: boolean;
   saleUnit: ProductSaleUnit;
   isFractional: boolean;
 }

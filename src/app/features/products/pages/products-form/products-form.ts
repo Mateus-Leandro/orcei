@@ -33,6 +33,7 @@ import { FinancialStatementService } from '../../../../core/services/financial-s
 import { StoreService } from '../../../../core/services/stores/store.service';
 import { IStoreView } from '../../../../core/models/store/store.model';
 import { forkJoin } from 'rxjs';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-products-form',
@@ -47,7 +48,7 @@ import { forkJoin } from 'rxjs';
     FinancialStatementTable,
     MatCheckboxModule,
     Select,
-    Spinner,
+    Spinner
   ],
   templateUrl: './products-form.html',
   styleUrl: './products-form.scss',
@@ -75,6 +76,7 @@ export class ProductsForm implements OnInit, OnDestroy {
       name: ['', [Validators.required]],
       saleUnit: ['UN', [Validators.required]],
       isFractional: [false, []],
+      commission: [true, []],
       barcodes: [[], []],
     });
 
@@ -93,6 +95,7 @@ export class ProductsForm implements OnInit, OnDestroy {
           this.formGroup.patchValue({
             code: product.data?.code,
             name: product.data?.name,
+            commission: product.data?.commission,
             saleUnit: product.data?.saleUnit ?? 'UN',
             isFractional: product.data?.isFractional ?? false,
             barcodes: product.data?.barcodes,
@@ -168,12 +171,12 @@ export class ProductsForm implements OnInit, OnDestroy {
     }
 
     const payload = this.formGroup.getRawValue();
-
     const isNewProduct = !this.productId;
 
     const upsertProduct: IUpsertProduct = {
       id: this?.productId || undefined,
       name: payload.name,
+      commission: payload.commission,
       saleUnit: payload.saleUnit,
       isFractional: payload.isFractional,
     };
@@ -266,5 +269,9 @@ export class ProductsForm implements OnInit, OnDestroy {
 
   get barcodesControl() {
     return this.formGroup.get('barcodes') as FormControl<IBarcodeEanAndId[]>;
+  }
+
+  get commissionControl() {
+    return this.formGroup.get('commission') as FormControl<boolean>;
   }
 }

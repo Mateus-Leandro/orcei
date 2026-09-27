@@ -33,6 +33,7 @@ export class ProductRepository {
       .upsert({
         id: upsertProduct.id,
         name: upsertProduct.name,
+        commission: upsertProduct.commission,
         sale_unit: upsertProduct.saleUnit,
         is_fractional: upsertProduct.isFractional,
       })
@@ -71,11 +72,11 @@ export class ProductRepository {
         }
 
         const rawStatements: any[] = data?.financialStatement || [];
-
         const mappedData: IProductView = {
           id: data.id,
           code: data.code,
           name: data.name,
+          commission: data.commission,
           saleUnit: data.sale_unit ?? 'UN',
           isFractional: data.is_fractional ?? false,
           financialStatement: rawStatements[0],
@@ -138,6 +139,7 @@ export class ProductRepository {
             id: item.id,
             code: item.code,
             name: item.name,
+            commission: item.commission,
             saleUnit: item.sale_unit ?? 'UN',
             isFractional: item.is_fractional ?? false,
             financialStatement: {

@@ -27,6 +27,7 @@ export class ProductTable implements OnChanges {
   displayedColumns: string[] = [
     'Código',
     'Nome',
+    'Comissão',
     'UN',
     'Margem',
     'Preço de Custo',
@@ -40,7 +41,7 @@ export class ProductTable implements OnChanges {
   constructor(
     private dateFormatPipe: DateFormatPipe,
     private currencyFormatPipe: CurrencyFormatPipe,
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['products']) {
@@ -54,6 +55,7 @@ export class ProductTable implements OnChanges {
       Código: product.code,
       UN: product.saleUnit,
       Nome: product.name,
+      Comissão: product.commission ? 'SIM' : 'NÃO',
       Margem: product?.financialStatement?.margin || 0,
       'Preço de Custo': this.currencyFormatPipe.transform(
         product?.financialStatement?.costPrice || 0,
