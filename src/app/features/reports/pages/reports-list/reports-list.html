@@ -1,4 +1,8 @@
 <app-container-page-layout>
+  @if (generatingProductReport()) {
+  <app-spinner />
+  }
+
   <mat-card>
     <mat-card-header>
       <mat-card-title>Relatórios</mat-card-title>
@@ -6,8 +10,14 @@
 
     <mat-card-content class="reports-list">
       <button type="button" class="report-option" (click)="openCommissionBySeller()">
-        <mat-icon aria-hidden="true">bar_chart</mat-icon>
+        <mat-icon aria-hidden="true">attach_money</mat-icon>
         <span>Comissão por vendedor</span>
+        <mat-icon class="report-option__arrow" aria-hidden="true">chevron_right</mat-icon>
+      </button>
+      <button type="button" class="report-option" [disabled]="generatingProductReport()"
+        (click)="openProductRegistrationReport()">
+        <mat-icon aria-hidden="true">inventory_2</mat-icon>
+        <span>Cadastro de produtos</span>
         <mat-icon class="report-option__arrow" aria-hidden="true">chevron_right</mat-icon>
       </button>
     </mat-card-content>

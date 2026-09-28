@@ -4,6 +4,7 @@ import {
   IAddBarcode,
   IProduct,
   IProductView,
+  IProductStoreReportRow,
   IUpsertProduct,
 } from '../../models/product/product.model';
 import { IFinancialStatementView } from '../../models/financial-statement/financial-statement.model';
@@ -158,6 +159,48 @@ export class ProductRepository {
           data: mappedData,
           count: count ?? 0,
         };
+      }),
+      finalize(() => this.loadingService.hide()),
+    );
+  }
+
+  findForStoreRegistrationReport(page: number, limit: number, storeId: string) {
+    this.loadingService.show();
+
+    const fromIndex = (page - 1) * limit;
+    const toIndex = fromIndex + limit - 1;
+    const query = this.supabase
+      .from('products')
+      .select(
+        'code,name,sale_unit,is_fractional,commission,barcodes(ean),financialStatement:financial_statement(store_id,cost_price,sale_price)',
+        { count: 'exact' },
+      )
+      .eq('financialStatement.store_id', storeId)
+      .order('name', { ascending: true })
+      .range(fromIndex, toIndex);
+
+    return from(query).pipe(
+      map(({ data, count, error }) => {
+        if (error) throw error;
+
+        const products: IProductStoreReportRow[] = (data ?? []).map((item: any) => {
+          const statement = (item.financialStatement ?? []).find(
+            (financialStatement: any) => financialStatement.store_id === storeId,
+          );
+
+          return {
+            code: item.code,
+            name: item.name,
+            saleUnit: item.sale_unit ?? 'UN',
+            isFractional: item.is_fractional ?? false,
+            commission: item.commission ?? false,
+            barcodes: (item.barcodes ?? []).map((barcode: any) => barcode.ean),
+            costPrice: statement?.cost_price ?? null,
+            salePrice: statement?.sale_price ?? null,
+          };
+        });
+
+        return { data: products, count: count ?? 0 };
       }),
       finalize(() => this.loadingService.hide()),
     );

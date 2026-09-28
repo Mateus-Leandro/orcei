@@ -1,5 +1,8 @@
 import { IBarcode } from '../barcode/barcode.model';
-import { IFinancialStatement, IFinancialStatementView } from '../financial-statement/financial-statement.model';
+import {
+  IFinancialStatement,
+  IFinancialStatementView,
+} from '../financial-statement/financial-statement.model';
 
 export type ProductSaleUnit =
   | 'UN'
@@ -53,6 +56,17 @@ export interface IProductView extends IProduct {
   barcodes: IBarcode[];
   financialStatement: IFinancialStatement;
   financialStatements?: IFinancialStatementView[];
+}
+
+export interface IProductStoreReportRow {
+  code: number;
+  name: string;
+  saleUnit: ProductSaleUnit;
+  isFractional: boolean;
+  commission: boolean;
+  barcodes: string[];
+  costPrice: number | null;
+  salePrice: number | null;
 }
 
 export interface IAddBarcode {

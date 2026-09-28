@@ -16,6 +16,10 @@ export class ProductService {
     return this.repository.findAll(page, limit, search, storeId);
   }
 
+  findForStoreRegistrationReport(page: number, limit: number, storeId: string) {
+    return this.repository.findForStoreRegistrationReport(page, limit, storeId);
+  }
+
   deleteById(id: string) {
     return this.repository.deleteById(id);
   }

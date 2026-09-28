@@ -17,6 +17,15 @@
   cursor: pointer;
 }
 
+.report-option + .report-option {
+  margin-top: 12px;
+}
+
+.report-option:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
 .report-option:hover {
   background: var(--hover-color, #f5f5f5);
 }
