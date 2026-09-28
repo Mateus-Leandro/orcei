@@ -180,7 +180,7 @@ export class BudgetPdfService {
     }
 
     // Rodapé ancorado na base da via (mantém o espaçamento do modelo).
-    let footerY = top + 122;
+    let footerY = top + (viaLabel === 'cliente' ? 118 : 122);
     this.separator(doc, footerY);
     footerY += 5;
 
@@ -214,6 +214,18 @@ export class BudgetPdfService {
       footerY,
     );
     doc.setTextColor(0, 0, 0);
+
+    if (viaLabel === 'cliente') {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6);
+      const messageY = top + 140;
+      doc.text(
+        'Precisa de um sistema como esse? Entre em contato: 31 98444-8086',
+        this.RIGHT,
+        messageY,
+        { align: 'right' },
+      );
+    }
   }
 
   // Linha sólida que ocupa toda a largura útil da página.
