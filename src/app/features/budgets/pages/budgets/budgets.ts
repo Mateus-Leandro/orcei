@@ -6,6 +6,7 @@ import { CardContainer } from '../../../../shared/components/card-container/card
 import { BudgetTable } from '../../components/budget-table/budget-table';
 import { IBudgetView } from '../../../../core/models/budget/budget.model';
 import { BudgetService } from '../../../../core/services/budget/budget.service';
+import { BudgetPdfService } from '../../../../core/services/budget-pdf/budget-pdf.service';
 import { StoreService } from '../../../../core/services/stores/store.service';
 import { NotificationService } from '../../../../core/services/notification-service/notification.service';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
@@ -40,6 +41,7 @@ export class Budgets {
     private storeService: StoreService,
     private notificationService: NotificationService,
     private router: Router,
+    private budgetPdfService: BudgetPdfService,
   ) {
     this.form = this.fb.group({
       search: [''],
@@ -128,6 +130,41 @@ export class Budgets {
           this.notificationService.showError(`Erro ao excluir orçamento: ${err.message || err}`);
         },
       });
+    });
+  }
+
+  onGeneratePdf(row: Partial<IBudgetView>): void {
+    if (!row.id) return;
+
+    this.budgetService.findById(row.id).subscribe({
+      next: (response) => {
+        if (!response.data) {
+          this.notificationService.showError('Orçamento não encontrado.');
+          return;
+        }
+
+        const budget = response.data;
+        const selectedStore = this.storeService.selectedStore();
+
+        if (selectedStore?.id === budget.storeId) {
+          this.budgetPdfService.generate(budget, selectedStore);
+          return;
+        }
+
+        this.storeService.findById(budget.storeId).subscribe({
+          next: (store) => this.budgetPdfService.generate(budget, store),
+          error: (err) => {
+            this.notificationService.showError(
+              `Erro ao obter a loja do orçamento: ${err.message || err}`,
+            );
+          },
+        });
+      },
+      error: (err) => {
+        this.notificationService.showError(
+          `Erro ao gerar PDF do orçamento: ${err.message || err}`,
+        );
+      },
     });
   }
 }

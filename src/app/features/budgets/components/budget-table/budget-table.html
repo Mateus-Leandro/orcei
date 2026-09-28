@@ -4,8 +4,10 @@
   [totalItems]="totalItems"
   [pageIndex]="pageIndex"
   [serverSidePagination]="true"
+  [pdfButton]="true"
   [deleteButton]="true"
   (pageChange)="pageChange.emit($event)"
   (clickRow)="clickRow.emit($event)"
   (delete)="deleteRow.emit($event)"
+  (generatePdf)="generatePdfRow.emit($event)"
 ></app-table>

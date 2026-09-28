@@ -32,6 +32,7 @@ export class Table implements OnChanges {
   @Input({ required: true }) dataSource: any[] = [];
   @Input() totalItems: number = 0;
   @Input() deleteButton: boolean = false;
+  @Input() pdfButton: boolean = false;
   @Input() editableColumns: string[] = [];
   @Input() editableColumnTypes: Record<string, EditableColumnType> = {};
   @Input() allowFractional: (element: any, column: string) => boolean = () => true;
@@ -43,6 +44,7 @@ export class Table implements OnChanges {
 
   @Output() clickRow = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+  @Output() generatePdf = new EventEmitter<any>();
   @Output() cellChange = new EventEmitter<TableCellChange>();
 
   @Output()
@@ -99,6 +101,10 @@ export class Table implements OnChanges {
 
   onDelete(row: any): void {
     this.delete.emit(row);
+  }
+
+  onGeneratePdf(row: any): void {
+    this.generatePdf.emit(row);
   }
 
   isEditable(column: string): boolean {
@@ -190,6 +196,10 @@ export class Table implements OnChanges {
   }
 
   get displayedColumns(): string[] {
-    return this.deleteButton ? [...this.columns, 'delete'] : this.columns;
+    return [
+      ...this.columns,
+      ...(this.pdfButton ? ['pdf'] : []),
+      ...(this.deleteButton ? ['delete'] : []),
+    ];
   }
 }

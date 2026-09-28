@@ -67,6 +67,7 @@ export class BudgetRepository {
       .from('budgets')
       .select(
         '*, customer:customers(id, code, name, surname, document, phone, address, created_at, updated_at), ' +
+          'seller:sellers(id, name), ' +
           'budgets_products(id, product_id, quantity, unit_price, product:products(id, code, name, sale_unit, is_fractional))',
       )
       .eq('id', id)

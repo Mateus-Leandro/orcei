@@ -17,6 +17,7 @@ export class BudgetTable implements OnChanges {
 
   @Output() clickRow = new EventEmitter<IBudgetView>();
   @Output() deleteRow = new EventEmitter<Partial<IBudgetView>>();
+  @Output() generatePdfRow = new EventEmitter<Partial<IBudgetView>>();
 
   @Output()
   pageChange = new EventEmitter<{
