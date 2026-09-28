@@ -61,6 +61,9 @@ import {
 import { DateFormatPipe } from '../../../../shared/pipes/date-pipe/date.pipe';
 import { sortBySearchRelevance } from '../../../../shared/helpers/search-ranking.helper';
 import { ISelectOptions, Select } from '../../../../shared/components/select/select';
+import { ISeller } from '../../../../core/models/sellers/sellers.model';
+import { SellersService } from '../../../../core/services/sellers/sellers.service';
+import { MatDivider } from '@angular/material/divider';
 
 function customerRequiredValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
@@ -96,6 +99,7 @@ function positiveNumberValidator(control: AbstractControl): ValidationErrors | n
     CurrencyFormatPipe,
     Select,
     DatePicker,
+    MatDivider
   ],
   templateUrl: './budgets-form.html',
   styleUrl: './budgets-form.scss',
@@ -112,6 +116,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
     { value: EnumPaymentTypes.CASH, label: 'À Vista' },
     { value: EnumPaymentTypes.INSTALLMENT, label: 'A Prazo' },
   ];
+  sellers = signal<ISeller[]>([]);
+  sellerOptions = computed<ISelectOptions<string>[]>(() =>
+    this.sellers().map((seller) => ({ value: seller.id, label: seller.name })),
+  );
 
   @ViewChild('customerSearchInput') customerSearchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('productSearchInput') productSearchInput?: ElementRef<HTMLInputElement>;
@@ -170,6 +178,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private currencyFormatPipe: CurrencyFormatPipe,
     private storeService: StoreService,
+    private sellersService: SellersService,
     private dialog: MatDialog,
     private router: Router,
   ) {
@@ -178,6 +187,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       observation: [''],
       deliveryForecast: [''],
       paymentType: [EnumPaymentTypes.INSTALLMENT, Validators.required],
+      sellerId: ['', Validators.required],
     });
 
     this.budgetId = this.route.snapshot.paramMap.get('id');
@@ -222,6 +232,12 @@ export class BudgetsForm implements OnInit, OnDestroy {
     this.storeService.lockSelection();
     this.storeId = this.storeService.selectedStore()?.id ?? null;
 
+    this.sellersService.findAll(1, 1000, '').subscribe({
+      next: (response) => this.sellers.set(response.data ?? []),
+      error: (error) =>
+        this.notificationService.showError(`Erro ao buscar vendedores: ${error.message || error}`),
+    });
+
     if (this.budgetId) {
       this.budgetService.findById(this.budgetId).subscribe({
         next: (response) => {
@@ -239,6 +255,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
             observation: budget.observation ?? '',
             deliveryForecast: budget.deliveryForecast ?? '',
             paymentType: budget.paymentType ?? EnumPaymentTypes.CASH,
+            sellerId: budget.sellerId ?? null,
           });
 
           this.budgetCreatedAtRaw = budget.createdAt;
@@ -484,6 +501,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       id: this.budgetId || undefined,
       customerId: customer.id,
       storeId,
+      sellerId: this.sellerControl.value ?? undefined,
       observation: payload.observation || undefined,
       deliveryForecast: payload.deliveryForecast || undefined,
       paymentType: payload.paymentType || undefined,
@@ -552,6 +570,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       budgetNumber: Number(this.budgetNumberControl.value) || 0,
       customerId: customer.id,
       storeId: this.storeId ?? '',
+      sellerId: this.sellerControl.value ?? undefined,
       observation: this.observationControl.value || undefined,
       deliveryForecast: this.deliveryForecastControl.value || undefined,
       paymentType: this.paymentTypeControl.value || undefined,
@@ -585,5 +604,9 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   get paymentTypeControl() {
     return this.formGroup.get('paymentType') as FormControl<EnumPaymentTypes | null>;
+  }
+
+  get sellerControl() {
+    return this.formGroup.get('sellerId') as FormControl<string | null>;
   }
 }

@@ -1,0 +1,26 @@
+.reports-list {
+  padding-top: 16px;
+}
+
+.report-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  background: var(--surface-color, #fff);
+  color: var(--text-color, inherit);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.report-option:hover {
+  background: var(--hover-color, #f5f5f5);
+}
+
+.report-option__arrow {
+  margin-left: auto;
+}

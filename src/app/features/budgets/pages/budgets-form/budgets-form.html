@@ -1,114 +1,68 @@
 @if (loading()) {
-  <app-spinner />
+<app-spinner />
 }
 
-<app-entity-form-component
-  icon="request_quote"
-  [formGroup]="formGroup"
-  (submitEvent)="onSave()"
-  (cancelEvent)="onCancel()"
-  titleCard="Cadastro de orçamento"
-  subtitle="Selecione o cliente e os produtos do orçamento"
->
+<app-entity-form-component icon="request_quote" [formGroup]="formGroup" (submitEvent)="onSave()"
+  (cancelEvent)="onCancel()" titleCard="Cadastro de orçamento"
+  subtitle="Selecione o cliente e os produtos do orçamento">
   <div>
     @if (budgetId) {
-      <div class="row">
-        <div class="budget-number">
-          <app-form-field
-            [readonly]="true"
-            [disabled]="true"
-            label="Número do orçamento"
-            [control]="budgetNumberControl"
-          />
-        </div>
-
-        <div class="budget-date">
-          <app-form-field
-            [readonly]="true"
-            [disabled]="true"
-            label="Data de criação"
-            [control]="budgetCreatedAtControl"
-          />
-        </div>
-
-        <div class="budget-date">
-          <app-form-field
-            [readonly]="true"
-            [disabled]="true"
-            label="Data de alteração"
-            [control]="budgetUpdatedAtControl"
-          />
-        </div>
+    <div class="row">
+      <div class="budget-number">
+        <app-form-field [readonly]="true" [disabled]="true" label="Número do orçamento"
+          [control]="budgetNumberControl" />
       </div>
+
+      <div class="budget-date">
+        <app-form-field [readonly]="true" [disabled]="true" label="Data de criação"
+          [control]="budgetCreatedAtControl" />
+      </div>
+
+      <div class="budget-date">
+        <app-form-field [readonly]="true" [disabled]="true" label="Data de alteração"
+          [control]="budgetUpdatedAtControl" />
+      </div>
+    </div>
     }
     <p class="products-section__label">Informações do Cliente</p>
     <div class="row">
       <mat-form-field appearance="outline" class="customer-field">
         <mat-label>Cliente</mat-label>
-        <input
-          #customerSearchInput
-          matInput
-          placeholder="Pesquisar cliente"
-          [formControl]="customerSearchControl"
-          [matAutocomplete]="customerAuto"
-          [errorStateMatcher]="customerErrorMatcher"
-        />
+        <input #customerSearchInput matInput placeholder="Pesquisar cliente" [formControl]="customerSearchControl"
+          [matAutocomplete]="customerAuto" [errorStateMatcher]="customerErrorMatcher" />
         @if (customerSearchControl.value) {
-          <button
-            matSuffix
-            mat-icon-button
-            type="button"
-            aria-label="Remover cliente selecionado"
-            (click)="onClearCustomer()"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+        <button matSuffix mat-icon-button type="button" aria-label="Remover cliente selecionado"
+          (click)="onClearCustomer()">
+          <mat-icon>close</mat-icon>
+        </button>
         }
-        <mat-autocomplete
-          #customerAuto="matAutocomplete"
-          [displayWith]="displayCustomer"
-          (optionSelected)="onCustomerSelected($event.option.value)"
-        >
+        <mat-autocomplete #customerAuto="matAutocomplete" [displayWith]="displayCustomer"
+          (optionSelected)="onCustomerSelected($event.option.value)">
           @for (customer of customerOptions(); track customer.id) {
-            <mat-option [value]="customer" [class.blocked]="customer.blocked">{{
-              displayCustomer(customer)
+          <mat-option [value]="customer" [class.blocked]="customer.blocked">{{
+            displayCustomer(customer)
             }}</mat-option>
           }
         </mat-autocomplete>
         @if (customerSearchControl.hasError('required')) {
-          <mat-error>Selecione um cliente para o orçamento.</mat-error>
+        <mat-error>Selecione um cliente para o orçamento.</mat-error>
         }
       </mat-form-field>
 
       <div class="customer-info">
-        <app-form-field
-          label="Documento"
-          mask="000.000.000-00||00.000.000/0000-00"
-          [readonly]="true"
-          [disabled]="true"
-          [control]="customerDocumentControl"
-        />
+        <app-form-field label="Documento" mask="000.000.000-00||00.000.000/0000-00" [readonly]="true" [disabled]="true"
+          [control]="customerDocumentControl" />
       </div>
 
       <div class="customer-info">
-        <app-form-field
-          label="Telefone"
-          mask="(00) 0000-0000||(00) 00000-0000"
-          [readonly]="true"
-          [disabled]="true"
-          [control]="customerPhoneControl"
-        />
+        <app-form-field label="Telefone" mask="(00) 0000-0000||(00) 00000-0000" [readonly]="true" [disabled]="true"
+          [control]="customerPhoneControl" />
       </div>
     </div>
 
     <div class="row">
       <div class="customer-address">
-        <app-form-field
-          label="Endereço"
-          [readonly]="true"
-          [disabled]="true"
-          [control]="customerAddressControl"
-        />
+        <app-form-field label="Endereço" [readonly]="true" [disabled]="true" [control]="customerAddressControl" />
       </div>
     </div>
 
@@ -123,17 +77,16 @@
     </div>
 
     <div class="row">
+      <div class="seller-select">
+        <app-select [disabled]="!!budgetId" label="Vendedor" variant="secondary" [options]="sellerOptions()"
+          [control]="sellerControl" />
+      </div>
       <div class="payment-type">
-        <app-select
-          label="Tipo pagamento"
-          variant="secondary"
-          [disabled]="!!budgetId"
-          [options]="paymentTypes"
-          [control]="paymentTypeControl"
-        />
+        <app-select label="Tipo pagamento" variant="secondary" [disabled]="!!budgetId" [options]="paymentTypes"
+          [control]="paymentTypeControl" />
       </div>
     </div>
-
+    <mat-divider />
     <div class="products-section">
       <p class="products-section__label">Produtos do orçamento</p>
 
@@ -141,37 +94,23 @@
         <mat-form-field appearance="outline" class="product-field">
           <mat-label>Adicionar produto</mat-label>
           <mat-icon matPrefix>search</mat-icon>
-          <input
-            #productSearchInput
-            matInput
-            placeholder="Pesquisar produto"
-            [formControl]="productSearchControl"
-            [matAutocomplete]="productAuto"
-            (keydown.enter)="onProductSearchEnter($event)"
-          />
+          <input #productSearchInput matInput placeholder="Pesquisar produto" [formControl]="productSearchControl"
+            [matAutocomplete]="productAuto" (keydown.enter)="onProductSearchEnter($event)" />
           @if (productSearchControl.value) {
-            <button
-              matSuffix
-              mat-icon-button
-              type="button"
-              aria-label="Remover produto selecionado"
-              (click)="onClearProduct()"
-            >
-              <mat-icon>close</mat-icon>
-            </button>
+          <button matSuffix mat-icon-button type="button" aria-label="Remover produto selecionado"
+            (click)="onClearProduct()">
+            <mat-icon>close</mat-icon>
+          </button>
           }
-          <mat-autocomplete
-            #productAuto="matAutocomplete"
-            [displayWith]="displayProduct"
-            (optionSelected)="onProductSelected($event.option.value)"
-          >
+          <mat-autocomplete #productAuto="matAutocomplete" [displayWith]="displayProduct"
+            (optionSelected)="onProductSelected($event.option.value)">
             @for (product of productOptions(); track product.id) {
-              <mat-option [value]="product">{{
-                product.code +
-                  ' - ' +
-                  product.name +
-                  ' | Preço: ' +
-                  (product.financialStatement.salePrice | currencyFormat)
+            <mat-option [value]="product">{{
+              product.code +
+              ' - ' +
+              product.name +
+              ' | Preço: ' +
+              (product.financialStatement.salePrice | currencyFormat)
               }}</mat-option>
             }
           </mat-autocomplete>
@@ -179,63 +118,37 @@
 
         <mat-form-field appearance="outline" class="quantity-field">
           <mat-label>Quantidade</mat-label>
-          <input
-            #quantityInput
-            matInput
-            type="text"
-            inputmode="decimal"
-            [mask]="quantityMask()"
-            decimalMarker=","
-            thousandSeparator=""
-            [dropSpecialCharacters]="false"
-            formControlName="quantity"
-            (keydown.enter)="focusUnitPrice($event)"
-          />
+          <input #quantityInput matInput type="text" inputmode="decimal" [mask]="quantityMask()" decimalMarker=","
+            thousandSeparator="" [dropSpecialCharacters]="false" formControlName="quantity"
+            (keydown.enter)="focusUnitPrice($event)" />
           @if (quantityControl.hasError('positiveNumber')) {
-            <mat-error>Informe a quantidade</mat-error>
+          <mat-error>Informe a quantidade</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="unit-price-field">
           <mat-label>Preço unitário</mat-label>
           <span matTextPrefix>R$&nbsp;</span>
-          <input
-            #unitPriceInput
-            matInput
-            type="text"
-            inputmode="decimal"
-            mask="separator.2"
-            decimalMarker=","
-            thousandSeparator="."
-            [dropSpecialCharacters]="false"
-            formControlName="unitPrice"
-            (keydown.enter)="onAddProduct($event)"
-          />
+          <input #unitPriceInput matInput type="text" inputmode="decimal" mask="separator.2" decimalMarker=","
+            thousandSeparator="." [dropSpecialCharacters]="false" formControlName="unitPrice"
+            (keydown.enter)="onAddProduct($event)" />
           @if (unitPriceControl.hasError('positiveNumber')) {
-            <mat-error>Informe o preço unitário</mat-error>
+          <mat-error>Informe o preço unitário</mat-error>
           }
         </mat-form-field>
 
-        <app-button
-          class="add-product-button"
-          text="Adicionar"
-          icon="add"
-          (click)="onAddProduct()"
-          [disabled]="!canAddProduct()"
-        />
+        <app-button class="add-product-button" text="Adicionar" icon="add" (click)="onAddProduct()"
+          [disabled]="!canAddProduct()" />
       </div>
 
       @if (budgetProducts().length) {
-        <app-budget-products-table
-          [products]="budgetProducts()"
-          (cellChange)="onCellChange($event)"
-          (removeProduct)="onRemoveProduct($event)"
-        />
+      <app-budget-products-table [products]="budgetProducts()" (cellChange)="onCellChange($event)"
+        (removeProduct)="onRemoveProduct($event)" />
       } @else {
-        <div class="products-hint">
-          <mat-icon class="products-hint__icon">info</mat-icon>
-          <span>Pesquise e selecione produtos para adicionar ao orçamento.</span>
-        </div>
+      <div class="products-hint">
+        <mat-icon class="products-hint__icon">info</mat-icon>
+        <span>Pesquise e selecione produtos para adicionar ao orçamento.</span>
+      </div>
       }
 
       <div class="summary">

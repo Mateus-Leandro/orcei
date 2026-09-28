@@ -1,0 +1,27 @@
+.commission-filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.seller-filter {
+  grid-column: 1 / -1;
+}
+
+.generate-report {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.show-products {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+  .commission-filter {
+    grid-template-columns: 1fr;
+  }
+}

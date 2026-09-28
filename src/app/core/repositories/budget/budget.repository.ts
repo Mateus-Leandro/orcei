@@ -108,6 +108,42 @@ export class BudgetRepository {
     );
   }
 
+  findForCommissionReport(sellerId: string, startDate: string, endDate: string) {
+    this.loadingService.show();
+
+    const start = new Date(`${startDate}T00:00:00`);
+    const endExclusive = new Date(`${endDate}T00:00:00`);
+    endExclusive.setDate(endExclusive.getDate() + 1);
+
+    const request = async () => {
+      const rows: any[] = [];
+      const pageSize = 1000;
+      let fromIndex = 0;
+
+      while (true) {
+        const { data, error } = await this.supabase
+          .from('budgets')
+          .select(
+            'id,budget_number,created_at,payment_type,customer:customers(name,surname),budgets_products(quantity,unit_price,product:products(code,name,commission))',
+          )
+          .eq('seller_id', sellerId)
+          .gte('created_at', start.toISOString())
+          .lt('created_at', endExclusive.toISOString())
+          .order('created_at', { ascending: true })
+          .range(fromIndex, fromIndex + pageSize - 1);
+
+        if (error) throw error;
+        rows.push(...(data ?? []));
+        if (!data || data.length < pageSize) break;
+        fromIndex += pageSize;
+      }
+
+      return rows;
+    };
+
+    return from(request()).pipe(finalize(() => this.loadingService.hide()));
+  }
+
   upsert(budget: IUpsertBudget) {
     this.loadingService.show();
 
@@ -118,6 +154,7 @@ export class BudgetRepository {
           id: budget.id,
           customer_id: budget.customerId,
           store_id: budget.storeId,
+          seller_id: budget.sellerId ?? null,
           observation: budget.observation,
           delivery_forecast: budget.deliveryForecast,
           payment_type: budget.paymentType,
@@ -190,6 +227,7 @@ export class BudgetRepository {
       budgetNumber: item.budget_number,
       customerId: item.customer_id,
       storeId: item.store_id,
+      sellerId: item.seller_id ?? undefined,
       observation: item.observation ?? undefined,
       deliveryForecast: item.delivery_forecast ?? undefined,
       paymentType: item.payment_type ?? undefined,

@@ -8,16 +8,17 @@ import { CustomErrorStateMatcher } from '../../helpers/custom-error-state-matche
   selector: 'app-currency-input',
   imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './currency-input.html',
+  styleUrl: './currency-input.scss',
 })
 export class CurrencyInput implements OnInit {
   @Input({ required: true }) control!: FormControl<number | null>;
   @Input() label = 'Valor';
   @Input() placeholder = '';
+  @Input() displayFormat: 'currency' | 'percentage' = 'currency';
   @ViewChild(MatInput) matInput!: MatInput;
 
   displayValue = '';
   matcher!: CustomErrorStateMatcher;
-
   ngOnInit() {
     this.matcher = new CustomErrorStateMatcher(this.control);
     this.displayValue = this.format(this.control.value);
@@ -93,6 +94,13 @@ export class CurrencyInput implements OnInit {
 
   private format(value: number | null): string {
     if (value === null) return '';
+    if (this.displayFormat === 'percentage') {
+      return `${new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value)}%`;
+    }
+
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',

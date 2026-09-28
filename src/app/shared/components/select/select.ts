@@ -33,8 +33,9 @@ export type SelectVariant = 'primary' | 'secondary';
   styleUrl: './select.scss',
   encapsulation: ViewEncapsulation.None,
   host: {
-    '[class.select--disabled]': 'disabled',
-    '[class]': "'select--' + variant",
+    '[class.select--disabled]': 'disabled || control?.disabled',
+    '[class.select--primary]': "variant === 'primary'",
+    '[class.select--secondary]': "variant === 'secondary'",
   },
 })
 export class Select<T> implements OnChanges {

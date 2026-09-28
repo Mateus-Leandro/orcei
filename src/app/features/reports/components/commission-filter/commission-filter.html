@@ -1,0 +1,68 @@
+<app-container-page-layout>
+  @if (loading()) {
+    <app-spinner />
+  }
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Comissão por vendedor</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="commission-filter" [formGroup]="form" (ngSubmit)="onGenerateReport()">
+        <app-select
+          class="seller-filter"
+          variant="secondary"
+          label="Vendedor"
+          [options]="sellerOptions()"
+          [control]="form.controls.sellerId"
+        />
+
+        <app-date-picker
+          [max]="initialDateMax"
+          label="Data inicial"
+          [control]="form.controls.startDate"
+        />
+
+        <app-date-picker
+          label="Data final"
+          [control]="form.controls.endDate"
+          [min]="endDateMin"
+          [max]="initialDateMax"
+        />
+
+        <app-currency-input
+          label="Comissão à vista (%)"
+          displayFormat="percentage"
+          [control]="form.controls.cashCommission"
+        />
+
+        <app-currency-input
+          label="Comissão a prazo (%)"
+          displayFormat="percentage"
+          [control]="form.controls.installmentCommission"
+        />
+
+        <mat-checkbox class="show-products" [formControl]="form.controls.showProducts">
+          Mostrar Produtos
+        </mat-checkbox>
+
+        <div class="generate-report">
+          <app-button
+            icon="arrow_back"
+            type="button"
+            text="Cancelar"
+            bgColor="var(--cancel-color)"
+            (click)="onCancel()"
+          />
+          <app-button
+            type="submit"
+            text="Gerar relatório"
+            icon="picture_as_pdf"
+            [disabled]="form.invalid || loading()"
+          />
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</app-container-page-layout>

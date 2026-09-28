@@ -17,6 +17,7 @@ export interface IBudget {
   budgetNumber: number;
   customerId: string;
   storeId: string;
+  sellerId?: string;
   observation?: string;
   deliveryForecast?: string;
   paymentType?: EnumPaymentTypes;
@@ -36,6 +37,7 @@ export interface IUpsertBudget {
   id?: string;
   customerId: string;
   storeId: string;
+  sellerId?: string;
   observation?: string;
   deliveryForecast?: string;
   paymentType?: EnumPaymentTypes;

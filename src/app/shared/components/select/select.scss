@@ -1,3 +1,12 @@
+app-select {
+  display: block;
+  width: 100%;
+
+  .mat-mdc-form-field {
+    width: 100%;
+  }
+}
+
 app-select.select--primary {
   .mat-mdc-select-value,
   .mat-mdc-select-value-text,
@@ -67,6 +76,7 @@ app-select.select--disabled {
 
   .mat-mdc-select-value,
   .mat-mdc-select-value-text,
+  .mat-mdc-select-min-line,
   .mat-mdc-select-arrow,
   .mat-mdc-floating-label,
   .mdc-floating-label,

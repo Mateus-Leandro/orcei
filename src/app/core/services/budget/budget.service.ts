@@ -12,6 +12,10 @@ export class BudgetService {
     return this.repository.findById(id);
   }
 
+  findForCommissionReport(sellerId: string, startDate: string, endDate: string) {
+    return this.repository.findForCommissionReport(sellerId, startDate, endDate);
+  }
+
   findAll(page: number, limit: number, search: string, storeId?: string) {
     return this.repository.findAll(page, limit, search, storeId);
   }
