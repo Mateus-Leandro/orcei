@@ -27,7 +27,7 @@ export class BudgetRepository {
     let query = this.supabase
       .from('budgets')
       .select(
-        '*, customer:customers!inner(id, name, surname), budgets_products(quantity, unit_price)',
+        '*, customer:customers!inner(id, name, surname), seller:sellers(id, name), budgets_products(quantity, unit_price)',
         { count: 'exact' },
       )
       .order('budget_number', { ascending: false })
@@ -228,6 +228,7 @@ export class BudgetRepository {
       customerId: item.customer_id,
       storeId: item.store_id,
       sellerId: item.seller_id ?? undefined,
+      sellerName: item.seller?.name ?? '',
       observation: item.observation ?? undefined,
       deliveryForecast: item.delivery_forecast ?? undefined,
       paymentType: item.payment_type ?? undefined,

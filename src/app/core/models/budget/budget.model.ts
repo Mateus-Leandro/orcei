@@ -27,6 +27,7 @@ export interface IBudget {
 
 export interface IBudgetView extends IBudget {
   customer?: ICustomer;
+  sellerName: string;
   customerName: string;
   totalProducts: number;
   totalValue: number;

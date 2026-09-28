@@ -11,6 +11,7 @@ interface IBudgetPdfData {
   storeName: string;
   storePhone: string;
   budgetNumber: string;
+  sellerName: string;
   createdAt: string;
   deliveryForecast: string;
   customerName: string;
@@ -94,6 +95,7 @@ export class BudgetPdfService {
       storeName: store?.name ?? '',
       storePhone: this.formatPhone(store?.phone),
       budgetNumber: String(budget.budgetNumber ?? 0).padStart(6, '0'),
+      sellerName: budget.sellerName?.trim() ?? '',
       createdAt: this.formatDate(budget.createdAt),
       deliveryForecast: this.formatForecastDate(budget.deliveryForecast),
       customerName: budget.customerName?.trim() || 'Consumidor final',
@@ -136,6 +138,8 @@ export class BudgetPdfService {
     doc.setFontSize(9.5);
     doc.text(`Orçamento Nº: ${data.budgetNumber}`, this.LEFT, y);
     doc.text(`Criado em: ${data.createdAt}`, this.RIGHT, y, { align: 'right' });
+    y += 5;
+    doc.text(`Vendedor: ${data.sellerName}`, this.LEFT, y);
     y += 5;
     doc.text(`Cliente: ${data.customerName}`, this.LEFT, y);
     doc.text(`Cel: ${data.customerPhone}`, this.RIGHT, y, { align: 'right' });

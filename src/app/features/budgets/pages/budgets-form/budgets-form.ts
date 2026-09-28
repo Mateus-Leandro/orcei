@@ -571,6 +571,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       customerId: customer.id,
       storeId: this.storeId ?? '',
       sellerId: this.sellerControl.value ?? undefined,
+      sellerName: this.sellers().find((seller) => seller.id === this.sellerControl.value)?.name ?? '',
       observation: this.observationControl.value || undefined,
       deliveryForecast: this.deliveryForecastControl.value || undefined,
       paymentType: this.paymentTypeControl.value || undefined,

@@ -27,6 +27,7 @@ export class BudgetTable implements OnChanges {
   displayedColumns: string[] = [
     'Número',
     'Cliente',
+    'Vendedor',
     'Qtde de Produtos',
     'Valor Total',
     'Pagamento',
@@ -53,6 +54,7 @@ export class BudgetTable implements OnChanges {
       id: budget.id,
       Número: budget.budgetNumber,
       Cliente: budget.customerName,
+      Vendedor: budget.sellerName,
       'Qtde de Produtos': budget.totalProducts,
       'Valor Total': this.currencyFormatPipe.transform(budget.totalValue),
       Pagamento: PaymentTypeLabel(budget?.paymentType),
