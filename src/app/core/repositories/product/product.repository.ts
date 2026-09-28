@@ -33,7 +33,7 @@ export class ProductRepository {
       .from('products')
       .upsert({
         id: upsertProduct.id,
-        name: upsertProduct.name,
+        name: upsertProduct.name.trim().replace(/\s+/g, ' '),
         commission: upsertProduct.commission,
         sale_unit: upsertProduct.saleUnit,
         is_fractional: upsertProduct.isFractional,
