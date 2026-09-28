@@ -15,6 +15,7 @@
       </form>
     </mat-card-content>
     <mat-card-actions align="end" style="gap: 15px">
+      <ng-content select="[form-action]" />
       <app-button
         icon="arrow_back"
         text="Cancelar"

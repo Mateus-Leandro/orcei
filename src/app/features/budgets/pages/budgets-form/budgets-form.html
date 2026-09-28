@@ -161,6 +161,12 @@
           <span class="summary__value">{{ totalValueFormatted }}</span>
         </div>
       </div>
+
     </div>
   </div>
+  @if (budgetId) {
+  <app-button form-action text="Gerar PDF" icon="picture_as_pdf" bgColor="#1976d2" textColor="#fff"
+    (click)="onGeneratePdf()"
+    [disabled]="!canGeneratePdf()" />
+  }
 </app-entity-form-component>
