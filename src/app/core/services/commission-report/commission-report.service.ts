@@ -16,8 +16,8 @@ interface ICommissionReportBudget {
     quantity: number;
     unit_price: number;
     product:
-    | { code: number; name: string; commission: boolean }
-    | { code: number; name: string; commission: boolean }[]
+    | { code: number; name: string; sale_unit: string | null; commission: boolean }
+    | { code: number; name: string; sale_unit: string | null; commission: boolean }[]
     | null;
   }[];
 }
@@ -34,6 +34,7 @@ interface ICommissionReportRow {
   products: {
     code: number;
     name: string;
+    unit: string;
     quantity: number;
     total: number;
     commissionable: boolean;
@@ -73,6 +74,7 @@ export class CommissionReportService {
             products.push({
               code: product?.code ?? 0,
               name: product?.name ?? 'Produto removido',
+              unit: product?.sale_unit?.trim() || 'UN',
               quantity: Number(item.quantity ?? 0),
               total: itemTotal,
               commissionable,
@@ -147,7 +149,8 @@ export class CommissionReportService {
       { label: 'Orçamento', x: 12, align: 'left' as const },
       { label: 'Criação', x: 38, align: 'left' as const },
       { label: 'Cliente', x: 64, align: 'left' as const },
-      { label: 'Qtd. produtos', x: 137, align: 'right' as const },
+      ...(showProducts ? [{ label: 'Quantidade', x: 137, align: 'right' as const }] : []),
+      ...(showProducts ? [{ label: 'UN', x: 145, align: 'left' as const }] : []),
       { label: 'Pagamento', x: 152, align: 'left' as const },
       { label: 'Total', x: 211, align: 'right' as const },
       { label: 'Base comissão', x: 251, align: 'right' as const },
@@ -171,7 +174,7 @@ export class CommissionReportService {
     let totalCommissionBase = 0;
     let totalCommission = 0;
 
-    for (const row of rows) {
+    for (const [rowIndex, row] of rows.entries()) {
       const requiredSpace = 5 + (showProducts ? row.products.length * 4 : 0);
       if (y + requiredSpace > 178 && y > 60) {
         doc.addPage();
@@ -183,14 +186,17 @@ export class CommissionReportService {
       totalCommissionBase += row.commissionBase;
       totalCommission += row.commission;
 
-      doc.text(String(row.number), columns[0].x, y);
-      doc.text(this.formatDate(row.createdAt), columns[1].x, y);
-      doc.text(this.truncate(doc, row.customerName, 62), columns[2].x, y);
-      doc.text(this.formatNumber(row.productQuantity), columns[3].x, y, { align: 'right' });
-      doc.text(row.paymentLabel, columns[4].x, y);
-      doc.text(this.formatCurrency(row.total), columns[5].x, y, { align: 'right' });
-      doc.text(this.formatCurrency(row.commissionBase), columns[6].x, y, { align: 'right' });
-      doc.text(this.formatCurrency(row.commission), columns[7].x, y, { align: 'right' });
+      if (showProducts || rowIndex % 2 === 0) {
+        doc.setFillColor(239, 244, 250);
+        doc.rect(left, y - 3.5, right - left, 4.5, 'F');
+      }
+      doc.text(String(row.number), 12, y);
+      doc.text(this.formatDate(row.createdAt), 38, y);
+      doc.text(this.truncate(doc, row.customerName, 62), 64, y);
+      doc.text(row.paymentLabel, 152, y);
+      doc.text(this.formatCurrency(row.total), 211, y, { align: 'right' });
+      doc.text(this.formatCurrency(row.commissionBase), 251, y, { align: 'right' });
+      doc.text(this.formatCurrency(row.commission), 285, y, { align: 'right' });
       y += 5;
 
       if (showProducts) {
@@ -206,15 +212,16 @@ export class CommissionReportService {
 
           doc.setTextColor(95, 95, 95);
           const description = `|${product.code} - ${product.name}`;
-          doc.text(`  ${this.truncate(doc, description, 64)}`, columns[2].x, y);
-          doc.text(this.formatNumber(product.quantity), columns[3].x, y, { align: 'right' });
-          doc.text(this.formatCurrency(product.total), columns[5].x, y, { align: 'right' });
+          doc.text(`  ${this.truncate(doc, description, 64)}`, 64, y);
+          doc.text(this.formatNumber(product.quantity), 137, y, { align: 'right' });
+          doc.text(product.unit, 145, y);
+          doc.text(this.formatCurrency(product.total), 211, y, { align: 'right' });
           if (product.commissionable) {
             doc.setTextColor(0, 128, 0);
           } else {
             doc.setTextColor(204, 0, 0);
           }
-          doc.text(product.commissionable ? 'Comissionável' : 'Sem comissão', columns[6].x, y, {
+          doc.text(product.commissionable ? 'Comissionável' : 'Sem comissão', 251, y, {
             align: 'right',
           });
           doc.setTextColor(0, 0, 0);

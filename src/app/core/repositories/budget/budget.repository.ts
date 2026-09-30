@@ -125,7 +125,7 @@ export class BudgetRepository {
         const { data, error } = await this.supabase
           .from('budgets')
           .select(
-            'id,budget_number,created_at,payment_type,customer:customers(name,surname),budgets_products(quantity,unit_price,product:products(code,name,commission))',
+            'id,budget_number,created_at,payment_type,customer:customers(name,surname),budgets_products(quantity,unit_price,product:products(code,name,sale_unit,commission))',
           )
           .eq('seller_id', sellerId)
           .gte('created_at', start.toISOString())

@@ -55,7 +55,7 @@ export class CommissionFilter implements OnInit {
     sellerId: ['', Validators.required],
     cashCommission: [1, [Validators.required, Validators.min(0.01), Validators.max(99)]],
     installmentCommission: [0.5, [Validators.required, Validators.min(0.01), Validators.max(99)]],
-    showProducts: [false],
+    showProducts: [true],
   });
 
   get endDateMin(): Date | null {
