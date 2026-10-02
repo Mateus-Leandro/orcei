@@ -139,8 +139,6 @@ export class BudgetPdfService {
     doc.text(`Orçamento Nº: ${data.budgetNumber}`, this.LEFT, y);
     doc.text(`Criado em: ${data.createdAt}`, this.RIGHT, y, { align: 'right' });
     y += 5;
-    doc.text(`Vendedor: ${data.sellerName}`, this.LEFT, y);
-    y += 5;
     doc.text(`Cliente: ${data.customerName}`, this.LEFT, y);
     doc.text(`Cel: ${data.customerPhone}`, this.RIGHT, y, { align: 'right' });
     y += 5;
@@ -185,10 +183,13 @@ export class BudgetPdfService {
     footerY += 5;
 
     doc.setFontSize(9.5);
+    const sellerLabel = `Vendedor: ${data.sellerName}`;
+    doc.text(sellerLabel, this.LEFT, footerY);
+
     const forecast = data.deliveryForecast
       ? `Previsão de entrega: ${data.deliveryForecast}`
       : 'Previsão de entrega:';
-    doc.text(forecast, this.LEFT, footerY);
+    doc.text(forecast, this.CENTER, footerY, { align: 'center' });
     doc.text(`Total: ${this.formatCurrency(data.total)}`, this.RIGHT, footerY, { align: 'right' });
 
     footerY += 2;
@@ -217,7 +218,7 @@ export class BudgetPdfService {
 
     if (viaLabel === 'cliente') {
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6);
+      doc.setFontSize(8);
       const messageY = top + 140;
       doc.text(
         'Precisa de um sistema como esse? Entre em contato: 31 98444-8086',
