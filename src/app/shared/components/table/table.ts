@@ -38,6 +38,9 @@ export class Table implements OnChanges {
   @Input() allowFractional: (element: any, column: string) => boolean = () => true;
   @Input() serverSidePagination: boolean = false;
   @Input() showPaginator: boolean = true;
+  // Quando informado, limita a altura da tabela e habilita a rolagem vertical
+  // com o cabeçalho fixo.
+  @Input() maxHeight: string | null = null;
   @Input() pageSizeOptions: number[] = [5, 10, 25, 50];
   @Input() pageIndex = 0;
   @Input() rowClass: (row: any) => string | string[] | Record<string, boolean> = () => '';
@@ -65,7 +68,8 @@ export class Table implements OnChanges {
   }
 
   get displayedData(): any[] {
-    if (this.serverSidePagination) {
+    // Sem paginador não há como navegar entre páginas: exibe todos os itens.
+    if (this.serverSidePagination || !this.showPaginator) {
       return this.dataSource;
     }
 

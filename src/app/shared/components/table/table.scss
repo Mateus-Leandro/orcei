@@ -6,6 +6,24 @@ table {
   background: white;
 }
 
+.table-wrapper.scrollable {
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+
+  // A borda e o arredondamento passam para o wrapper: o overflow hidden da
+  // tabela impediria o cabeçalho de ficar fixo durante a rolagem.
+  table {
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .mat-mdc-header-cell {
+    background-color: var(--primary);
+  }
+}
+
 .mat-mdc-header-row {
   background-color: var(--primary);
 }
