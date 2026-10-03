@@ -289,7 +289,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
     if (!customer || typeof customer === 'string') {
       return '';
     }
-    return `${customer.name ?? ''}${customer.surname ? ` ${customer.surname}` : ''}`.trim();
+    return `${customer.name ?? ''}${customer.surname ? ` (${customer.surname})` : ''}`.trim();
   };
 
   onCustomerSelected(customer: ICustomer): void {
