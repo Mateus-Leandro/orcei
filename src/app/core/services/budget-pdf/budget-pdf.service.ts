@@ -39,6 +39,10 @@ export class BudgetPdfService {
   private readonly LEFT = 12;
   private readonly RIGHT = 198;
   private readonly CENTER = 105;
+  private readonly PAGE_HEIGHT = 297;
+  private readonly ROW_HEIGHT = 4.2;
+  // Máximo de linhas que cabem em meia folha (limitado pela via cliente).
+  private readonly MAX_HALF_PAGE_ROWS = 18;
   private readonly RED: [number, number, number] = [204, 0, 0];
   private readonly currencyFormat = new CurrencyFormatPipe(new CurrencyPipe('pt-BR'));
 
@@ -57,9 +61,16 @@ export class BudgetPdfService {
 
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-    this.renderVia(doc, data, 'loja', 10);
-    this.cutSeparator(doc, 151);
-    this.renderVia(doc, data, 'cliente', 154);
+    if (data.products.length <= this.MAX_HALF_PAGE_ROWS) {
+      // Cabe em meia folha: as duas vias ficam na mesma página.
+      this.renderHalfPageVia(doc, data, 'loja', 10);
+      this.cutSeparator(doc, 151);
+      this.renderHalfPageVia(doc, data, 'cliente', 154);
+    } else {
+      // Muitos itens: cada via ocupa uma ou mais páginas inteiras.
+      this.renderFullPageVia(doc, data, 'loja', false);
+      this.renderFullPageVia(doc, data, 'cliente', true);
+    }
 
     this.openOrDownload(doc, `Orçamento_${data.budgetNumber}.pdf`);
   }
@@ -107,10 +118,67 @@ export class BudgetPdfService {
     };
   }
 
-  private renderVia(doc: jsPDF, data: IBudgetPdfData, viaLabel: string, top: number): void {
+  private renderHalfPageVia(doc: jsPDF, data: IBudgetPdfData, viaLabel: string, top: number): void {
+    let y = this.renderHeader(doc, data, viaLabel, top);
+    y = this.renderTableHeader(doc, y);
+
+    for (const product of data.products) {
+      this.renderProductRow(doc, product, y);
+      y += this.ROW_HEIGHT;
+    }
+
+    // Rodapé ancorado na base da via (mantém o espaçamento do modelo).
+    this.renderFooter(
+      doc,
+      data,
+      top + (viaLabel === 'cliente' ? 118 : 122),
+      viaLabel === 'cliente',
+    );
+  }
+
+  private renderFullPageVia(
+    doc: jsPDF,
+    data: IBudgetPdfData,
+    viaLabel: string,
+    newPage: boolean,
+  ): void {
+    if (newPage) {
+      doc.addPage();
+    }
+
+    const firstPage = doc.getNumberOfPages();
+    const footerTop = this.PAGE_HEIGHT - 32;
+    const pageBottom = this.PAGE_HEIGHT - 12;
+
+    let y = this.renderHeader(doc, data, viaLabel, 10);
+    y = this.renderTableHeader(doc, y);
+
+    const footerLimit = footerTop - 2.5;
+    data.products.forEach((product, index) => {
+      const remainingRows = data.products.length - index;
+      const lastRowY = y + (remainingRows - 1) * this.ROW_HEIGHT;
+
+      // Quebra a página quando ela acaba ou quando os itens restantes terminariam
+      // nesta página sem deixar espaço para o rodapé: assim eles seguem junto
+      // com o rodapé na próxima página, em vez de o rodapé ficar sozinho.
+      if (y > pageBottom || (y > footerLimit && lastRowY <= pageBottom)) {
+        doc.addPage();
+        y = this.renderHeader(doc, data, viaLabel, 10);
+        y = this.renderTableHeader(doc, y);
+      }
+      this.renderProductRow(doc, product, y);
+      y += this.ROW_HEIGHT;
+    });
+
+    this.renderFooter(doc, data, footerTop, viaLabel === 'cliente');
+    this.renderPageNumbers(doc, firstPage, doc.getNumberOfPages());
+  }
+
+  // Cabeçalho completo da via; retorna o Y onde a tabela de produtos começa.
+  private renderHeader(doc: jsPDF, data: IBudgetPdfData, viaLabel: string, top: number): number {
     let y = top + 4;
 
-    // Cabeçalho: identificação da via + título.
+    // Identificação da via + título.
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.text(`-via ${viaLabel}-`, this.LEFT, y);
@@ -147,9 +215,11 @@ export class BudgetPdfService {
 
     y += 3;
     this.separator(doc, y);
-    y += 4.5;
+    return y + 4.5;
+  }
 
-    // Cabeçalho da tabela de produtos.
+  // Cabeçalho da tabela de produtos; retorna o Y da primeira linha.
+  private renderTableHeader(doc: jsPDF, y: number): number {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.text('CÓD.', this.COL.code, y);
@@ -161,27 +231,31 @@ export class BudgetPdfService {
 
     y += 1.5;
     this.separator(doc, y);
-    y += 4.5;
+    return y + 4.5;
+  }
 
-    // Linhas de produtos.
+  private renderProductRow(
+    doc: jsPDF,
+    product: IBudgetPdfData['products'][number],
+    y: number,
+  ): void {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     const descriptionWidth = this.COL.unit - this.COL.description - 2;
-    for (const product of data.products) {
-      doc.text(product.code, this.COL.code, y);
-      doc.text(this.truncate(doc, product.description, descriptionWidth), this.COL.description, y);
-      doc.text(product.unit, this.COL.unit, y);
-      doc.text(this.formatNumber(product.quantity), this.COL.quantity, y);
-      doc.text(this.formatCurrency(product.unitPrice), this.COL.unitPrice, y);
-      doc.text(this.formatCurrency(product.total), this.COL.total, y);
-      y += 4.2;
-    }
+    doc.text(product.code, this.COL.code, y);
+    doc.text(this.truncate(doc, product.description, descriptionWidth), this.COL.description, y);
+    doc.text(product.unit, this.COL.unit, y);
+    doc.text(this.formatNumber(product.quantity), this.COL.quantity, y);
+    doc.text(this.formatCurrency(product.unitPrice), this.COL.unitPrice, y);
+    doc.text(this.formatCurrency(product.total), this.COL.total, y);
+  }
 
-    // Rodapé ancorado na base da via (mantém o espaçamento do modelo).
-    let footerY = top + (viaLabel === 'cliente' ? 118 : 122);
+  private renderFooter(doc: jsPDF, data: IBudgetPdfData, top: number, showContact: boolean): void {
+    let footerY = top;
     this.separator(doc, footerY);
     footerY += 5;
 
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     const sellerLabel = `Vendedor: ${data.sellerName}`;
     doc.text(sellerLabel, this.LEFT, footerY);
@@ -216,16 +290,27 @@ export class BudgetPdfService {
     );
     doc.setTextColor(0, 0, 0);
 
-    if (viaLabel === 'cliente') {
+    if (showContact) {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
-      const messageY = top + 140;
       doc.text(
         'Precisa de um sistema como esse? Entre em contato: 31 98444-8086',
         this.RIGHT,
-        messageY,
+        top + 22,
         { align: 'right' },
       );
+    }
+  }
+
+  // Numeração "Página x de y" relativa às páginas da via.
+  private renderPageNumbers(doc: jsPDF, firstPage: number, lastPage: number): void {
+    const total = lastPage - firstPage + 1;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    for (let page = firstPage; page <= lastPage; page++) {
+      doc.setPage(page);
+      doc.text(`Página ${page - firstPage + 1} de ${total}`, this.RIGHT, 14, { align: 'right' });
     }
   }
 
