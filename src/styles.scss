@@ -42,3 +42,26 @@ body {
   color: #d32f2f !important;
   font-weight: 500;
 }
+
+// Campos somente leitura ficam com fundo
+// cinza claro para indicar que não podem ser alterados.
+.mat-mdc-form-field:has(input[readonly]) {
+  $readonly-outline: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
+  $readonly-text: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+
+  --mat-form-field-outlined-outline-color: #{$readonly-outline};
+  --mat-form-field-outlined-hover-outline-color: #{$readonly-outline};
+  --mat-form-field-outlined-focus-outline-color: #{$readonly-outline};
+  --mat-form-field-outlined-input-text-color: #{$readonly-text};
+  --mat-form-field-outlined-label-text-color: #{$readonly-text};
+  --mat-form-field-outlined-hover-label-text-color: #{$readonly-text};
+  --mat-form-field-outlined-focus-label-text-color: #{$readonly-text};
+
+  .mat-mdc-text-field-wrapper {
+    background-color: #f0f0f0;
+  }
+}
+
+.mat-mdc-form-field:has(input[readonly]) input {
+  cursor: default;
+}

@@ -29,8 +29,8 @@
       <mat-form-field appearance="outline" class="customer-field">
         <mat-label>Cliente</mat-label>
         <input #customerSearchInput matInput placeholder="Pesquisar cliente" [formControl]="customerSearchControl"
-          [matAutocomplete]="customerAuto" [errorStateMatcher]="customerErrorMatcher" />
-        @if (customerSearchControl.value) {
+          [matAutocomplete]="customerAuto" [errorStateMatcher]="customerErrorMatcher" [readonly]="!!budgetId" />
+        @if (customerSearchControl.value && !budgetId) {
         <button matSuffix mat-icon-button type="button" aria-label="Remover cliente selecionado"
           (click)="onClearCustomer()">
           <mat-icon>close</mat-icon>
