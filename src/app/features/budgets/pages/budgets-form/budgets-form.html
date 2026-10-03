@@ -120,7 +120,7 @@
           <mat-label>Quantidade</mat-label>
           <input #quantityInput matInput type="text" inputmode="decimal" [mask]="quantityMask()" decimalMarker=","
             thousandSeparator="" [dropSpecialCharacters]="false" formControlName="quantity"
-            (keydown.enter)="focusUnitPrice($event)" />
+            (keydown.enter)="focusUnitPrice($event)" [readonly]="!selectedProduct()" />
           @if (quantityControl.hasError('positiveNumber')) {
           <mat-error>Informe a quantidade</mat-error>
           }
@@ -131,7 +131,7 @@
           <span matTextPrefix>R$&nbsp;</span>
           <input #unitPriceInput matInput type="text" inputmode="decimal" mask="separator.2" decimalMarker=","
             thousandSeparator="." [dropSpecialCharacters]="false" formControlName="unitPrice"
-            (keydown.enter)="onAddProduct($event)" />
+            (keydown.enter)="onAddProduct($event)" [readonly]="!selectedProduct()" />
           @if (unitPriceControl.hasError('positiveNumber')) {
           <mat-error>Informe o preço unitário</mat-error>
           }

@@ -60,6 +60,11 @@ body {
   .mat-mdc-text-field-wrapper {
     background-color: #f0f0f0;
   }
+
+  .mat-mdc-form-field-text-prefix,
+  .mat-mdc-form-field-text-suffix {
+    color: $readonly-text;
+  }
 }
 
 .mat-mdc-form-field:has(input[readonly]) input {
