@@ -45,7 +45,7 @@ body {
 
 // Campos somente leitura ficam com fundo
 // cinza claro para indicar que não podem ser alterados.
-.mat-mdc-form-field:has(input[readonly]) {
+.mat-mdc-form-field:has(input[readonly]):not(.date-picker-field) {
   $readonly-outline: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
   $readonly-text: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
 
@@ -67,6 +67,6 @@ body {
   }
 }
 
-.mat-mdc-form-field:has(input[readonly]) input {
+.mat-mdc-form-field:has(input[readonly]):not(.date-picker-field) input {
   cursor: default;
 }
