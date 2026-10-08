@@ -1,7 +1,11 @@
 import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  MatDatepicker,
+  MatDatepickerIntl,
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
@@ -11,6 +15,15 @@ import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/cor
   providers: [
     provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    {
+      provide: MatDatepickerIntl,
+      useFactory: () => {
+        const intl = new MatDatepickerIntl();
+        intl.prevMonthLabel = 'Mês anterior';
+        intl.nextMonthLabel = 'Próximo mês';
+        return intl;
+      },
+    },
   ],
   imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, ReactiveFormsModule],
   templateUrl: './date-picker.html',
