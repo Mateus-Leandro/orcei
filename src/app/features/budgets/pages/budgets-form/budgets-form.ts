@@ -216,7 +216,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
         return;
       }
 
-      this.productService.findAll(1, 20, value, this.storeService.selectedStore()?.id).subscribe({
+      this.productService.findAll(1, 40, value, this.storeService.selectedStore()?.id).subscribe({
         next: (response: any) =>
           this.productOptions.set(
             sortBySearchRelevance(response.data ?? [], value, (product: IProductView) => [
