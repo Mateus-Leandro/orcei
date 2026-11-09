@@ -101,6 +101,10 @@ export class BudgetPdfService {
       };
     });
 
+    const customerName = customer
+      ? `${customer.name?.trim() ?? ''}${customer.surname?.trim() ? ` (${customer.surname.trim()})` : ''}`.trim() || 'Consumidor final'
+      : budget.customerName?.trim() || 'Consumidor final';
+
     return {
       generatedAt: this.formatDateTime(new Date()),
       storeName: store?.name ?? '',
@@ -109,7 +113,7 @@ export class BudgetPdfService {
       sellerName: budget.sellerName?.trim() ?? '',
       createdAt: this.formatDate(budget.createdAt),
       deliveryForecast: this.formatForecastDate(budget.deliveryForecast),
-      customerName: budget.customerName?.trim() || 'Consumidor final',
+      customerName: customerName,
       customerPhone: this.formatPhone(customer?.phone),
       customerAddress: customer?.address?.trim() ?? '',
       totalProducts: budget.totalProducts ?? products.length,
