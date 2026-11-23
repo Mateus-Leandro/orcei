@@ -57,6 +57,11 @@
   min-width: 0;
 }
 
+.sale-unit-field {
+  width: 200px;
+  flex-shrink: 0;
+}
+
 .quantity-field {
   max-width: 160px;
   flex-shrink: 0;

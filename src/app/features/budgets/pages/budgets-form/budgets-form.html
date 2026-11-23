@@ -116,6 +116,9 @@
           </mat-autocomplete>
         </mat-form-field>
 
+        <app-select class="sale-unit-field" label="Unidade" variant="secondary" [options]="saleUnitOptions"
+          [control]="saleUnitControl" (clickOption)="onSaleUnitChange($event.value)" />
+
         <mat-form-field appearance="outline" class="quantity-field">
           <mat-label>Quantidade</mat-label>
           <input #quantityInput matInput type="text" inputmode="decimal" [mask]="quantityMask()" decimalMarker=","

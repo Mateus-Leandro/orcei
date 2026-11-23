@@ -7,7 +7,6 @@ export interface IBudgetProduct {
   productCode?: number;
   productName?: string;
   saleUnit?: string;
-  isFractional?: boolean;
   quantity: number;
   unitPrice: number;
 }

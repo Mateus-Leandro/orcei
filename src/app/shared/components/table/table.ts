@@ -3,10 +3,16 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { Select } from '../select/select';
 import { NgxMaskDirective } from 'ngx-mask';
 import { IconButton } from '../icon-button/icon-button';
 
-export type EditableColumnType = 'currency' | 'percentage' | 'number';
+export type EditableColumnType = 'currency' | 'percentage' | 'number' | 'select';
+
+export interface EditableColumnOption {
+  value: string;
+  label: string;
+}
 
 export interface TableCellChange {
   row: any;
@@ -21,6 +27,7 @@ export interface TableCellChange {
     FormsModule,
     MatTableModule,
     MatPaginatorModule,
+    Select,
     NgxMaskDirective,
     IconButton,
   ],
@@ -35,6 +42,8 @@ export class Table implements OnChanges {
   @Input() pdfButton: boolean = false;
   @Input() editableColumns: string[] = [];
   @Input() editableColumnTypes: Record<string, EditableColumnType> = {};
+  // Opções das colunas editáveis do tipo 'select'.
+  @Input() editableColumnOptions: Partial<Record<string, EditableColumnOption[]>> = {};
   @Input() allowFractional: (element: any, column: string) => boolean = () => true;
   @Input() serverSidePagination: boolean = false;
   @Input() showPaginator: boolean = true;
@@ -113,6 +122,18 @@ export class Table implements OnChanges {
 
   isEditable(column: string): boolean {
     return this.editableColumns.includes(column);
+  }
+
+  isSelectColumn(column: string): boolean {
+    return this.editableColumnTypes[column] === 'select';
+  }
+
+  onSelectChange(element: any, column: string, value: string): void {
+    if (element[column] === value) {
+      return;
+    }
+    element[column] = value;
+    this.cellChange.emit({ row: element, column, value });
   }
 
   isCellEditing(element: any, column: string): boolean {

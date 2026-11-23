@@ -9,16 +9,17 @@ interface ICommissionReportBudget {
   created_at: string;
   payment_type: string | null;
   customer:
-  | { name: string; surname: string | null }
-  | { name: string; surname: string | null }[]
-  | null;
+    | { name: string; surname: string | null }
+    | { name: string; surname: string | null }[]
+    | null;
   budgets_products: {
     quantity: number;
     unit_price: number;
+    sale_unit: string | null;
     product:
-    | { code: number; name: string; sale_unit: string | null; commission: boolean }
-    | { code: number; name: string; sale_unit: string | null; commission: boolean }[]
-    | null;
+      | { code: number; name: string; sale_unit: string | null; commission: boolean }
+      | { code: number; name: string; sale_unit: string | null; commission: boolean }[]
+      | null;
   }[];
 }
 
@@ -43,7 +44,7 @@ interface ICommissionReportRow {
 
 @Injectable({ providedIn: 'root' })
 export class CommissionReportService {
-  constructor(private budgetService: BudgetService) { }
+  constructor(private budgetService: BudgetService) {}
 
   generate(
     sellerName: string,
@@ -74,7 +75,7 @@ export class CommissionReportService {
             products.push({
               code: product?.code ?? 0,
               name: product?.name ?? 'Produto removido',
-              unit: product?.sale_unit?.trim() || 'UN',
+              unit: item.sale_unit?.trim() || product?.sale_unit?.trim() || 'UN',
               quantity: Number(item.quantity ?? 0),
               total: itemTotal,
               commissionable,

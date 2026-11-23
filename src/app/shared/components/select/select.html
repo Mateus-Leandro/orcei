@@ -1,5 +1,7 @@
 <mat-form-field appearance="outline">
+  @if (label) {
   <mat-label>{{ label }}</mat-label>
+  }
 
   @if (control) {
   <mat-select [formControl]="control" [panelClass]="panelClass" (selectionChange)="selectOption($event.value)"

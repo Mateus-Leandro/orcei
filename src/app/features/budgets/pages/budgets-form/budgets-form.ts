@@ -45,7 +45,12 @@ import {
   IUpsertBudget,
 } from '../../../../core/models/budget/budget.model';
 import { ICustomer } from '../../../../core/models/customers/customers.model';
-import { IProductView } from '../../../../core/models/product/product.model';
+import {
+  IProductView,
+  isFractionalUnit,
+  PRODUCT_SALE_UNIT_OPTIONS,
+  ProductSaleUnit,
+} from '../../../../core/models/product/product.model';
 import { BudgetService } from '../../../../core/services/budget/budget.service';
 import { BudgetPdfService } from '../../../../core/services/budget-pdf/budget-pdf.service';
 import { CustomersService } from '../../../../core/services/customers/customers.service';
@@ -99,7 +104,7 @@ function positiveNumberValidator(control: AbstractControl): ValidationErrors | n
     CurrencyFormatPipe,
     Select,
     DatePicker,
-    MatDivider
+    MatDivider,
   ],
   templateUrl: './budgets-form.html',
   styleUrl: './budgets-form.scss',
@@ -140,6 +145,10 @@ export class BudgetsForm implements OnInit, OnDestroy {
   customerAddressControl = new FormControl<string>({ value: '', disabled: true });
 
   productForm = new FormGroup({
+    saleUnit: new FormControl<ProductSaleUnit | null>(
+      { value: null, disabled: true },
+      { validators: Validators.required },
+    ),
     quantity: new FormControl<string>(
       { value: '', disabled: true },
       { validators: positiveNumberValidator },
@@ -159,8 +168,11 @@ export class BudgetsForm implements OnInit, OnDestroy {
   customerOptions = signal<ICustomer[]>([]);
   productOptions = signal<IProductView[]>([]);
   budgetProducts = signal<IBudgetProduct[]>([]);
+  saleUnitOptions = PRODUCT_SALE_UNIT_OPTIONS;
+  // Unidade escolhida no item (pode diferir do cadastro); define se a quantidade aceita fração.
+  selectedSaleUnit = signal<ProductSaleUnit | null>(null);
   quantityMask = computed(() =>
-    this.selectedProduct()?.isFractional ? 'separator.2' : 'separator.0',
+    isFractionalUnit(this.selectedSaleUnit()) ? 'separator.2' : 'separator.0',
   );
 
   totalProducts = computed(() => this.budgetProducts().length);
@@ -353,9 +365,14 @@ export class BudgetsForm implements OnInit, OnDestroy {
     this.productOptions.set([]);
 
     this.productForm.enable({ emitEvent: false });
-    this.quantityControl.setValue(this.formatNumber(1, product.isFractional ? 2 : 0), {
-      emitEvent: false,
-    });
+    this.saleUnitControl.setValue(product.saleUnit, { emitEvent: false });
+    this.selectedSaleUnit.set(product.saleUnit);
+    this.quantityControl.setValue(
+      this.formatNumber(1, isFractionalUnit(product.saleUnit) ? 2 : 0),
+      {
+        emitEvent: false,
+      },
+    );
 
     const salePrice = product.financialStatement?.salePrice ?? 0;
     this.unitPriceControl.setValue(salePrice > 0 ? this.formatNumber(salePrice, 2) : '', {
@@ -363,6 +380,21 @@ export class BudgetsForm implements OnInit, OnDestroy {
     });
 
     setTimeout(() => this.quantityInput?.nativeElement.focus(), 0);
+  }
+
+  onSaleUnitChange(unit: ProductSaleUnit): void {
+    this.selectedSaleUnit.set(unit);
+
+    // Reformata a quantidade para a nova unidade (trunca se deixar de ser fracionada).
+    const fractional = isFractionalUnit(unit);
+    const quantity = this.toNumber(this.quantityControl.value);
+    const adjusted = fractional ? quantity : Math.trunc(quantity);
+    this.quantityControl.setValue(
+      adjusted > 0 ? this.formatNumber(adjusted, fractional ? 2 : 0) : '',
+      {
+        emitEvent: false,
+      },
+    );
   }
 
   onProductSearchEnter(event: Event): void {
@@ -403,8 +435,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
       productId: product.id,
       productCode: product.code,
       productName: product.name,
-      saleUnit: product.saleUnit,
-      isFractional: product.isFractional,
+      saleUnit: this.saleUnitControl.value ?? product.saleUnit,
       quantity,
       unitPrice,
     };
@@ -416,10 +447,15 @@ export class BudgetsForm implements OnInit, OnDestroy {
 
   private resetProductSelection(): void {
     this.selectedProduct.set(null);
+    this.selectedSaleUnit.set(null);
     this.productSearchControl.setValue('', { emitEvent: false });
     this.productOptions.set([]);
-    this.productForm.reset({ quantity: '', unitPrice: '' }, { emitEvent: false });
+    this.productForm.reset({ saleUnit: null, quantity: '', unitPrice: '' }, { emitEvent: false });
     this.productForm.disable({ emitEvent: false });
+  }
+
+  get saleUnitControl(): FormControl<ProductSaleUnit | null> {
+    return this.productForm.controls.saleUnit;
   }
 
   get quantityControl(): FormControl<string | null> {
@@ -455,9 +491,7 @@ export class BudgetsForm implements OnInit, OnDestroy {
   onCellChange(change: IBudgetProductCellChange): void {
     this.budgetProducts.update((products) =>
       products.map((product) =>
-        product.productId === change.productId
-          ? { ...product, [change.field]: change.value }
-          : product,
+        product.productId === change.productId ? { ...product, ...change.changes } : product,
       ),
     );
   }
@@ -571,7 +605,8 @@ export class BudgetsForm implements OnInit, OnDestroy {
       customerId: customer.id,
       storeId: this.storeId ?? '',
       sellerId: this.sellerControl.value ?? undefined,
-      sellerName: this.sellers().find((seller) => seller.id === this.sellerControl.value)?.name ?? '',
+      sellerName:
+        this.sellers().find((seller) => seller.id === this.sellerControl.value)?.name ?? '',
       observation: this.observationControl.value || undefined,
       deliveryForecast: this.deliveryForecastControl.value || undefined,
       paymentType: this.paymentTypeControl.value || undefined,
