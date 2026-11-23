@@ -6,8 +6,23 @@
           {{ column }}
         </th>
 
-        <td mat-cell *matCellDef="let element" [class.editable-cell]="isEditable(column)">
-          @if (isEditable(column)) {
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [class.editable-cell]="isEditable(column) && !isSelectColumn(column)"
+          [class.editable-select-cell]="isEditable(column) && isSelectColumn(column)"
+        >
+          @if (isEditable(column) && isSelectColumn(column)) {
+            <app-select
+              class="editable-select"
+              label=""
+              variant="secondary"
+              [options]="editableColumnOptions[column] ?? []"
+              [selectedValue]="element[column]"
+              (clickOption)="onSelectChange(element, column, $event.value)"
+              (click)="$event.stopPropagation()"
+            />
+          } @else if (isEditable(column)) {
             @if (isCellEditing(element, column)) {
               <input
                 class="editable-input"

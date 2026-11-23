@@ -36,7 +36,6 @@ export class ProductRepository {
         name: upsertProduct.name.trim().replace(/\s+/g, ' '),
         commission: upsertProduct.commission,
         sale_unit: upsertProduct.saleUnit,
-        is_fractional: upsertProduct.isFractional,
       })
       .select()
       .single()
@@ -79,7 +78,6 @@ export class ProductRepository {
           name: data.name,
           commission: data.commission,
           saleUnit: data.sale_unit ?? 'UN',
-          isFractional: data.is_fractional ?? false,
           financialStatement: rawStatements[0],
           financialStatements: rawStatements.map(
             (item): IFinancialStatementView => ({
@@ -142,7 +140,6 @@ export class ProductRepository {
             name: item.name,
             commission: item.commission,
             saleUnit: item.sale_unit ?? 'UN',
-            isFractional: item.is_fractional ?? false,
             financialStatement: {
               ...item?.financialStatement[0],
               margin: item?.financialStatement[0]?.margin || 0,
@@ -172,7 +169,7 @@ export class ProductRepository {
     const query = this.supabase
       .from('products')
       .select(
-        'code,name,sale_unit,is_fractional,commission,barcodes(ean),financialStatement:financial_statement(store_id,cost_price,sale_price)',
+        'code,name,sale_unit,commission,barcodes(ean),financialStatement:financial_statement(store_id,cost_price,sale_price)',
         { count: 'exact' },
       )
       .eq('financialStatement.store_id', storeId)
@@ -192,7 +189,6 @@ export class ProductRepository {
             code: item.code,
             name: item.name,
             saleUnit: item.sale_unit ?? 'UN',
-            isFractional: item.is_fractional ?? false,
             commission: item.commission ?? false,
             barcodes: (item.barcodes ?? []).map((barcode: any) => barcode.ean),
             costPrice: statement?.cost_price ?? null,

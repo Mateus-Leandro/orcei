@@ -33,13 +33,18 @@ export const PRODUCT_SALE_UNIT_OPTIONS: { value: ProductSaleUnit; label: string 
   { value: 'SC', label: 'SC - Saco' },
 ];
 
+// Unidades de venda que permitem quantidade fracionada.
+export const FRACTIONAL_SALE_UNITS: readonly ProductSaleUnit[] = ['KG', 'G', 'L', 'ML', 'M'];
+
+export const isFractionalUnit = (unit?: string | null): boolean =>
+  !!unit && FRACTIONAL_SALE_UNITS.includes(unit as ProductSaleUnit);
+
 export interface IProduct {
   id: string;
   code: number;
   name: string;
   commission: boolean;
   saleUnit: ProductSaleUnit;
-  isFractional: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,7 +54,6 @@ export interface IUpsertProduct {
   name: string;
   commission: boolean;
   saleUnit: ProductSaleUnit;
-  isFractional: boolean;
 }
 
 export interface IProductView extends IProduct {
@@ -62,7 +66,6 @@ export interface IProductStoreReportRow {
   code: number;
   name: string;
   saleUnit: ProductSaleUnit;
-  isFractional: boolean;
   commission: boolean;
   barcodes: string[];
   costPrice: number | null;

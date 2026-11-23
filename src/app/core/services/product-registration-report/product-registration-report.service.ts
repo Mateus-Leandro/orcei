@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import { Observable, map, of, switchMap } from 'rxjs';
-import { IProductStoreReportRow } from '../../models/product/product.model';
+import { IProductStoreReportRow, isFractionalUnit } from '../../models/product/product.model';
 import { IStoreView } from '../../models/store/store.model';
 import { ProductService } from '../product/product.service';
 
@@ -84,7 +84,7 @@ export class ProductRegistrationReportService {
       doc.text(String(product.code), columns[0].x, y);
       doc.text(this.truncate(doc, product.name, 82), columns[1].x, y);
       doc.text(product.saleUnit ?? 'UN', columns[2].x, y);
-      doc.text(product.isFractional ? 'Sim' : 'Não', columns[3].x, y);
+      doc.text(isFractionalUnit(product.saleUnit) ? 'Sim' : 'Não', columns[3].x, y);
       doc.text(product.commission ? 'Sim' : 'Não', columns[4].x, y);
       doc.text(
         product.costPrice === null ? '—' : this.formatCurrency(product.costPrice),

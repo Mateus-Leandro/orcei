@@ -9,11 +9,17 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
+  EditableColumnOption,
   EditableColumnType,
   Table,
   TableCellChange,
 } from '../../../../shared/components/table/table';
 import { IBudgetProduct } from '../../../../core/models/budget/budget.model';
+import {
+  isFractionalUnit,
+  PRODUCT_SALE_UNIT_OPTIONS,
+  ProductSaleUnit,
+} from '../../../../core/models/product/product.model';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format/currency-format.pipe';
 import {
   ConfirmDialog,
@@ -22,8 +28,7 @@ import {
 
 export interface IBudgetProductCellChange {
   productId: string;
-  field: 'quantity' | 'unitPrice';
-  value: number;
+  changes: Partial<Pick<IBudgetProduct, 'saleUnit' | 'quantity' | 'unitPrice'>>;
 }
 
 @Component({
@@ -46,21 +51,20 @@ export class BudgetProductsTable implements OnChanges {
     'Preço Unitário',
     'Preço Total',
   ];
-  editableColumns = ['Quantidade', 'Preço Unitário'];
+  editableColumns = ['Unidade', 'Quantidade', 'Preço Unitário'];
   editableColumnTypes: Record<string, EditableColumnType> = {
+    Unidade: 'select',
     Quantidade: 'number',
     'Preço Unitário': 'currency',
   };
-  dataSource: any[] = [];
-
-  private readonly columnFieldMap: Record<string, 'quantity' | 'unitPrice'> = {
-    Quantidade: 'quantity',
-    'Preço Unitário': 'unitPrice',
+  editableColumnOptions: Record<string, EditableColumnOption[]> = {
+    Unidade: PRODUCT_SALE_UNIT_OPTIONS,
   };
+  dataSource: any[] = [];
 
   // Bloqueia o separador decimal na quantidade de itens não fracionados.
   allowFractional = (element: any, column: string): boolean =>
-    column === 'Quantidade' ? !!element['isFractional'] : true;
+    column === 'Quantidade' ? isFractionalUnit(element['Unidade']) : true;
 
   private dialog = inject(MatDialog);
 
@@ -95,7 +99,6 @@ export class BudgetProductsTable implements OnChanges {
   private mapDataSource(): void {
     this.dataSource = this.products.map((product) => ({
       productId: product.productId,
-      isFractional: product.isFractional ?? false,
       Código: product.productCode ?? '',
       Produto: product.productName ?? '',
       Unidade: product.saleUnit ?? '',
@@ -107,10 +110,29 @@ export class BudgetProductsTable implements OnChanges {
 
   onCellChange(event: TableCellChange): void {
     const { row, column, value } = event;
+
+    if (column === 'Unidade') {
+      const saleUnit = value as ProductSaleUnit;
+      const changes: IBudgetProductCellChange['changes'] = { saleUnit };
+
+      // Ao trocar para uma unidade não fracionada, a quantidade é truncada.
+      if (!isFractionalUnit(saleUnit)) {
+        const quantity = Math.trunc(row['Quantidade']);
+        if (quantity !== row['Quantidade']) {
+          row['Quantidade'] = quantity;
+          row['Preço Total'] = this.calcTotal(quantity, row['Preço Unitário']);
+          changes.quantity = quantity;
+        }
+      }
+
+      this.cellChange.emit({ productId: row.productId, changes });
+      return;
+    }
+
     let numericValue = parseFloat(value) || 0;
 
     // Itens não fracionados só aceitam quantidade inteira.
-    if (column === 'Quantidade' && !row['isFractional']) {
+    if (column === 'Quantidade' && !isFractionalUnit(row['Unidade'])) {
       numericValue = Math.trunc(numericValue);
       row['Quantidade'] = numericValue;
     }
@@ -120,9 +142,10 @@ export class BudgetProductsTable implements OnChanges {
 
     row['Preço Total'] = this.calcTotal(quantity, unitPrice);
 
-    const field = this.columnFieldMap[column];
-    if (field) {
-      this.cellChange.emit({ productId: row.productId, field, value: numericValue });
+    if (column === 'Quantidade') {
+      this.cellChange.emit({ productId: row.productId, changes: { quantity: numericValue } });
+    } else if (column === 'Preço Unitário') {
+      this.cellChange.emit({ productId: row.productId, changes: { unitPrice: numericValue } });
     }
   }
 

@@ -27,7 +27,10 @@ import { Spinner } from '../../../../shared/components/spinner/spinner';
 import { LoadingService } from '../../../../core/services/loading/loading.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BarcodeDialog } from '../../components/barcode-dialog/barcode-dialog';
-import { FinancialStatementTable, IFinancialStatementCellChange } from '../../components/financial-statement-table/financial-statement-table';
+import {
+  FinancialStatementTable,
+  IFinancialStatementCellChange,
+} from '../../components/financial-statement-table/financial-statement-table';
 import { IFinancialStatementView } from '../../../../core/models/financial-statement/financial-statement.model';
 import { FinancialStatementService } from '../../../../core/services/financial-statement/financial-statement.service';
 import { StoreService } from '../../../../core/services/stores/store.service';
@@ -48,7 +51,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     FinancialStatementTable,
     MatCheckboxModule,
     Select,
-    Spinner
+    Spinner,
   ],
   templateUrl: './products-form.html',
   styleUrl: './products-form.scss',
@@ -75,7 +78,6 @@ export class ProductsForm implements OnInit, OnDestroy {
       code: ['', []],
       name: ['', [Validators.required]],
       saleUnit: ['UN', [Validators.required]],
-      isFractional: [false, []],
       commission: [true, []],
       barcodes: [[], []],
     });
@@ -97,7 +99,6 @@ export class ProductsForm implements OnInit, OnDestroy {
             name: product.data?.name,
             commission: product.data?.commission,
             saleUnit: product.data?.saleUnit ?? 'UN',
-            isFractional: product.data?.isFractional ?? false,
             barcodes: product.data?.barcodes,
           });
           this.financialStatements.set(
@@ -178,7 +179,6 @@ export class ProductsForm implements OnInit, OnDestroy {
       name: payload.name,
       commission: payload.commission,
       saleUnit: payload.saleUnit,
-      isFractional: payload.isFractional,
     };
 
     this.productService.upsertProduct(upsertProduct).subscribe({
@@ -261,10 +261,6 @@ export class ProductsForm implements OnInit, OnDestroy {
 
   get saleUnitControl() {
     return this.formGroup.get('saleUnit') as FormControl<string>;
-  }
-
-  get isFractionalControl() {
-    return this.formGroup.get('isFractional') as FormControl<boolean>;
   }
 
   get barcodesControl() {

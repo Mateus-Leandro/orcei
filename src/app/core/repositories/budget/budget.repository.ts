@@ -68,7 +68,7 @@ export class BudgetRepository {
       .select(
         '*, customer:customers(id, code, name, surname, document, phone, address, created_at, updated_at), ' +
           'seller:sellers(id, name), ' +
-          'budgets_products(id, product_id, quantity, unit_price, product:products(id, code, name, sale_unit, is_fractional))',
+          'budgets_products(id, product_id, quantity, unit_price, sale_unit, product:products(id, code, name, sale_unit))',
       )
       .eq('id', id)
       .maybeSingle();
@@ -94,8 +94,8 @@ export class BudgetRepository {
           productId: bp.product_id,
           productCode: bp.product?.code,
           productName: bp.product?.name ?? '',
-          saleUnit: bp.product?.sale_unit ?? '',
-          isFractional: bp.product?.is_fractional ?? false,
+          // Itens antigos não têm unidade própria: usa a do cadastro do produto.
+          saleUnit: bp.sale_unit ?? bp.product?.sale_unit ?? '',
           quantity: bp.quantity ?? 0,
           unitPrice: bp.unit_price ?? 0,
         }));
@@ -125,7 +125,7 @@ export class BudgetRepository {
         const { data, error } = await this.supabase
           .from('budgets')
           .select(
-            'id,budget_number,created_at,payment_type,customer:customers(name,surname),budgets_products(quantity,unit_price,product:products(code,name,sale_unit,commission))',
+            'id,budget_number,created_at,payment_type,customer:customers(name,surname),budgets_products(quantity,unit_price,sale_unit,product:products(code,name,sale_unit,commission))',
           )
           .eq('seller_id', sellerId)
           .gte('created_at', start.toISOString())
@@ -182,6 +182,7 @@ export class BudgetRepository {
           product_id: product.productId,
           quantity: product.quantity,
           unit_price: product.unitPrice,
+          sale_unit: product.saleUnit || null,
         }));
 
         const { error: insertError } = await this.supabase.from('budgets_products').insert(rows);

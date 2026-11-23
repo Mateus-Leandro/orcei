@@ -68,6 +68,42 @@ table {
   overflow: hidden;
 }
 
+.editable-select-cell {
+  min-width: 200px;
+  width: 200px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+// app-select compacto para caber na linha da tabela.
+.editable-select {
+  --mat-form-field-container-height: 36px;
+  --mat-form-field-container-vertical-padding: 6px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  // Sem a borda do outline: o select fica com aparência de texto da célula,
+  // alinhado ao cabeçalho, com sublinhado no hover (igual às demais células editáveis).
+  ::ng-deep .mdc-notched-outline__leading,
+  ::ng-deep .mdc-notched-outline__notch,
+  ::ng-deep .mdc-notched-outline__trailing {
+    border: none !important;
+  }
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+  }
+
+  &:hover ::ng-deep .mat-mdc-text-field-wrapper {
+    border-bottom-color: #aaa;
+  }
+}
+
 .editable-display {
   display: block;
   width: 100%;
